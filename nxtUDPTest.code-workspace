@@ -1,0 +1,45 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+    "launch": {
+
+        "configurations": [{
+            "type": "dezog",
+            "request": "launch",
+            "name": "DeZog",
+            "remoteType": "cspect",
+            "zxnext": {
+                "port":12000,
+            },
+            "cspect": {
+                "port": 11000
+            },
+            "startAutomatically": false,
+            "history": {
+                "reverseDebugInstructionCount": 10000,
+                "codeCoverageEnabled": true
+            },
+            "commandsAfterLaunch": [
+                //"-sprites",
+                //"-patterns"
+            ],
+            "disassemblerArgs": {
+        		"numberOfLines": 20,
+                "esxdosRst": true
+            },
+            "rootFolder": "${workspaceFolder}",
+            "load": "build/test.nex",
+            "smallValuesMaximum": 513,
+            "tmpDir": ".tmp"
+       }],
+        "compounds": []
+    },
+    "settings": {
+        "files.associations": {
+            "stdio.h": "c"
+        }
+    }
+}
