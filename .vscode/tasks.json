@@ -7,11 +7,12 @@
             "label": "CSpect",
             "type": "shell",
             "group": "test",
-            "command": "/home/hannu/bin/runCSpect.sh",
+            "command": "C:/bin/CSpect2_19_9_1/CSpect.exe",
             "args": [
+                "-sound -w2 -60 -vsync -zxnext -mmc=./"
             ],
-            "options": {
-                "cwd": "/home/hannu/bin/cspect"
+            "options": { 
+                "cwd": "C:/bin/CSpect2_19_9_1"
             },
             "problemMatcher": []
         },
