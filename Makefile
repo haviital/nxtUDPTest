@@ -16,8 +16,8 @@ MKDIR = mkdir -p
 CC=zcc
 AS=zcc
 TARGET=+zxn -subtype=nex
-#VERBOSITY=-vn
-VERBOSITY=-v
+VERBOSITY=-vn
+#VERBOSITY=-v
 OUT_DIR=build bin
 PRAGMA_FILE=zpragma.inc
 #DEBUGFLAGS := --list --c-code-in-asm

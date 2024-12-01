@@ -2,18 +2,18 @@
 6165.11 FD E5        push iy
 6167.11 D9           exx
 6168.11 E5           push hl
-6169.11 ED 73 6C 9B  ld (9B6Ch),sp
+6169.11 ED 73 BB 9B  ld (9BBBh),sp
 616D.11 31 00 C0     ld sp,0C000h
-6170.11 21 EB 96     ld hl,96EBh
+6170.11 21 3A 97     ld hl,973Ah
 6173.11 34           inc (hl)
 6174.11 34           inc (hl)
 
-; Note: The address 8293h is in a different bank.
-6175.11 CD 93 82     call 8293h
+; Note: The address 8289h is in a different bank.
+6175.11 CD 89 82     call 8289h
 
 6178.11 E5           push hl
 6179.11 C1           pop bc
-617A.11 ED 7B 6C 9B  ld sp,(9B6Ch)
+617A.11 ED 7B BB 9B  ld sp,(9BBBh)
 617E.11 D9           exx
 617F.11 E1           pop hl
 6180.11 D9           exx
@@ -22,5 +22,5 @@
 6185.11 FB           ei
 6186.11 C9           ret
 
-9B6C.4 00 00 FF...  DEFB 00 00 FF FF FF FF FF FF ; ASCII: ????????
+9BBB.4 00 00 FF...  DEFB 00 00 FF FF FF FF FF FF ; ASCII: ????????
 C000.0 00 00 00...  DEFB 00 00 00 00 00 00 00 00 ; ASCII: ????????

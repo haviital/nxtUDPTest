@@ -171,6 +171,16 @@ static void create_start_screen(void)
     zx_border(INK_WHITE);
     zx_cls(INK_BLACK | PAPER_WHITE);
 
+    ZXN_NEXTREG(0x07, 0x03);  // 28MHz
+   
+    IO_153B = 0x00;  // Select ESP for UART(?)
+
+    // Reset ESP
+    // ZXN_NEXTREG(0x02, 0x80);
+    // z80_delay_ms(100*8);       // 100ms, about 8x longer for 28MHz
+    // XN_NEXTREG(0x02, 0);
+    // z80_delay_ms(8000U*8U);      // 8s, about 8x longer for 28MHz
+
     printf("Uart init\r\n");
     esp_response_time_ms = 66 + ESP_FW_RESPONSE_TIME_MS;   // two bit periods at 300bps
     uart_rx_readline_last(buffer, sizeof(buffer)-1);   // clear Rx
@@ -193,7 +203,7 @@ static void create_start_screen(void)
     }
     while (*buffer);
 
-    printAt(5,  7, "Press any key to start");
+    printf("Press any key to start\n");
     //printAt(1, 15, "Press any key to switch screen");
 }
 
@@ -216,7 +226,7 @@ static void select_test(void)
 
     test_blit_transparent(&off_screen);
 
-    test_draw_text(&off_screen);
+    //test_draw_text(&off_screen);
 }
 
 static void test_draw_text(layer2_screen_t *screen)
@@ -232,7 +242,7 @@ static void test_draw_text(layer2_screen_t *screen)
 
     layer2_draw_text(19+pos[2].x, 12+pos[2].y, "Hello", 0xEF, screen);
 
-    // Clipped text.
+    // Clipped text. 
     layer2_draw_text(3-pos[3].x,  29-pos[3].y, "Hello", 0xEF, screen);
     layer2_draw_text(11+pos[4].x, 29+pos[4].y, "Hello", 0xEF, screen);
     layer2_draw_text(19-pos[5].x, 29-pos[5].y, "Hello", 0xEF, screen);
@@ -256,22 +266,22 @@ static void test_blit_transparent(layer2_screen_t *screen)
     layer2_fill_rect(0, 64,  256, 64, 0x00, screen);
     layer2_fill_rect(0, 128, 256, 64, 0x00, screen);
 
-    layer2_blit_transparent(120+pos[7].x, 24+pos[7].y,  sprite, 16, 16, screen); // top
-    layer2_blit_transparent(120, 56,  sprite, 16, 16, screen); // top + middle
-    layer2_blit_transparent(120, 88,  sprite, 16, 16, screen); // middle
-    layer2_blit_transparent(120, 120, sprite, 16, 16, screen); // middle + bottom
-    layer2_blit_transparent(120, 152, sprite, 16, 16, screen); // bottom
-    layer2_blit_transparent(120, 184, sprite, 16, 16, screen); // bottom clipped
+    layer2_blit(120+pos[7].x, 24+pos[7].y,  sprite, 16, 16, screen); // top
+    layer2_blit(120, 56,  sprite, 16, 16, screen); // top + middle
+    layer2_blit(120, 88,  sprite, 16, 16, screen); // middle
+    layer2_blit(120, 120, sprite, 16, 16, screen); // middle + bottom
+    layer2_blit(120, 152, sprite, 16, 16, screen); // bottom
+    layer2_blit(120, 184, sprite, 16, 16, screen); // bottom clipped
 
-    layer2_blit_transparent(64, 48, tall_sprite, 2, 96, screen); // top + middle + bottom
+    layer2_blit(64, 48, tall_sprite, 2, 96, screen); // top + middle + bottom
 
     // Clipped blits.
-    layer2_blit_transparent(248, 56,  sprite, 16, 16, screen);
-    layer2_blit_transparent(248, 120, sprite, 16, 16, screen);
-    layer2_blit_transparent(248, 184, sprite, 16, 16, screen);
+    layer2_blit(248, 56,  sprite, 16, 16, screen);
+    layer2_blit(248, 120, sprite, 16, 16, screen);
+    layer2_blit(248, 184, sprite, 16, 16, screen);
 
     // Outside screen.
-    layer2_blit_transparent(248, 248, sprite, 16, 16, screen);
+    layer2_blit(248, 248, sprite, 16, 16, screen);
 
     if (IS_SHADOW_SCREEN(screen))
     {
@@ -291,6 +301,8 @@ int main(void)
     create_start_screen();
     in_wait_key();
     init_tests();
+
+    layer2_draw_text(3,  12, "Hello", 0xEF, &off_screen);
 
     while (true)
     {
