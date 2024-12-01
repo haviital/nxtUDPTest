@@ -19,6 +19,9 @@
 
 #include "lib/zxn/zxnext_layer2.h"
 
+#include "esp.h"
+#include "uart.h"
+
 #pragma output CRT_ORG_CODE = 0x6164
 #pragma output REGISTER_SP = 0xC000
 #pragma output CLIB_MALLOC_HEAP_SIZE = 0
@@ -116,6 +119,22 @@ static struct coord pos[64];
  * Functions
  ******************************************************************************/
 
+// ESP DETECT BPS
+
+void main_esp_detect_bps(void)
+{
+   printf("Detecting ESP baud rate\n");
+   
+   if (!esp_detect_bps())
+   {
+      esp_bps = 115200UL;
+      printf("\n  Failed, selecting default");
+   }
+
+   printf("\n  Setting uart to %lu\n", esp_bps);
+   uart_set_prescaler(uart_compute_prescaler(esp_bps));
+}
+
 static void init_hardware(void)
 {
     // Put Z80 in 28 MHz turbo mode.
@@ -152,10 +171,30 @@ static void create_start_screen(void)
     zx_border(INK_WHITE);
     zx_cls(INK_BLACK | PAPER_WHITE);
 
-    printf("Uart inited\r\n");
+    printf("Uart init\r\n");
+    esp_response_time_ms = 66 + ESP_FW_RESPONSE_TIME_MS;   // two bit periods at 300bps
+    uart_rx_readline_last(buffer, sizeof(buffer)-1);   // clear Rx
+
+    esp_response_time_ms = 66 + ESP_FW_RESPONSE_TIME_MS;   // two bit periods at 300bps
+   
+    printf("ESP AT+GMR follows...\n");
+    uart_rx_readline_last(buffer, sizeof(buffer)-1);   // clear Rx
+
+    // Send AT command to UART.
+    uart_tx(STRING_ESP_TX_AT_GMR);
+    *buffer = 0;
+
+    // Read response from UART. Print to to screen.
+    do
+    {
+        puts(buffer);  
+        *buffer = 0;
+        uart_rx_readline(buffer, sizeof(buffer)-1);
+    }
+    while (*buffer);
 
     printAt(5,  7, "Press any key to start");
-    printAt(1, 15, "Press any key to switch screen");
+    //printAt(1, 15, "Press any key to switch screen");
 }
 
 static void init_tests(void)

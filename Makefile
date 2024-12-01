@@ -2,7 +2,7 @@
 EXEC_OUTPUT=build/test
 
 # List all your source files here
-SOURCES = test.c
+SOURCES = test.c esp.c uart.c
 
 # Maybe you'll need to edit this
 CRT=1
