@@ -7,9 +7,8 @@
             "label": "CSpect",
             "type": "shell",
             "group": "test",
-            "command": "C:/bin/CSpect2_19_9_1/CSpect.exe",
+            "command": "C:/bin/CSpect2_19_9_1/run.bat",
             "args": [
-                "-sound -w2 -60 -vsync -zxnext -mmc=./"
             ],
             "options": { 
                 "cwd": "C:/bin/CSpect2_19_9_1"

@@ -147,8 +147,12 @@ static void init_isr(void)
 
 static void create_start_screen(void)
 {
+    int c, k;
+
     zx_border(INK_WHITE);
     zx_cls(INK_BLACK | PAPER_WHITE);
+
+    printf("Uart inited\r\n");
 
     printAt(5,  7, "Press any key to start");
     printAt(1, 15, "Press any key to switch screen");
