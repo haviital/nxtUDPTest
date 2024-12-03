@@ -1,4 +1,4 @@
-C:/Users/Hannu/AppData/Local/Temp/zcc000032F8629F2.asm:
+C:/Users/Hannu/AppData/Local/Temp/zcc000043E864D92.asm:
      1                          MODULE test_c
      2                          LINE 0, "src/test.c"
 src/test.c:
@@ -1911,378 +1911,395 @@ src/test.c:
   1856  0139  dde5              	push	ix
   1857  013b  dd210000          	ld	ix,0
   1858  013f  dd39              	add	ix,sp
-  1859  0141  010000            	ld	bc,0x0000
-  1860  0144  1e00              	ld	e,0x00
-  1861                          l_drawCloud_00102:
-  1862  0146  79                	ld	a, c
-  1863  0147  c5                	push	bc
-  1864  0148  d5                	push	de
-  1865  0149  dd6e04            	ld	l,(ix+4)
-  1866  014c  dd6605            	ld	h,(ix+5)
-  1867  014f  e5                	push	hl
-  1868  0150  261a              	ld	h,0x1a
-  1869  0152  e5                	push	hl
-  1870  0153  33                	inc	sp
-  1871  0154  211000            	ld	hl,0x0010
-  1872  0157  e5                	push	hl
-  1873  0158  219000            	ld	hl,_cloud
-  1874  015b  e5                	push	hl
-  1875  015c  2664              	ld	h,0x64
-  1876  015e  e5                	push	hl
-  1877  015f  33                	inc	sp
-  1878  0160  f5                	push	af
-  1879  0161  33                	inc	sp
-  1880  0162  cd0000            	call	_layer2_blit_transparent
-  1881  0165  210900            	ld	hl,9
-  1882  0168  39                	add	hl, sp
-  1883  0169  f9                	ld	sp, hl
-  1884  016a  d1                	pop	de
-  1885  016b  c1                	pop	bc
-  1886  016c  3e10              	ld	a,0x10
-  1887  016e  ed33              	add	bc, a
-  1888  0170  1c                	inc	e
-  1889  0171  7b                	ld	a, e
-  1890  0172  d610              	sub	a,0x10
-  1891  0174  38d0              	jr	C,l_drawCloud_00102
-  1892  0176  dde1              	pop	ix
-  1893  0178  c9                	ret
-  1894                          ;	---------------------------------
-  1895                          ; Function test_draw_text
-  1896                          ; ---------------------------------
-  1897                          _test_draw_text:
-  1898  0179  dde5              	push	ix
-  1899  017b  dd210000          	ld	ix,0
-  1900  017f  dd39              	add	ix,sp
-  1901  0181  3ac100            	ld	a, (_pos + 1)
-  1902  0184  c60c              	add	a,0x0c
-  1903  0186  47                	ld	b, a
-  1904  0187  3ac000            	ld	a, (_pos + 0)
-  1905  018a  c603              	add	a,0x03
-  1906  018c  dd6e04            	ld	l,(ix+4)
-  1907  018f  dd6605            	ld	h,(ix+5)
-  1908  0192  e5                	push	hl
-  1909  0193  26ef              	ld	h,0xef
-  1910  0195  e5                	push	hl
-  1911  0196  33                	inc	sp
-  1912  0197  21b502            	ld	hl,___str_10
-  1913  019a  e5                	push	hl
-  1914  019b  c5                	push	bc
-  1915  019c  33                	inc	sp
-  1916  019d  f5                	push	af
-  1917  019e  33                	inc	sp
-  1918  019f  cd0000            	call	_layer2_draw_text
-  1919  01a2  f1                	pop	af
-  1920  01a3  f1                	pop	af
-  1921  01a4  33                	inc	sp
-  1922  01a5  210000            	ld	hl,0x0000
-  1923  01a8  e3                	ex	(sp),hl
-  1924  01a9  cd0000            	call	_layer2_set_font
-  1925  01ac  f1                	pop	af
-  1926  01ad  11b502            	ld	de,___str_10
-  1927  01b0  21c300            	ld	hl,_pos + 3
-  1928  01b3  4e                	ld	c, (hl)
-  1929  01b4  3e0c              	ld	a,0x0c
-  1930  01b6  91                	sub	a, c
-  1931  01b7  47                	ld	b, a
-  1932  01b8  21c200            	ld	hl,_pos + 2
-  1933  01bb  4e                	ld	c, (hl)
-  1934  01bc  3e0b              	ld	a,0x0b
-  1935  01be  91                	sub	a, c
-  1936  01bf  dd6e04            	ld	l,(ix+4)
-  1937  01c2  dd6605            	ld	h,(ix+5)
-  1938  01c5  e5                	push	hl
-  1939  01c6  26ef              	ld	h,0xef
-  1940  01c8  e5                	push	hl
-  1941  01c9  33                	inc	sp
-  1942  01ca  d5                	push	de
-  1943  01cb  c5                	push	bc
-  1944  01cc  33                	inc	sp
-  1945  01cd  f5                	push	af
-  1946  01ce  33                	inc	sp
-  1947  01cf  cd0000            	call	_layer2_draw_text
-  1948  01d2  f1                	pop	af
-  1949  01d3  f1                	pop	af
-  1950  01d4  33                	inc	sp
-  1951  01d5  21003d            	ld	hl,0x3d00
-  1952  01d8  e3                	ex	(sp),hl
-  1953  01d9  cd0000            	call	_layer2_set_font
-  1954  01dc  f1                	pop	af
-  1955  01dd  11b502            	ld	de,___str_10
-  1956  01e0  3ac500            	ld	a, (_pos + 5)
-  1957  01e3  c60c              	add	a,0x0c
-  1958  01e5  47                	ld	b, a
-  1959  01e6  3ac400            	ld	a, (_pos + 4)
-  1960  01e9  c613              	add	a,0x13
-  1961  01eb  dd6e04            	ld	l,(ix+4)
-  1962  01ee  dd6605            	ld	h,(ix+5)
-  1963  01f1  e5                	push	hl
-  1964  01f2  26ef              	ld	h,0xef
-  1965  01f4  e5                	push	hl
-  1966  01f5  33                	inc	sp
-  1967  01f6  d5                	push	de
-  1968  01f7  c5                	push	bc
-  1969  01f8  33                	inc	sp
-  1970  01f9  f5                	push	af
-  1971  01fa  33                	inc	sp
-  1972  01fb  cd0000            	call	_layer2_draw_text
-  1973  01fe  f1                	pop	af
-  1974  01ff  f1                	pop	af
-  1975  0200  f1                	pop	af
-  1976  0201  33                	inc	sp
-  1977  0202  11b502            	ld	de,___str_10
-  1978  0205  21c700            	ld	hl,_pos + 7
-  1979  0208  4e                	ld	c, (hl)
-  1980  0209  3e1d              	ld	a,0x1d
-  1981  020b  91                	sub	a, c
-  1982  020c  47                	ld	b, a
-  1983  020d  21c600            	ld	hl,_pos + 6
-  1984  0210  4e                	ld	c, (hl)
-  1985  0211  3e03              	ld	a,0x03
-  1986  0213  91                	sub	a, c
-  1987  0214  dd6e04            	ld	l,(ix+4)
-  1988  0217  dd6605            	ld	h,(ix+5)
-  1989  021a  e5                	push	hl
-  1990  021b  26ef              	ld	h,0xef
-  1991  021d  e5                	push	hl
-  1992  021e  33                	inc	sp
-  1993  021f  d5                	push	de
-  1994  0220  c5                	push	bc
-  1995  0221  33                	inc	sp
-  1996  0222  f5                	push	af
-  1997  0223  33                	inc	sp
-  1998  0224  cd0000            	call	_layer2_draw_text
-  1999  0227  f1                	pop	af
-  2000  0228  f1                	pop	af
-  2001  0229  f1                	pop	af
-  2002  022a  33                	inc	sp
-  2003  022b  11b502            	ld	de,___str_10
-  2004  022e  3ac900            	ld	a, (_pos + 9)
-  2005  0231  c61d              	add	a,0x1d
-  2006  0233  47                	ld	b, a
-  2007  0234  3ac800            	ld	a, (_pos + 8)
-  2008  0237  c60b              	add	a,0x0b
-  2009  0239  dd6e04            	ld	l,(ix+4)
-  2010  023c  dd6605            	ld	h,(ix+5)
-  2011  023f  e5                	push	hl
-  2012  0240  26ef              	ld	h,0xef
-  2013  0242  e5                	push	hl
-  2014  0243  33                	inc	sp
-  2015  0244  d5                	push	de
-  2016  0245  c5                	push	bc
-  2017  0246  33                	inc	sp
-  2018  0247  f5                	push	af
-  2019  0248  33                	inc	sp
-  2020  0249  cd0000            	call	_layer2_draw_text
-  2021  024c  f1                	pop	af
-  2022  024d  f1                	pop	af
-  2023  024e  f1                	pop	af
-  2024  024f  33                	inc	sp
-  2025  0250  11b502            	ld	de,___str_10
-  2026  0253  21cb00            	ld	hl,_pos + 11
-  2027  0256  4e                	ld	c, (hl)
-  2028  0257  3e1d              	ld	a,0x1d
-  2029  0259  91                	sub	a, c
-  2030  025a  47                	ld	b, a
-  2031  025b  21ca00            	ld	hl,_pos + 10
-  2032  025e  4e                	ld	c, (hl)
-  2033  025f  3e13              	ld	a,0x13
-  2034  0261  91                	sub	a, c
-  2035  0262  dd6e04            	ld	l,(ix+4)
-  2036  0265  dd6605            	ld	h,(ix+5)
-  2037  0268  e5                	push	hl
-  2038  0269  26ef              	ld	h,0xef
-  2039  026b  e5                	push	hl
-  2040  026c  33                	inc	sp
-  2041  026d  d5                	push	de
-  2042  026e  c5                	push	bc
-  2043  026f  33                	inc	sp
-  2044  0270  f5                	push	af
-  2045  0271  33                	inc	sp
-  2046  0272  cd0000            	call	_layer2_draw_text
-  2047  0275  f1                	pop	af
-  2048  0276  f1                	pop	af
-  2049  0277  f1                	pop	af
-  2050  0278  33                	inc	sp
-  2051  0279  11b502            	ld	de,___str_10
-  2052  027c  3acd00            	ld	a, (_pos + 13)
-  2053  027f  c620              	add	a,0x20
-  2054  0281  47                	ld	b, a
-  2055  0282  3acc00            	ld	a, (_pos + 12)
-  2056  0285  c618              	add	a,0x18
-  2057  0287  dd6e04            	ld	l,(ix+4)
-  2058  028a  dd6605            	ld	h,(ix+5)
-  2059  028d  e5                	push	hl
-  2060  028e  26ef              	ld	h,0xef
-  2061  0290  e5                	push	hl
-  2062  0291  33                	inc	sp
-  2063  0292  d5                	push	de
-  2064  0293  c5                	push	bc
-  2065  0294  33                	inc	sp
-  2066  0295  f5                	push	af
-  2067  0296  33                	inc	sp
-  2068  0297  cd0000            	call	_layer2_draw_text
-  2069  029a  f1                	pop	af
-  2070  029b  f1                	pop	af
-  2071  029c  f1                	pop	af
-  2072  029d  33                	inc	sp
-  2073  029e  dd4e04            	ld	c,(ix+4)
-  2074  02a1  dd4605            	ld	b,(ix+5)
-  2075  02a4  dd7e05            	ld	a,(ix+5)
-  2076  02a7  ddb604            	or	a,(ix+4)
-  2077  02aa  2809              	jr	Z,l_test_draw_text_00105
-  2078  02ac  0a                	ld	a, (bc)
-  2079  02ad  3d                	dec	a
-  2080  02ae  2005              	jr	NZ,l_test_draw_text_00105
-  2081  02b0  cd0000            	call	_layer2_flip_main_shadow_screen
-  2082  02b3  1812              	jr	l_test_draw_text_00108
-  2083                          l_test_draw_text_00105:
-  2084  02b5  dd7e05            	ld	a,(ix+5)
-  2085  02b8  ddb604            	or	a,(ix+4)
-  2086  02bb  280a              	jr	Z,l_test_draw_text_00108
-  2087  02bd  0a                	ld	a, (bc)
-  2088  02be  d602              	sub	a,0x02
-  2089  02c0  2005              	jr	NZ,l_test_draw_text_00108
-  2090  02c2  c5                	push	bc
-  2091  02c3  cd0000            	call	_layer2_copy_off_screen
-  2092  02c6  f1                	pop	af
-  2093                          l_test_draw_text_00108:
-  2094  02c7  dde1              	pop	ix
-  2095  02c9  c9                	ret
-  2096                          	SECTION rodata_compiler
-  2097                          ___str_10:
-  2098  02b5  48656c6c6f        	DEFM "Hello"
-  2099  02ba  00                	DEFB 0x00
-  2100                          	SECTION code_compiler
-  2101                          ;	---------------------------------
-  2102                          ; Function test_blit_transparent
-  2103                          ; ---------------------------------
-  2104                          _test_blit_transparent:
-  2105  02ca  dde5              	push	ix
-  2106  02cc  dd210000          	ld	ix,0
-  2107  02d0  dd39              	add	ix,sp
-  2108  02d2  110000            	ld	de,_sprite+0
-  2109  02d5  3acf00            	ld	a, (_pos + 15)
-  2110  02d8  c618              	add	a,0x18
-  2111  02da  47                	ld	b, a
-  2112  02db  3ace00            	ld	a, (_pos + 14)
-  2113  02de  c678              	add	a,0x78
-  2114  02e0  dd6e04            	ld	l,(ix+4)
-  2115  02e3  dd6605            	ld	h,(ix+5)
-  2116  02e6  e5                	push	hl
-  2117  02e7  260c              	ld	h,0x0c
-  2118  02e9  e5                	push	hl
-  2119  02ea  33                	inc	sp
-  2120  02eb  210c00            	ld	hl,0x000c
-  2121  02ee  e5                	push	hl
-  2122  02ef  d5                	push	de
-  2123  02f0  c5                	push	bc
-  2124  02f1  33                	inc	sp
-  2125  02f2  f5                	push	af
-  2126  02f3  33                	inc	sp
-  2127  02f4  cd0000            	call	_layer2_blit_transparent
-  2128  02f7  210900            	ld	hl,9
-  2129  02fa  39                	add	hl, sp
-  2130  02fb  f9                	ld	sp, hl
-  2131  02fc  dd4e04            	ld	c,(ix+4)
-  2132  02ff  dd4605            	ld	b,(ix+5)
-  2133  0302  dd7e05            	ld	a,(ix+5)
-  2134  0305  ddb604            	or	a,(ix+4)
-  2135  0308  2809              	jr	Z,l_test_blit_transparent_00105
-  2136  030a  0a                	ld	a, (bc)
-  2137  030b  3d                	dec	a
-  2138  030c  2005              	jr	NZ,l_test_blit_transparent_00105
-  2139  030e  cd0000            	call	_layer2_flip_main_shadow_screen
-  2140  0311  1812              	jr	l_test_blit_transparent_00108
-  2141                          l_test_blit_transparent_00105:
-  2142  0313  dd7e05            	ld	a,(ix+5)
-  2143  0316  ddb604            	or	a,(ix+4)
-  2144  0319  280a              	jr	Z,l_test_blit_transparent_00108
-  2145  031b  0a                	ld	a, (bc)
-  2146  031c  d602              	sub	a,0x02
-  2147  031e  2005              	jr	NZ,l_test_blit_transparent_00108
-  2148  0320  c5                	push	bc
-  2149  0321  cd0000            	call	_layer2_copy_off_screen
-  2150  0324  f1                	pop	af
-  2151                          l_test_blit_transparent_00108:
-  2152  0325  dde1              	pop	ix
-  2153  0327  c9                	ret
-  2154                          ;	---------------------------------
-  2155                          ; Function DrawGame
-  2156                          ; ---------------------------------
-  2157                          _DrawGame:
-  2158  0328  01c000            	ld	bc,_pos+0
-  2159  032b  110000            	ld	de,0x0000
-  2160                          l_DrawGame_00103:
-  2161  032e  7b                	ld	a, e
-  2162  032f  d640              	sub	a,0x40
-  2163  0331  7a                	ld	a, d
-  2164  0332  17                	rla
-  2165  0333  3f                	ccf
-  2166  0334  1f                	rra
-  2167  0335  de80              	sbc	a,0x80
-  2168  0337  300a              	jr	NC,l_DrawGame_00101
-  2169  0339  6b                	ld	l, e
-  2170  033a  62                	ld	h, d
-  2171  033b  29                	add	hl, hl
-  2172  033c  09                	add	hl, bc
-  2173  033d  34                	inc	(hl)
-  2174  033e  23                	inc	hl
-  2175  033f  34                	inc	(hl)
-  2176  0340  13                	inc	de
-  2177  0341  18eb              	jr	l_DrawGame_00103
-  2178                          l_DrawGame_00101:
-  2179  0343  210600            	ld	hl,_off_screen
-  2180  0346  e5                	push	hl
-  2181  0347  cdca02            	call	_test_blit_transparent
-  2182  034a  210600            	ld	hl,_off_screen
-  2183  034d  e3                	ex	(sp),hl
-  2184  034e  cd3901            	call	_drawCloud
-  2185  0351  f1                	pop	af
-  2186  0352  c9                	ret
-  2187                          ;	---------------------------------
-  2188                          ; Function main
-  2189                          ; ---------------------------------
-  2190                          _main:
-  2191  0353  cd4c00            	call	_init_hardware
-  2192  0356  cd7100            	call	_init_isr
-  2193  0359  cd9400            	call	_create_start_screen
-  2194  035c  cd0000            	call	_in_wait_key
-  2195  035f  cd1401            	call	_init_tests
-  2196  0362  210600            	ld	hl,_off_screen
-  2197  0365  e5                	push	hl
-  2198  0366  3eef              	ld	a,0xef
-  2199  0368  f5                	push	af
-  2200  0369  33                	inc	sp
-  2201  036a  21bb02            	ld	hl,___str_11
-  2202  036d  e5                	push	hl
-  2203  036e  11030c            	ld	de,0x0c03
-  2204  0371  d5                	push	de
-  2205  0372  cd0000            	call	_layer2_draw_text
-  2206  0375  f1                	pop	af
-  2207  0376  f1                	pop	af
-  2208  0377  f1                	pop	af
-  2209  0378  33                	inc	sp
-  2210                          l_main_00102:
-  2211  0379  cd2803            	call	_DrawGame
-  2212  037c  18fb              	jr	l_main_00102
-  2213                          	SECTION rodata_compiler
-  2214                          ___str_11:
-  2215  02bb  48656c6c6f        	DEFM "Hello"
-  2216  02c0  00                	DEFB 0x00
-  2217                          	SECTION data_compiler
-  2218                          _test_number:
-  2219  0000  00                	DEFB +0x00
-  2220                          _shadow_screen:
-  2221  0001  01                	DEFB +0x01
-  2222  0002  00                	DEFB +0x00
-  2223  0003  00                	DEFB +0x00
-  2224  0004  00                	DEFB +0x00
-  2225  0005  00                	DEFB +0x00
-  2226                          _off_screen:
-  2227  0006  02                	DEFB +0x02
-  2228  0007  00                	DEFB +0x00
-  2229  0008  01                	DEFB +0x01
-  2230  0009  03                	DEFB +0x03
-  2231  000a  00                	DEFB +0x00
-  2232                          	SECTION IGNORE
-  2233                          
+  1859  0141  dd6e04            	ld	l,(ix+4)
+  1860  0144  dd6605            	ld	h,(ix+5)
+  1861  0147  e5                	push	hl
+  1862  0148  1128ff            	ld	de,0xff28
+  1863  014b  d5                	push	de
+  1864  014c  210001            	ld	hl,0x0100
+  1865  014f  e5                	push	hl
+  1866  0150  af                	xor	a, a
+  1867  0151  f5                	push	af
+  1868  0152  33                	inc	sp
+  1869  0153  af                	xor	a, a
+  1870  0154  f5                	push	af
+  1871  0155  33                	inc	sp
+  1872  0156  cd0000            	call	_layer2_fill_rect
+  1873  0159  f1                	pop	af
+  1874  015a  f1                	pop	af
+  1875  015b  f1                	pop	af
+  1876  015c  f1                	pop	af
+  1877  015d  010000            	ld	bc,0x0000
+  1878  0160  1e00              	ld	e,0x00
+  1879                          l_drawCloud_00102:
+  1880  0162  79                	ld	a, c
+  1881  0163  c5                	push	bc
+  1882  0164  d5                	push	de
+  1883  0165  dd6e04            	ld	l,(ix+4)
+  1884  0168  dd6605            	ld	h,(ix+5)
+  1885  016b  e5                	push	hl
+  1886  016c  261a              	ld	h,0x1a
+  1887  016e  e5                	push	hl
+  1888  016f  33                	inc	sp
+  1889  0170  211000            	ld	hl,0x0010
+  1890  0173  e5                	push	hl
+  1891  0174  219000            	ld	hl,_cloud
+  1892  0177  e5                	push	hl
+  1893  0178  2628              	ld	h,0x28
+  1894  017a  e5                	push	hl
+  1895  017b  33                	inc	sp
+  1896  017c  f5                	push	af
+  1897  017d  33                	inc	sp
+  1898  017e  cd0000            	call	_layer2_blit_transparent
+  1899  0181  210900            	ld	hl,9
+  1900  0184  39                	add	hl, sp
+  1901  0185  f9                	ld	sp, hl
+  1902  0186  d1                	pop	de
+  1903  0187  c1                	pop	bc
+  1904  0188  3e10              	ld	a,0x10
+  1905  018a  ed33              	add	bc, a
+  1906  018c  1c                	inc	e
+  1907  018d  7b                	ld	a, e
+  1908  018e  d610              	sub	a,0x10
+  1909  0190  38d0              	jr	C,l_drawCloud_00102
+  1910  0192  dde1              	pop	ix
+  1911  0194  c9                	ret
+  1912                          ;	---------------------------------
+  1913                          ; Function test_draw_text
+  1914                          ; ---------------------------------
+  1915                          _test_draw_text:
+  1916  0195  dde5              	push	ix
+  1917  0197  dd210000          	ld	ix,0
+  1918  019b  dd39              	add	ix,sp
+  1919  019d  3ac100            	ld	a, (_pos + 1)
+  1920  01a0  c60c              	add	a,0x0c
+  1921  01a2  47                	ld	b, a
+  1922  01a3  3ac000            	ld	a, (_pos + 0)
+  1923  01a6  c603              	add	a,0x03
+  1924  01a8  dd6e04            	ld	l,(ix+4)
+  1925  01ab  dd6605            	ld	h,(ix+5)
+  1926  01ae  e5                	push	hl
+  1927  01af  26ef              	ld	h,0xef
+  1928  01b1  e5                	push	hl
+  1929  01b2  33                	inc	sp
+  1930  01b3  21b502            	ld	hl,___str_10
+  1931  01b6  e5                	push	hl
+  1932  01b7  c5                	push	bc
+  1933  01b8  33                	inc	sp
+  1934  01b9  f5                	push	af
+  1935  01ba  33                	inc	sp
+  1936  01bb  cd0000            	call	_layer2_draw_text
+  1937  01be  f1                	pop	af
+  1938  01bf  f1                	pop	af
+  1939  01c0  33                	inc	sp
+  1940  01c1  210000            	ld	hl,0x0000
+  1941  01c4  e3                	ex	(sp),hl
+  1942  01c5  cd0000            	call	_layer2_set_font
+  1943  01c8  f1                	pop	af
+  1944  01c9  11b502            	ld	de,___str_10
+  1945  01cc  21c300            	ld	hl,_pos + 3
+  1946  01cf  4e                	ld	c, (hl)
+  1947  01d0  3e0c              	ld	a,0x0c
+  1948  01d2  91                	sub	a, c
+  1949  01d3  47                	ld	b, a
+  1950  01d4  21c200            	ld	hl,_pos + 2
+  1951  01d7  4e                	ld	c, (hl)
+  1952  01d8  3e0b              	ld	a,0x0b
+  1953  01da  91                	sub	a, c
+  1954  01db  dd6e04            	ld	l,(ix+4)
+  1955  01de  dd6605            	ld	h,(ix+5)
+  1956  01e1  e5                	push	hl
+  1957  01e2  26ef              	ld	h,0xef
+  1958  01e4  e5                	push	hl
+  1959  01e5  33                	inc	sp
+  1960  01e6  d5                	push	de
+  1961  01e7  c5                	push	bc
+  1962  01e8  33                	inc	sp
+  1963  01e9  f5                	push	af
+  1964  01ea  33                	inc	sp
+  1965  01eb  cd0000            	call	_layer2_draw_text
+  1966  01ee  f1                	pop	af
+  1967  01ef  f1                	pop	af
+  1968  01f0  33                	inc	sp
+  1969  01f1  21003d            	ld	hl,0x3d00
+  1970  01f4  e3                	ex	(sp),hl
+  1971  01f5  cd0000            	call	_layer2_set_font
+  1972  01f8  f1                	pop	af
+  1973  01f9  11b502            	ld	de,___str_10
+  1974  01fc  3ac500            	ld	a, (_pos + 5)
+  1975  01ff  c60c              	add	a,0x0c
+  1976  0201  47                	ld	b, a
+  1977  0202  3ac400            	ld	a, (_pos + 4)
+  1978  0205  c613              	add	a,0x13
+  1979  0207  dd6e04            	ld	l,(ix+4)
+  1980  020a  dd6605            	ld	h,(ix+5)
+  1981  020d  e5                	push	hl
+  1982  020e  26ef              	ld	h,0xef
+  1983  0210  e5                	push	hl
+  1984  0211  33                	inc	sp
+  1985  0212  d5                	push	de
+  1986  0213  c5                	push	bc
+  1987  0214  33                	inc	sp
+  1988  0215  f5                	push	af
+  1989  0216  33                	inc	sp
+  1990  0217  cd0000            	call	_layer2_draw_text
+  1991  021a  f1                	pop	af
+  1992  021b  f1                	pop	af
+  1993  021c  f1                	pop	af
+  1994  021d  33                	inc	sp
+  1995  021e  11b502            	ld	de,___str_10
+  1996  0221  21c700            	ld	hl,_pos + 7
+  1997  0224  4e                	ld	c, (hl)
+  1998  0225  3e1d              	ld	a,0x1d
+  1999  0227  91                	sub	a, c
+  2000  0228  47                	ld	b, a
+  2001  0229  21c600            	ld	hl,_pos + 6
+  2002  022c  4e                	ld	c, (hl)
+  2003  022d  3e03              	ld	a,0x03
+  2004  022f  91                	sub	a, c
+  2005  0230  dd6e04            	ld	l,(ix+4)
+  2006  0233  dd6605            	ld	h,(ix+5)
+  2007  0236  e5                	push	hl
+  2008  0237  26ef              	ld	h,0xef
+  2009  0239  e5                	push	hl
+  2010  023a  33                	inc	sp
+  2011  023b  d5                	push	de
+  2012  023c  c5                	push	bc
+  2013  023d  33                	inc	sp
+  2014  023e  f5                	push	af
+  2015  023f  33                	inc	sp
+  2016  0240  cd0000            	call	_layer2_draw_text
+  2017  0243  f1                	pop	af
+  2018  0244  f1                	pop	af
+  2019  0245  f1                	pop	af
+  2020  0246  33                	inc	sp
+  2021  0247  11b502            	ld	de,___str_10
+  2022  024a  3ac900            	ld	a, (_pos + 9)
+  2023  024d  c61d              	add	a,0x1d
+  2024  024f  47                	ld	b, a
+  2025  0250  3ac800            	ld	a, (_pos + 8)
+  2026  0253  c60b              	add	a,0x0b
+  2027  0255  dd6e04            	ld	l,(ix+4)
+  2028  0258  dd6605            	ld	h,(ix+5)
+  2029  025b  e5                	push	hl
+  2030  025c  26ef              	ld	h,0xef
+  2031  025e  e5                	push	hl
+  2032  025f  33                	inc	sp
+  2033  0260  d5                	push	de
+  2034  0261  c5                	push	bc
+  2035  0262  33                	inc	sp
+  2036  0263  f5                	push	af
+  2037  0264  33                	inc	sp
+  2038  0265  cd0000            	call	_layer2_draw_text
+  2039  0268  f1                	pop	af
+  2040  0269  f1                	pop	af
+  2041  026a  f1                	pop	af
+  2042  026b  33                	inc	sp
+  2043  026c  11b502            	ld	de,___str_10
+  2044  026f  21cb00            	ld	hl,_pos + 11
+  2045  0272  4e                	ld	c, (hl)
+  2046  0273  3e1d              	ld	a,0x1d
+  2047  0275  91                	sub	a, c
+  2048  0276  47                	ld	b, a
+  2049  0277  21ca00            	ld	hl,_pos + 10
+  2050  027a  4e                	ld	c, (hl)
+  2051  027b  3e13              	ld	a,0x13
+  2052  027d  91                	sub	a, c
+  2053  027e  dd6e04            	ld	l,(ix+4)
+  2054  0281  dd6605            	ld	h,(ix+5)
+  2055  0284  e5                	push	hl
+  2056  0285  26ef              	ld	h,0xef
+  2057  0287  e5                	push	hl
+  2058  0288  33                	inc	sp
+  2059  0289  d5                	push	de
+  2060  028a  c5                	push	bc
+  2061  028b  33                	inc	sp
+  2062  028c  f5                	push	af
+  2063  028d  33                	inc	sp
+  2064  028e  cd0000            	call	_layer2_draw_text
+  2065  0291  f1                	pop	af
+  2066  0292  f1                	pop	af
+  2067  0293  f1                	pop	af
+  2068  0294  33                	inc	sp
+  2069  0295  11b502            	ld	de,___str_10
+  2070  0298  3acd00            	ld	a, (_pos + 13)
+  2071  029b  c620              	add	a,0x20
+  2072  029d  47                	ld	b, a
+  2073  029e  3acc00            	ld	a, (_pos + 12)
+  2074  02a1  c618              	add	a,0x18
+  2075  02a3  dd6e04            	ld	l,(ix+4)
+  2076  02a6  dd6605            	ld	h,(ix+5)
+  2077  02a9  e5                	push	hl
+  2078  02aa  26ef              	ld	h,0xef
+  2079  02ac  e5                	push	hl
+  2080  02ad  33                	inc	sp
+  2081  02ae  d5                	push	de
+  2082  02af  c5                	push	bc
+  2083  02b0  33                	inc	sp
+  2084  02b1  f5                	push	af
+  2085  02b2  33                	inc	sp
+  2086  02b3  cd0000            	call	_layer2_draw_text
+  2087  02b6  f1                	pop	af
+  2088  02b7  f1                	pop	af
+  2089  02b8  f1                	pop	af
+  2090  02b9  33                	inc	sp
+  2091  02ba  dd4e04            	ld	c,(ix+4)
+  2092  02bd  dd4605            	ld	b,(ix+5)
+  2093  02c0  dd7e05            	ld	a,(ix+5)
+  2094  02c3  ddb604            	or	a,(ix+4)
+  2095  02c6  2809              	jr	Z,l_test_draw_text_00105
+  2096  02c8  0a                	ld	a, (bc)
+  2097  02c9  3d                	dec	a
+  2098  02ca  2005              	jr	NZ,l_test_draw_text_00105
+  2099  02cc  cd0000            	call	_layer2_flip_main_shadow_screen
+  2100  02cf  1812              	jr	l_test_draw_text_00108
+  2101                          l_test_draw_text_00105:
+  2102  02d1  dd7e05            	ld	a,(ix+5)
+  2103  02d4  ddb604            	or	a,(ix+4)
+  2104  02d7  280a              	jr	Z,l_test_draw_text_00108
+  2105  02d9  0a                	ld	a, (bc)
+  2106  02da  d602              	sub	a,0x02
+  2107  02dc  2005              	jr	NZ,l_test_draw_text_00108
+  2108  02de  c5                	push	bc
+  2109  02df  cd0000            	call	_layer2_copy_off_screen
+  2110  02e2  f1                	pop	af
+  2111                          l_test_draw_text_00108:
+  2112  02e3  dde1              	pop	ix
+  2113  02e5  c9                	ret
+  2114                          	SECTION rodata_compiler
+  2115                          ___str_10:
+  2116  02b5  48656c6c6f        	DEFM "Hello"
+  2117  02ba  00                	DEFB 0x00
+  2118                          	SECTION code_compiler
+  2119                          ;	---------------------------------
+  2120                          ; Function test_blit_transparent
+  2121                          ; ---------------------------------
+  2122                          _test_blit_transparent:
+  2123  02e6  dde5              	push	ix
+  2124  02e8  dd210000          	ld	ix,0
+  2125  02ec  dd39              	add	ix,sp
+  2126  02ee  110000            	ld	de,_sprite+0
+  2127  02f1  3acf00            	ld	a, (_pos + 15)
+  2128  02f4  c618              	add	a,0x18
+  2129  02f6  47                	ld	b, a
+  2130  02f7  3ace00            	ld	a, (_pos + 14)
+  2131  02fa  c678              	add	a,0x78
+  2132  02fc  dd6e04            	ld	l,(ix+4)
+  2133  02ff  dd6605            	ld	h,(ix+5)
+  2134  0302  e5                	push	hl
+  2135  0303  260c              	ld	h,0x0c
+  2136  0305  e5                	push	hl
+  2137  0306  33                	inc	sp
+  2138  0307  210c00            	ld	hl,0x000c
+  2139  030a  e5                	push	hl
+  2140  030b  d5                	push	de
+  2141  030c  c5                	push	bc
+  2142  030d  33                	inc	sp
+  2143  030e  f5                	push	af
+  2144  030f  33                	inc	sp
+  2145  0310  cd0000            	call	_layer2_blit_transparent
+  2146  0313  210900            	ld	hl,9
+  2147  0316  39                	add	hl, sp
+  2148  0317  f9                	ld	sp, hl
+  2149  0318  dd4e04            	ld	c,(ix+4)
+  2150  031b  dd4605            	ld	b,(ix+5)
+  2151  031e  dd7e05            	ld	a,(ix+5)
+  2152  0321  ddb604            	or	a,(ix+4)
+  2153  0324  2809              	jr	Z,l_test_blit_transparent_00105
+  2154  0326  0a                	ld	a, (bc)
+  2155  0327  3d                	dec	a
+  2156  0328  2005              	jr	NZ,l_test_blit_transparent_00105
+  2157  032a  cd0000            	call	_layer2_flip_main_shadow_screen
+  2158  032d  1812              	jr	l_test_blit_transparent_00108
+  2159                          l_test_blit_transparent_00105:
+  2160  032f  dd7e05            	ld	a,(ix+5)
+  2161  0332  ddb604            	or	a,(ix+4)
+  2162  0335  280a              	jr	Z,l_test_blit_transparent_00108
+  2163  0337  0a                	ld	a, (bc)
+  2164  0338  d602              	sub	a,0x02
+  2165  033a  2005              	jr	NZ,l_test_blit_transparent_00108
+  2166  033c  c5                	push	bc
+  2167  033d  cd0000            	call	_layer2_copy_off_screen
+  2168  0340  f1                	pop	af
+  2169                          l_test_blit_transparent_00108:
+  2170  0341  dde1              	pop	ix
+  2171  0343  c9                	ret
+  2172                          ;	---------------------------------
+  2173                          ; Function DrawGame
+  2174                          ; ---------------------------------
+  2175                          _DrawGame:
+  2176  0344  01c000            	ld	bc,_pos+0
+  2177  0347  110000            	ld	de,0x0000
+  2178                          l_DrawGame_00103:
+  2179  034a  7b                	ld	a, e
+  2180  034b  d640              	sub	a,0x40
+  2181  034d  7a                	ld	a, d
+  2182  034e  17                	rla
+  2183  034f  3f                	ccf
+  2184  0350  1f                	rra
+  2185  0351  de80              	sbc	a,0x80
+  2186  0353  300a              	jr	NC,l_DrawGame_00101
+  2187  0355  6b                	ld	l, e
+  2188  0356  62                	ld	h, d
+  2189  0357  29                	add	hl, hl
+  2190  0358  09                	add	hl, bc
+  2191  0359  34                	inc	(hl)
+  2192  035a  23                	inc	hl
+  2193  035b  34                	inc	(hl)
+  2194  035c  13                	inc	de
+  2195  035d  18eb              	jr	l_DrawGame_00103
+  2196                          l_DrawGame_00101:
+  2197  035f  210600            	ld	hl,_off_screen
+  2198  0362  e5                	push	hl
+  2199  0363  cde602            	call	_test_blit_transparent
+  2200  0366  210600            	ld	hl,_off_screen
+  2201  0369  e3                	ex	(sp),hl
+  2202  036a  cd3901            	call	_drawCloud
+  2203  036d  f1                	pop	af
+  2204  036e  c9                	ret
+  2205                          ;	---------------------------------
+  2206                          ; Function main
+  2207                          ; ---------------------------------
+  2208                          _main:
+  2209  036f  cd4c00            	call	_init_hardware
+  2210  0372  cd7100            	call	_init_isr
+  2211  0375  cd9400            	call	_create_start_screen
+  2212  0378  cd1401            	call	_init_tests
+  2213  037b  210600            	ld	hl,_off_screen
+  2214  037e  e5                	push	hl
+  2215  037f  3eef              	ld	a,0xef
+  2216  0381  f5                	push	af
+  2217  0382  33                	inc	sp
+  2218  0383  21bb02            	ld	hl,___str_11
+  2219  0386  e5                	push	hl
+  2220  0387  11030c            	ld	de,0x0c03
+  2221  038a  d5                	push	de
+  2222  038b  cd0000            	call	_layer2_draw_text
+  2223  038e  f1                	pop	af
+  2224  038f  f1                	pop	af
+  2225  0390  f1                	pop	af
+  2226  0391  33                	inc	sp
+  2227                          l_main_00102:
+  2228  0392  cd4403            	call	_DrawGame
+  2229  0395  18fb              	jr	l_main_00102
+  2230                          	SECTION rodata_compiler
+  2231                          ___str_11:
+  2232  02bb  48656c6c6f        	DEFM "Hello"
+  2233  02c0  00                	DEFB 0x00
+  2234                          	SECTION data_compiler
+  2235                          _test_number:
+  2236  0000  00                	DEFB +0x00
+  2237                          _shadow_screen:
+  2238  0001  01                	DEFB +0x01
+  2239  0002  00                	DEFB +0x00
+  2240  0003  00                	DEFB +0x00
+  2241  0004  00                	DEFB +0x00
+  2242  0005  00                	DEFB +0x00
+  2243                          _off_screen:
+  2244  0006  02                	DEFB +0x02
+  2245  0007  00                	DEFB +0x00
+  2246  0008  01                	DEFB +0x01
+  2247  0009  03                	DEFB +0x03
+  2248  000a  00                	DEFB +0x00
+  2249                          	SECTION IGNORE
+  2250                          

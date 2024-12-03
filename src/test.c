@@ -261,15 +261,15 @@ static void init_tests(void)
 static void drawCloud(layer2_screen_t *screen)
 {
     // Draw top part
-    int y = 50;
-    //layer2_fill_rect(0, 0,  256, y, 0xff, screen);
+    int y = 40;
+    layer2_fill_rect(0, 0,  256, y, 0xff, screen);
 
     // Draw tiled cloud
     int i=0;
     int x=0;
     for(i=0; i<16; i++ )
     {
-        layer2_blit_transparent(x, 100,  cloud, 16, 26, screen); // top
+        layer2_blit_transparent(x, y,  cloud, 16, 26, screen); // top
         x+=16;
     }
 }
@@ -343,7 +343,7 @@ int main(void)
     init_isr();
 
     create_start_screen();
-    in_wait_key();
+    //in_wait_key();
     init_tests();
 
     layer2_draw_text(3,  12, "Hello", 0xEF, &off_screen);
