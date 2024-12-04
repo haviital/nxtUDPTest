@@ -29,7 +29,7 @@ OBJS=$(patsubst %, src/%, $(OBJECTS))
 C_OPT_FLAGS=-SO3 --max-allocs-per-node200000
 
 CFLAGS=$(TARGET) $(VERBOSITY) -c $(C_OPT_FLAGS) -compiler sdcc -clib=sdcc_iy -pragma-include:$(PRAGMA_FILE)
-LDFLAGS=$(TARGET) $(VERBOSITY) --list -m -s -clib=sdcc_iy -llib/zxn/zxnext_layer2 -pragma-include:$(PRAGMA_FILE)
+LDFLAGS=$(TARGET) $(VERBOSITY) --list -m -s -clib=sdcc_iy -llib/zxn/zxnext_layer2 -llib/zxn/zxnext_sprite -pragma-include:$(PRAGMA_FILE)
 ASFLAGS=$(TARGET) $(VERBOSITY) -c --list -m -s
 
 EXEC=$(EXEC_OUTPUT).nex
