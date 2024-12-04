@@ -24,6 +24,7 @@
                     "path": "Add your assembler list or sld file"
                 }
             ],
+            "preLaunchTask": "CSpect",
             "commandsAfterLaunch": [],
             "history": {
                 "reverseDebugInstructionCount": 1000000,

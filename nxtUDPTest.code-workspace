@@ -6,7 +6,9 @@
 	],
     "launch": {
 
-        "configurations": [{
+        "configurations": [
+            
+            {
             "type": "dezog",
             "request": "launch",
             "name": "DeZog",

@@ -8,9 +8,8 @@
             "type": "shell",
             "group": "test",
             "command": "C:/bin/CSpect2_19_9_1/run.bat",
-            "args": [
-            ],
-            "options": { 
+            "args": [],
+            "options": {
                 "cwd": "C:/bin/CSpect2_19_9_1"
             },
             "problemMatcher": []
@@ -19,7 +18,9 @@
             "label": "z88dk clean",
             "type": "process",
             "command": "make",
-            "args": ["clean"],
+            "args": [
+                "clean"
+            ],
             "group": "build",
             "presentation": {
                 "echo": true,
@@ -35,7 +36,9 @@
             "label": "z88dk",
             "type": "process",
             "command": "make",
-            "args": ["install"],
+            "args": [
+                "install"
+            ],
             "group": "build",
             "presentation": {
                 "echo": true,
