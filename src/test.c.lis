@@ -1,4 +1,4 @@
-C:/Users/Hannu/AppData/Local/Temp/zcc00000380AE672.asm:
+C:/Users/Hannu/AppData/Local/Temp/zcc00004364B08E2.asm:
      1                          MODULE test_c
      2                          LINE 0, "src/test.c"
 src/test.c:
@@ -2379,80 +2379,87 @@ src/test.c:
   2347  0271  50                	ld	d, b
   2348  0272  c5                	push	bc
   2349  0273  d5                	push	de
-  2350  0274  cde701            	call	_DrawPacket
+  2350  0274  cda701            	call	_DrawCloudEdge
   2351  0277  f1                	pop	af
   2352  0278  c1                	pop	bc
-  2353  0279  59                	ld	e, c
-  2354  027a  50                	ld	d, b
-  2355  027b  c5                	push	bc
-  2356  027c  d5                	push	de
-  2357  027d  cda701            	call	_DrawCloudEdge
-  2358  0280  f1                	pop	af
-  2359  0281  c1                	pop	bc
-  2360  0282  78                	ld	a, b
-  2361  0283  b1                	or	a, c
-  2362  0284  2809              	jr	Z,l_DrawGame_00106
-  2363  0286  0a                	ld	a, (bc)
-  2364  0287  3d                	dec	a
-  2365  0288  2005              	jr	NZ,l_DrawGame_00106
-  2366  028a  c30000            	jp	_layer2_flip_main_shadow_screen
-  2367  028d  180c              	jr	l_DrawGame_00112
-  2368                          l_DrawGame_00106:
-  2369  028f  78                	ld	a, b
-  2370  0290  b1                	or	a, c
-  2371  0291  c8                	ret	Z
-  2372  0292  0a                	ld	a, (bc)
-  2373  0293  d602              	sub	a,0x02
-  2374  0295  c0                	ret	NZ
-  2375  0296  c5                	push	bc
-  2376  0297  cd0000            	call	_layer2_copy_off_screen
-  2377  029a  f1                	pop	af
-  2378                          l_DrawGame_00112:
-  2379  029b  c9                	ret
-  2380                          ;	---------------------------------
-  2381                          ; Function main
-  2382                          ; ---------------------------------
-  2383                          _main:
-  2384  029c  cd4c00            	call	_init_hardware
-  2385  029f  cd7100            	call	_init_isr
-  2386  02a2  cd1401            	call	_create_sprites
-  2387  02a5  af                	xor	a, a
-  2388  02a6  f5                	push	af
-  2389  02a7  33                	inc	sp
-  2390  02a8  af                	xor	a, a
-  2391  02a9  f5                	push	af
-  2392  02aa  33                	inc	sp
-  2393  02ab  af                	xor	a, a
-  2394  02ac  57                	ld	d,a
-  2395  02ad  1e01              	ld	e,0x01
-  2396  02af  d5                	push	de
-  2397  02b0  cd0000            	call	_set_sprite_layers_system
-  2398  02b3  f1                	pop	af
-  2399  02b4  f1                	pop	af
-  2400  02b5  cd9400            	call	_create_start_screen
-  2401                          l_main_00102:
-  2402  02b8  76                	halt
-  2403  02b9  cd4b01            	call	_update_sprites
-  2404  02bc  18fa              	jr	l_main_00102
-  2405                          	SECTION data_compiler
-  2406                          _test_number:
-  2407  0000  00                	DEFB +0x00
-  2408                          _shadow_screen:
-  2409  0001  01                	DEFB +0x01
-  2410  0002  00                	DEFB +0x00
-  2411  0003  00                	DEFB +0x00
-  2412  0004  00                	DEFB +0x00
-  2413  0005  00                	DEFB +0x00
-  2414                          _off_screen:
-  2415  0006  02                	DEFB +0x02
-  2416  0007  00                	DEFB +0x00
-  2417  0008  01                	DEFB +0x01
-  2418  0009  03                	DEFB +0x03
-  2419  000a  00                	DEFB +0x00
-  2420                          _testSprite:
-  2421  000b  78                	DEFB +0x78
-  2422  000c  58                	DEFB +0x58
-  2423  000d  01                	DEFB +0x01
-  2424  000e  01                	DEFB +0x01
-  2425                          	SECTION IGNORE
-  2426                          
+  2353  0279  78                	ld	a, b
+  2354  027a  b1                	or	a, c
+  2355  027b  2809              	jr	Z,l_DrawGame_00106
+  2356  027d  0a                	ld	a, (bc)
+  2357  027e  3d                	dec	a
+  2358  027f  2005              	jr	NZ,l_DrawGame_00106
+  2359  0281  c30000            	jp	_layer2_flip_main_shadow_screen
+  2360  0284  180c              	jr	l_DrawGame_00112
+  2361                          l_DrawGame_00106:
+  2362  0286  78                	ld	a, b
+  2363  0287  b1                	or	a, c
+  2364  0288  c8                	ret	Z
+  2365  0289  0a                	ld	a, (bc)
+  2366  028a  d602              	sub	a,0x02
+  2367  028c  c0                	ret	NZ
+  2368  028d  c5                	push	bc
+  2369  028e  cd0000            	call	_layer2_copy_off_screen
+  2370  0291  f1                	pop	af
+  2371                          l_DrawGame_00112:
+  2372  0292  c9                	ret
+  2373                          ;	---------------------------------
+  2374                          ; Function main
+  2375                          ; ---------------------------------
+  2376                          _main:
+  2377  0293  cd4c00            	call	_init_hardware
+  2378  0296  cd7100            	call	_init_isr
+  2379  0299  cd1401            	call	_create_sprites
+  2380  029c  af                	xor	a, a
+  2381  029d  f5                	push	af
+  2382  029e  33                	inc	sp
+  2383  029f  af                	xor	a, a
+  2384  02a0  f5                	push	af
+  2385  02a1  33                	inc	sp
+  2386  02a2  af                	xor	a, a
+  2387  02a3  57                	ld	d,a
+  2388  02a4  1e01              	ld	e,0x01
+  2389  02a6  d5                	push	de
+  2390  02a7  cd0000            	call	_set_sprite_layers_system
+  2391  02aa  f1                	pop	af
+  2392  02ab  f1                	pop	af
+  2393  02ac  cd9400            	call	_create_start_screen
+  2394  02af  af                	xor	a, a
+  2395  02b0  f5                	push	af
+  2396  02b1  33                	inc	sp
+  2397  02b2  af                	xor	a, a
+  2398  02b3  f5                	push	af
+  2399  02b4  33                	inc	sp
+  2400  02b5  af                	xor	a, a
+  2401  02b6  57                	ld	d,a
+  2402  02b7  1e01              	ld	e,0x01
+  2403  02b9  d5                	push	de
+  2404  02ba  cd0000            	call	_layer2_configure
+  2405  02bd  f1                	pop	af
+  2406  02be  f1                	pop	af
+  2407                          l_main_00102:
+  2408  02bf  cd1c02            	call	_DrawGame
+  2409  02c2  76                	halt
+  2410  02c3  cd4b01            	call	_update_sprites
+  2411  02c6  18f7              	jr	l_main_00102
+  2412                          	SECTION data_compiler
+  2413                          _test_number:
+  2414  0000  00                	DEFB +0x00
+  2415                          _shadow_screen:
+  2416  0001  01                	DEFB +0x01
+  2417  0002  00                	DEFB +0x00
+  2418  0003  00                	DEFB +0x00
+  2419  0004  00                	DEFB +0x00
+  2420  0005  00                	DEFB +0x00
+  2421                          _off_screen:
+  2422  0006  02                	DEFB +0x02
+  2423  0007  00                	DEFB +0x00
+  2424  0008  01                	DEFB +0x01
+  2425  0009  03                	DEFB +0x03
+  2426  000a  00                	DEFB +0x00
+  2427                          _testSprite:
+  2428  000b  78                	DEFB +0x78
+  2429  000c  58                	DEFB +0x58
+  2430  000d  01                	DEFB +0x01
+  2431  000e  01                	DEFB +0x01
+  2432                          	SECTION IGNORE
+  2433                          

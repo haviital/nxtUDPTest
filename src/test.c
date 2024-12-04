@@ -432,7 +432,7 @@ static void DrawGame(void)
     // Fill the lower screen area with black.
     layer2_fill_rect(0, CLOUD_SPRITE_Y, 256, (int)(194-CLOUD_SPRITE_Y), 0, &off_screen);
 
-    DrawPacket(&off_screen);
+    //DrawPacket(&off_screen);
 
     DrawCloudEdge(&off_screen);
 
@@ -460,12 +460,12 @@ int main(void)
     create_start_screen();
     //in_wait_key();
 
-    //layer2_configure(true, false, false, 0);
+    layer2_configure(true, false, false, 0);
     //layer2_draw_text(3,  12, "Hello", 0xEF, &off_screen);
 
     while (true)
     {
-        //DrawGame();
+        DrawGame();
 
         // Wait for vertical blanking interval.
         intrinsic_halt();
