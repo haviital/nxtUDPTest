@@ -1,4 +1,4 @@
-C:/Users/Hannu/AppData/Local/Temp/zcc00004364B08E2.asm:
+C:/Users/Hannu/AppData/Local/Temp/zcc0000595472FD2.asm:
      1                          MODULE test_c
      2                          LINE 0, "src/test.c"
 src/test.c:
@@ -2019,20 +2019,20 @@ src/test.c:
   1992                          ; ---------------------------------
   1993                          _init_isr:
   1994  0071  f3                	di
-  1995  0072  210080            	ld	hl,0x8000
+  1995  0072  210060            	ld	hl,0x6000
   1996  0075  cd0000            	call	_im2_init_fastcall
-  1997  0078  210080            	ld	hl,0x8000
-  1998  007b  3681              	ld	(hl),0x81
+  1997  0078  210060            	ld	hl,0x6000
+  1998  007b  3661              	ld	(hl),0x61
   1999  007d  5d                	ld	e, l
   2000  007e  54                	ld	d, h
   2001  007f  13                	inc	de
   2002  0080  010001            	ld	bc,0x0100
   2003  0083  edb0              	ldir
-  2004  0085  218181            	ld	hl,0x8181
+  2004  0085  216161            	ld	hl,0x6161
   2005  0088  36fb              	ld	(hl),0xfb
-  2006  008a  2e82              	ld	l,0x82
+  2006  008a  2e62              	ld	l,0x62
   2007  008c  36ed              	ld	(hl),0xed
-  2008  008e  2e83              	ld	l,0x83
+  2008  008e  2e63              	ld	l,0x63
   2009  0090  364d              	ld	(hl),0x4d
   2010  0092  fb                	ei
   2011  0093  c9                	ret
@@ -2423,43 +2423,31 @@ src/test.c:
   2391  02aa  f1                	pop	af
   2392  02ab  f1                	pop	af
   2393  02ac  cd9400            	call	_create_start_screen
-  2394  02af  af                	xor	a, a
-  2395  02b0  f5                	push	af
-  2396  02b1  33                	inc	sp
-  2397  02b2  af                	xor	a, a
-  2398  02b3  f5                	push	af
-  2399  02b4  33                	inc	sp
-  2400  02b5  af                	xor	a, a
-  2401  02b6  57                	ld	d,a
-  2402  02b7  1e01              	ld	e,0x01
-  2403  02b9  d5                	push	de
-  2404  02ba  cd0000            	call	_layer2_configure
-  2405  02bd  f1                	pop	af
-  2406  02be  f1                	pop	af
-  2407                          l_main_00102:
-  2408  02bf  cd1c02            	call	_DrawGame
-  2409  02c2  76                	halt
-  2410  02c3  cd4b01            	call	_update_sprites
-  2411  02c6  18f7              	jr	l_main_00102
-  2412                          	SECTION data_compiler
-  2413                          _test_number:
-  2414  0000  00                	DEFB +0x00
-  2415                          _shadow_screen:
-  2416  0001  01                	DEFB +0x01
-  2417  0002  00                	DEFB +0x00
-  2418  0003  00                	DEFB +0x00
-  2419  0004  00                	DEFB +0x00
-  2420  0005  00                	DEFB +0x00
-  2421                          _off_screen:
-  2422  0006  02                	DEFB +0x02
-  2423  0007  00                	DEFB +0x00
-  2424  0008  01                	DEFB +0x01
-  2425  0009  03                	DEFB +0x03
-  2426  000a  00                	DEFB +0x00
-  2427                          _testSprite:
-  2428  000b  78                	DEFB +0x78
-  2429  000c  58                	DEFB +0x58
-  2430  000d  01                	DEFB +0x01
-  2431  000e  01                	DEFB +0x01
-  2432                          	SECTION IGNORE
-  2433                          
+  2394  02af  cd1c02            	call	_DrawGame
+  2395  02b2  cd1c02            	call	_DrawGame
+  2396                          l_main_00102:
+  2397  02b5  76                	halt
+  2398  02b6  cd4b01            	call	_update_sprites
+  2399  02b9  18fa              	jr	l_main_00102
+  2400                          	SECTION data_compiler
+  2401                          _test_number:
+  2402  0000  00                	DEFB +0x00
+  2403                          _shadow_screen:
+  2404  0001  01                	DEFB +0x01
+  2405  0002  00                	DEFB +0x00
+  2406  0003  00                	DEFB +0x00
+  2407  0004  00                	DEFB +0x00
+  2408  0005  00                	DEFB +0x00
+  2409                          _off_screen:
+  2410  0006  02                	DEFB +0x02
+  2411  0007  00                	DEFB +0x00
+  2412  0008  01                	DEFB +0x01
+  2413  0009  03                	DEFB +0x03
+  2414  000a  00                	DEFB +0x00
+  2415                          _testSprite:
+  2416  000b  78                	DEFB +0x78
+  2417  000c  58                	DEFB +0x58
+  2418  000d  01                	DEFB +0x01
+  2419  000e  01                	DEFB +0x01
+  2420                          	SECTION IGNORE
+  2421                          

@@ -20,8 +20,9 @@
 #include "lib/zxn/zxnext_layer2.h"
 #include "lib/zxn/zxnext_sprite.h"
 
-#pragma output CRT_ORG_CODE = 0x8184
-#pragma output REGISTER_SP = 0xFF58
+#pragma output CRT_ORG_CODE = 0x6164
+#pragma output REGISTER_SP = 0xC000
+#pragma output CLIB_MALLOC_HEAP_SIZE = 0
 #pragma output CLIB_MALLOC_HEAP_SIZE = 0
 #pragma output CLIB_STDIO_HEAP_SIZE = 0
 #pragma output CLIB_FOPEN_MAX = -1
@@ -318,11 +319,11 @@ static void init_isr(void)
     // entry at address 0x8181.
 
     intrinsic_di();
-    im2_init((void *) 0x8000);
-    memset((void *) 0x8000, 0x81, 257);
-    z80_bpoke(0x8181, 0xFB);
-    z80_bpoke(0x8182, 0xED);
-    z80_bpoke(0x8183, 0x4D);
+    im2_init((void *) 0x6000);
+    memset((void *) 0x6000, 0x61, 257);
+    z80_bpoke(0x6161, 0xFB);
+    z80_bpoke(0x6162, 0xED);
+    z80_bpoke(0x6163, 0x4D);
     intrinsic_ei();
 }
 
@@ -460,12 +461,17 @@ int main(void)
     create_start_screen();
     //in_wait_key();
 
-    layer2_configure(true, false, false, 0);
+    //layer2_configure(true, false, false, 0);
+    
     //layer2_draw_text(3,  12, "Hello", 0xEF, &off_screen);
+
+    DrawGame();
+    DrawGame(); 
+
 
     while (true)
     {
-        DrawGame();
+        //DrawGame();
 
         // Wait for vertical blanking interval.
         intrinsic_halt();
