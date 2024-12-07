@@ -115,6 +115,12 @@ static layer2_screen_t shadow_screen = {SHADOW_SCREEN};
 
 static layer2_screen_t off_screen = {OFF_SCREEN, 0, 1, 3};
 
+#define INCOMING_PACKET_GOB_COUNT 10
+static GameObject incomingPacketGobs[INCOMING_PACKET_GOB_COUNT];
+
+#define OUTGOING_PACKET_GOB_COUNT 10
+static GameObject outgoingPacketGobs[OUTGOING_PACKET_GOB_COUNT];
+
 //static uint8_t tall_sprite[192];
 
 
@@ -298,14 +304,6 @@ static const uint8_t server[] =
 };
 #endif
 
-struct coord
-{
-    uint8_t x;
-    uint8_t y; 
-};
-
-static struct coord pos[64];
-
 /*******************************************************************************
  * Functions
  ******************************************************************************/
@@ -401,51 +399,70 @@ static void create_start_screen(void)
 static GameObject testSprite = {30, 88, 0, 3, 0, true};
 //static GameObject cloudSprite = {30, 88, 0, 3, 0, true};
 
+#define CLOUD_PATTERN_SLOT 0
 static void create_sprites(void)
 {
-    // Packet sprite
+
+     // Packet sprite
     set_sprite_slot(0);
     set_sprite_pattern(packet);
     set_sprite_slot(0);
     set_sprite_attributes_ext(0, testSprite.x, testSprite.y, 0, 0, true);
 
     // Cloud sprite 0
-    set_sprite_slot(10);
+    set_sprite_slot(100);
     set_sprite_pattern(cloudSpr);
-    set_sprite_slot(10);
-    set_sprite_attributes_ext(10, 30, 40, 0, 0, true);
+    set_sprite_slot(100);
+    set_sprite_attributes_ext(100, 30, 40, 0, 0, true);
 
     // Cloud sprite 1
-    set_sprite_slot(11);
+    set_sprite_slot(101);
     set_sprite_pattern(cloudSpr);
-    set_sprite_slot(11);
-    set_sprite_attributes_ext(11, 216, 40, 0, 0, true);
+    set_sprite_slot(101);
+    set_sprite_attributes_ext(101, 216, 40, 0, 0, true);
+
+    // Incoming gobs
+    GameObject defaultGob = {.x = 30, .y= 88, .sx=0, .sy=3, .spriteIndex=0, .spritePatternIndex = CLOUD_PATTERN_SLOT, .isHidden=true};
+    for(int i=0; i<INCOMING_PACKET_GOB_COUNT; i++)
+    {
+        int sprIndex = i;
+        incomingPacketGobs[i] = defaultGob;
+        incomingPacketGobs[i].y = i*32;
+        incomingPacketGobs[i].spriteIndex = sprIndex;
+        set_sprite_slot(i);
+        set_sprite_pattern(packet);
+        set_sprite_slot(i);
+        set_sprite_attributes_ext(incomingPacketGobs[i].spritePatternIndex, incomingPacketGobs[i].x, incomingPacketGobs[i].y, 0, 0, true);
+    }
 }
 
 static void UpdateGameObjects(void)
 {
-    // Calculate next position of sprite.
-    //testSprite.x += testSprite.dx;
-    //testSprite.y += testSprite.dy;
-    GobUpdate(&testSprite);
+    for(int i=0; i<INCOMING_PACKET_GOB_COUNT; i++)
+    {
+        // Calculate next position of sprite.
+        //testSprite.x += testSprite.dx;
+        //testSprite.y += testSprite.dy;
+        GobUpdate(&incomingPacketGobs[i]);
 
-    // Hide if inside clouds
-    if(testSprite.y < CLOUD_SPRITE_Y)
-        testSprite.isHidden = true;
-    else
-        testSprite.isHidden = false;
+        // Hide if inside clouds
+        if(incomingPacketGobs[i].y < CLOUD_SPRITE_Y)
+            incomingPacketGobs[i].isHidden = true;
+        else
+            incomingPacketGobs[i].isHidden = false;
 
-    // If sprite is at the edge of the screen then change its direction.
-    // if ((testSprite.x == 0) || (testSprite.x >= 240))
-    // {
-    //     testSprite.dx = -testSprite.dx;
-    // }
-    // if ((testSprite.y == 0) || (testSprite.y >= 176))
-    // {
-    //     testSprite.dy = -testSprite.dy;
-    // }
+        // If sprite is at the edge of the screen then change its direction.
+        // if ((testSprite.x == 0) || (testSprite.x >= 240))
+        // {
+        //     testSprite.dx = -testSprite.dx;
+        // }
+        // if ((testSprite.y == 0) || (testSprite.y >= 176))
+        // {
+        //     testSprite.dy = -testSprite.dy;
+        // }
 
-    GobDraw(&testSprite);
+        GobDraw(&incomingPacketGobs[i]);
+    }
 }
 
 
@@ -461,20 +478,8 @@ static void DrawCloudEdge(layer2_screen_t *screen)
     }
 }
 
-static void DrawPacket(layer2_screen_t *screen)
-{
-    layer2_blit_transparent(120+pos[7].x, 24+pos[7].y,  sprite, 12, 12, screen); // top
-
-}
-
 static void DrawGame(void)
 {
-    for(int i=0; i<64; i++)
-    {
-        ++pos[i].x; 
-        ++pos[i].y; 
-    }
-
     // Draw top part with white (cloud)
     layer2_fill_rect(0, 0,  256, CLOUD_SPRITE_Y, 0xff, &off_screen);
 

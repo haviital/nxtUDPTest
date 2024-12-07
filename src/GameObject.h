@@ -11,6 +11,7 @@ typedef struct GameObject_
     int8_t sy; // Vertical speed in pixels
 
     uint8_t spriteIndex;  // Sprite index.
+    uint8_t spritePatternIndex; // Srite bitmap data slot.
     bool isHidden;  // True is the game objec is not visible.
 
 } GameObject;
