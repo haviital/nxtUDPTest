@@ -20,6 +20,7 @@
 #include "lib/zxn/zxnext_layer2.h"
 #include "lib/zxn/zxnext_sprite.h"
 
+
 #pragma output CRT_ORG_CODE = 0x6164
 #pragma output REGISTER_SP = 0xC000
 #pragma output CLIB_MALLOC_HEAP_SIZE = 0
@@ -29,6 +30,7 @@
 
 #include "esp.h"
 #include "uart.h"
+#include "GameObject.h"
 
 // #pragma output CRT_ORG_CODE = 0x6164
 // #pragma output REGISTER_SP = 0xC000
@@ -108,7 +110,7 @@ static layer2_screen_t off_screen = {OFF_SCREEN, 0, 1, 3};
 
 //static uint8_t tall_sprite[192];
 
-static sprite_info_t testSprite = {120, 88, 1, 1};
+static GameObject testSprite = {100, 88, 1, 0};
 
 #if 0
 //16x16
@@ -382,18 +384,19 @@ static void create_sprites(void)
 static void update_sprites(void)
 {
     // Calculate next position of sprite.
-    testSprite.x += testSprite.dx;
-    testSprite.y += testSprite.dy;
+    //testSprite.x += testSprite.dx;
+    //testSprite.y += testSprite.dy;
+    GobUpdate(&testSprite);
 
     // If sprite is at the edge of the screen then change its direction.
-    if ((testSprite.x == 0) || (testSprite.x >= 240))
-    {
-        testSprite.dx = -testSprite.dx;
-    }
-    if ((testSprite.y == 0) || (testSprite.y >= 176))
-    {
-        testSprite.dy = -testSprite.dy;
-    }
+    // if ((testSprite.x == 0) || (testSprite.x >= 240))
+    // {
+    //     testSprite.dx = -testSprite.dx;
+    // }
+    // if ((testSprite.y == 0) || (testSprite.y >= 176))
+    // {
+    //     testSprite.dy = -testSprite.dy;
+    // }
 
     // Update sprite position.
     set_sprite_slot(0);
