@@ -1,10 +1,34 @@
 #include <arch/zxn.h>
 #include <stdint.h>
+#include <stdbool.h>
+#include <stdio.h>
 #include <z80.h>
 
 #include "esp.h"
 #include "uart.h"
 //#include "user.h"
+
+void uart_send_at_cmd_and_print(unsigned char *cmd)
+{
+    // Send AT command to UART.
+    //printf("call: %s\n", cmd);
+    uart_tx(cmd);
+    *buffer = 0;
+
+    // Read response from UART. Print to to screen.
+    do
+    {
+        puts(buffer);  
+        *buffer = 0;
+        unsigned char ret = uart_rx_readline(buffer, sizeof(buffer)-1);
+      //   if(ret==URR_TIMEOUT)
+      //       puts("--> Error: timeout\n"); 
+      //  else 
+      if(ret==URR_INCOMPLETE)
+            puts("--> Error: incomplete\n");         
+    }
+    while (*buffer);
+}
 
 // UART BAUD RATE
 
@@ -68,7 +92,11 @@ unsigned char uart_rx_readline(unsigned char *s, unsigned int len)
       *s++ = c;
       *s = 0;
 
-      if (c == '\n') return URR_OK;
+      if (c == '\n') 
+      {
+         //puts("--> return found!\n"); 
+         return URR_OK;
+      }
    }
    while (--len);
 

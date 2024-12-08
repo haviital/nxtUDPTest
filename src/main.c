@@ -32,6 +32,7 @@
 #include "uart.h"
 #include "GameObject.h"
 #include "gfx.h"
+#include "netcom.h"
 
 // #pragma output CRT_ORG_CODE = 0x6164
 // #pragma output REGISTER_SP = 0xC000
@@ -126,22 +127,6 @@ static GameObject outgoingPacketGobs[OUTGOING_PACKET_GOB_COUNT];
  * Functions
  ******************************************************************************/
 
-// ESP DETECT BPS
-
-void main_esp_detect_bps(void)
-{
-   printf("Detecting ESP baud rate\n");
-   
-   if (!esp_detect_bps())
-   {
-      esp_bps = 115200UL;
-      printf("\n  Failed, selecting default");
-   }
-
-   printf("\n  Setting uart to %lu\n", esp_bps);
-   uart_set_prescaler(uart_compute_prescaler(esp_bps));
-}
-
 static void init_hardware(void)
 {
     // Put Z80 in 28 MHz turbo mode.
@@ -180,35 +165,11 @@ static void create_start_screen(void)
    
     IO_153B = 0x00;  // Select ESP for UART(?)
 
-    // Reset ESP
-    // ZXN_NEXTREG(0x02, 0x80);
-    // z80_delay_ms(100*8);       // 100ms, about 8x longer for 28MHz
-    // XN_NEXTREG(0x02, 0);
-    // z80_delay_ms(8000U*8U);      // 8s, about 8x longer for 28MHz
-
-    printf("Uart init\r\n");
-    esp_response_time_ms = 66 + ESP_FW_RESPONSE_TIME_MS;   // two bit periods at 300bps
-    uart_rx_readline_last(buffer, sizeof(buffer)-1);   // clear Rx
-
-    esp_response_time_ms = 66 + ESP_FW_RESPONSE_TIME_MS;   // two bit periods at 300bps
-   
-    printf("ESP AT+GMR follows...\n");
-    uart_rx_readline_last(buffer, sizeof(buffer)-1);   // clear Rx
-
-    // Send AT command to UART.
-    uart_tx(STRING_ESP_TX_AT_GMR);
-    *buffer = 0;
-
-    // Read response from UART. Print to to screen.
-    do
-    {
-        puts(buffer);  
-        *buffer = 0;
-        uart_rx_readline(buffer, sizeof(buffer)-1);
-    }
-    while (*buffer);
+    // Init ESP.
+    NetComInit();
 
     printf("Press any key to start\n");
+    in_wait_key();
     //printAt(1, 15, "Press any key to switch screen");
 }
 
@@ -345,7 +306,7 @@ static void DrawCloudEdge(layer2_screen_t *screen)
     }
 }
 
-static void DrawGame(void)
+static void DrawGameBackground(void)
 {
     // Draw top part with white (cloud)
     layer2_fill_rect(0, 0,  256, CLOUD_SPRITE_Y, 0xff, &off_screen);
@@ -359,6 +320,15 @@ static void DrawGame(void)
 
     //test_draw_text(&off_screen);
 
+    // Swap the double buffered screen.
+    if (IS_SHADOW_SCREEN(&off_screen))
+    {
+        layer2_flip_main_shadow_screen();
+    }
+    else if (IS_OFF_SCREEN(&off_screen))
+    {
+        layer2_copy_off_screen(&off_screen);
+    }
 }
 
 
@@ -366,18 +336,14 @@ int main(void)
 {
     init_hardware();
     init_isr();
+
+    create_start_screen();
+    
     create_sprites();
     set_sprite_layers_system(true, false, LAYER_PRIORITIES_S_L_U, false);
 
-    create_start_screen();
-    //in_wait_key();
-
-    //layer2_configure(true, false, false, 0);
-    
- 
-    DrawGame();
-    DrawGame(); 
-
+    DrawGameBackground();
+    DrawGameBackground(); 
 
     while (true)
     {

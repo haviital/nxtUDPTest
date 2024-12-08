@@ -7,7 +7,7 @@
     "launch": {
 
         "configurations": [
-            
+
             {
             "type": "dezog",
             "request": "launch",
@@ -41,7 +41,9 @@
     },
     "settings": {
         "files.associations": {
-            "stdio.h": "c"
+            "stdio.h": "c",
+            "uart.h": "c",
+            "esp.h": "c"
         }
     }
 }

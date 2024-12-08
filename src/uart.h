@@ -5,6 +5,8 @@
 
 __sfr __banked __at 0x153b IO_153B;   // until it is added to headers
 
+extern void uart_send_at_cmd_and_print(unsigned char *cmd);
+
 // UART BAUD RATE
 
 extern uint32_t uart_compute_prescaler(uint32_t bps);
