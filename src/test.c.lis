@@ -1,4 +1,4 @@
-C:/Users/Hannu/AppData/Local/Temp/zcc00002BF8AB582.asm:
+C:/Users/Hannu/AppData/Local/Temp/zcc00001FE4857F2.asm:
      1                          MODULE test_c
      2                          LINE 0, "src/test.c"
 src/test.c:
@@ -986,70 +986,79 @@ src/test.c:
    981                          	GLOBAL _GLOBAL_ZX_PORT_7FFD
    982                          	GLOBAL _GLOBAL_ZX_PORT_1FFD
    983                          	GLOBAL _GLOBAL_ZX_PORT_FE
-   984                          ;--------------------------------------------------------
-   985                          ; special function registers
-   986                          ;--------------------------------------------------------
-   987                          defc _IO_FE	=	0x00fe
-   988                          defc _IO_FF	=	0x00ff
-   989                          defc _IO_TIMEX_VIDEO_MODE	=	0x00ff
-   990                          defc _IO_1FFD	=	0x1ffd
-   991                          defc _IO_7FFD	=	0x7ffd
-   992                          defc _IO_DFFD	=	0xdffd
-   993                          defc _IO_0F	=	0x000f
-   994                          defc _IO_DAC_L0	=	0x000f
-   995                          defc _IO_1F	=	0x001f
-   996                          defc _IO_DAC_L1	=	0x001f
-   997                          defc _IO_4F	=	0x004f
-   998                          defc _IO_DAC_R0	=	0x004f
-   999                          defc _IO_5F	=	0x005f
-  1000                          defc _IO_DAC_R1	=	0x005f
-  1001                          defc _IO_DF	=	0x00df
-  1002                          defc _IO_DAC_M0	=	0x00df
-  1003                          defc _IO_FFFD	=	0xfffd
-  1004                          defc _IO_TURBOSOUND	=	0xfffd
-  1005                          defc _IO_AY_REG	=	0xfffd
-  1006                          defc _IO_BFFD	=	0xbffd
-  1007                          defc _IO_AY_DAT	=	0xbffd
-  1008                          defc _IO_123B	=	0x123b
-  1009                          defc _IO_LAYER_2_CONFIG	=	0x123b
-  1010                          defc _IO_303B	=	0x303b
-  1011                          defc _IO_SPRITE_SLOT	=	0x303b
-  1012                          defc _IO_SPRITE_FLAGS	=	0x303b
-  1013                          defc _IO_57	=	0x0057
-  1014                          defc _IO_SPRITE_ATTRIBUTE	=	0x0057
-  1015                          defc _IO_5B	=	0x005b
-  1016                          defc _IO_SPRITE_PATTERN	=	0x005b
-  1017                          defc _IO_143B	=	0x143b
-  1018                          defc _IO_UART_RX	=	0x143b
-  1019                          defc _IO_UART_BAUD_RATE	=	0x143b
-  1020                          defc _IO_133B	=	0x133b
-  1021                          defc _IO_UART_TX	=	0x133b
-  1022                          defc _IO_UART_STATUS	=	0x133b
-  1023                          defc _IO_6B	=	0x006b
-  1024                          defc _IO_DMA	=	0x006b
-  1025                          defc _IO_E3	=	0x00e3
-  1026                          defc _IO_DIVIDE_CONTROL	=	0x00e3
-  1027                          defc _IO_E7	=	0x00e7
-  1028                          defc _IO_SPI_CONTROL	=	0x00e7
-  1029                          defc _IO_SPI_STATUS	=	0x00e7
-  1030                          defc _IO_EB	=	0x00eb
-  1031                          defc _IO_SPI_DATA	=	0x00eb
-  1032                          defc _IO_103B	=	0x103b
-  1033                          defc _IO_I2C_SCL	=	0x103b
-  1034                          defc _IO_113B	=	0x113b
-  1035                          defc _IO_I2C_SDA	=	0x113b
-  1036                          defc _IO_LED_L	=	0x103b
-  1037                          defc _IO_243B	=	0x243b
-  1038                          defc _IO_NEXTREG_REG	=	0x243b
-  1039                          defc _IO_253B	=	0x253b
-  1040                          defc _IO_NEXTREG_DAT	=	0x253b
-  1041                          defc _IO_153B	=	0x153b
-  1042                          ;--------------------------------------------------------
-  1043                          ; ram data
-  1044                          ;--------------------------------------------------------
-  1045                          	SECTION bss_compiler
-  1046                          _incomingPacketGobs:
-  1047  0000  0000000000000000  	DEFS 70
+   984                          	GLOBAL _cloud
+   985                          	GLOBAL _specnextSpr1
+   986                          	GLOBAL _specnextSpr0
+   987                          	GLOBAL _serverSpr3
+   988                          	GLOBAL _serverSpr2
+   989                          	GLOBAL _serverSpr1
+   990                          	GLOBAL _serverSpr0
+   991                          	GLOBAL _cloudSpr
+   992                          	GLOBAL _packet
+   993                          ;--------------------------------------------------------
+   994                          ; special function registers
+   995                          ;--------------------------------------------------------
+   996                          defc _IO_FE	=	0x00fe
+   997                          defc _IO_FF	=	0x00ff
+   998                          defc _IO_TIMEX_VIDEO_MODE	=	0x00ff
+   999                          defc _IO_1FFD	=	0x1ffd
+  1000                          defc _IO_7FFD	=	0x7ffd
+  1001                          defc _IO_DFFD	=	0xdffd
+  1002                          defc _IO_0F	=	0x000f
+  1003                          defc _IO_DAC_L0	=	0x000f
+  1004                          defc _IO_1F	=	0x001f
+  1005                          defc _IO_DAC_L1	=	0x001f
+  1006                          defc _IO_4F	=	0x004f
+  1007                          defc _IO_DAC_R0	=	0x004f
+  1008                          defc _IO_5F	=	0x005f
+  1009                          defc _IO_DAC_R1	=	0x005f
+  1010                          defc _IO_DF	=	0x00df
+  1011                          defc _IO_DAC_M0	=	0x00df
+  1012                          defc _IO_FFFD	=	0xfffd
+  1013                          defc _IO_TURBOSOUND	=	0xfffd
+  1014                          defc _IO_AY_REG	=	0xfffd
+  1015                          defc _IO_BFFD	=	0xbffd
+  1016                          defc _IO_AY_DAT	=	0xbffd
+  1017                          defc _IO_123B	=	0x123b
+  1018                          defc _IO_LAYER_2_CONFIG	=	0x123b
+  1019                          defc _IO_303B	=	0x303b
+  1020                          defc _IO_SPRITE_SLOT	=	0x303b
+  1021                          defc _IO_SPRITE_FLAGS	=	0x303b
+  1022                          defc _IO_57	=	0x0057
+  1023                          defc _IO_SPRITE_ATTRIBUTE	=	0x0057
+  1024                          defc _IO_5B	=	0x005b
+  1025                          defc _IO_SPRITE_PATTERN	=	0x005b
+  1026                          defc _IO_143B	=	0x143b
+  1027                          defc _IO_UART_RX	=	0x143b
+  1028                          defc _IO_UART_BAUD_RATE	=	0x143b
+  1029                          defc _IO_133B	=	0x133b
+  1030                          defc _IO_UART_TX	=	0x133b
+  1031                          defc _IO_UART_STATUS	=	0x133b
+  1032                          defc _IO_6B	=	0x006b
+  1033                          defc _IO_DMA	=	0x006b
+  1034                          defc _IO_E3	=	0x00e3
+  1035                          defc _IO_DIVIDE_CONTROL	=	0x00e3
+  1036                          defc _IO_E7	=	0x00e7
+  1037                          defc _IO_SPI_CONTROL	=	0x00e7
+  1038                          defc _IO_SPI_STATUS	=	0x00e7
+  1039                          defc _IO_EB	=	0x00eb
+  1040                          defc _IO_SPI_DATA	=	0x00eb
+  1041                          defc _IO_103B	=	0x103b
+  1042                          defc _IO_I2C_SCL	=	0x103b
+  1043                          defc _IO_113B	=	0x113b
+  1044                          defc _IO_I2C_SDA	=	0x113b
+  1045                          defc _IO_LED_L	=	0x103b
+  1046                          defc _IO_243B	=	0x243b
+  1047                          defc _IO_NEXTREG_REG	=	0x243b
+  1048                          defc _IO_253B	=	0x253b
+  1049                          defc _IO_NEXTREG_DAT	=	0x253b
+  1050                          defc _IO_153B	=	0x153b
+  1051                          ;--------------------------------------------------------
+  1052                          ; ram data
+  1053                          ;--------------------------------------------------------
+  1054                          	SECTION bss_compiler
+  1055                          _incomingPacketGobs:
+  1056  0000  0000000000000000  	DEFS 70
               0000000000000000  
               0000000000000000  
               0000000000000000  
@@ -1058,8 +1067,8 @@ src/test.c:
               0000000000000000  
               0000000000000000  
               000000000000      
-  1048                          _outgoingPacketGobs:
-  1049  0046  0000000000000000  	DEFS 70
+  1057                          _outgoingPacketGobs:
+  1058  0046  0000000000000000  	DEFS 70
               0000000000000000  
               0000000000000000  
               0000000000000000  
@@ -1068,1802 +1077,972 @@ src/test.c:
               0000000000000000  
               0000000000000000  
               000000000000      
-  1050                          ;--------------------------------------------------------
-  1051                          ; ram data
-  1052                          ;--------------------------------------------------------
-  1053                          
-  1054                          IF 0
-  1055                          
-  1056                          ; .area _INITIALIZED removed by z88dk
-  1057                          
-  1058                          _test_number:
-  1059                          	DEFS 1
-  1060                          _shadow_screen:
-  1061                          	DEFS 5
-  1062                          _off_screen:
-  1063                          	DEFS 5
-  1064                          _testSprite:
-  1065                          	DEFS 7
+  1059                          ;--------------------------------------------------------
+  1060                          ; ram data
+  1061                          ;--------------------------------------------------------
+  1062                          
+  1063                          IF 0
+  1064                          
+  1065                          ; .area _INITIALIZED removed by z88dk
   1066                          
-  1067                          ENDIF
-  1068                          
-  1069                          ;--------------------------------------------------------
-  1070                          ; absolute external ram data
-  1071                          ;--------------------------------------------------------
-  1072                          	SECTION IGNORE
-  1073                          ;--------------------------------------------------------
-  1074                          ; global & static initialisations
-  1075                          ;--------------------------------------------------------
-  1076                          	SECTION code_crt_init
-  1077                          ;--------------------------------------------------------
-  1078                          ; Home
-  1079                          ;--------------------------------------------------------
-  1080                          	SECTION IGNORE
-  1081                          ;--------------------------------------------------------
-  1082                          ; code
-  1083                          ;--------------------------------------------------------
-  1084                          	SECTION code_compiler
-  1085                          ;	---------------------------------
-  1086                          ; Function main_esp_detect_bps
-  1087                          ; ---------------------------------
-  1088                          _main_esp_detect_bps:
-  1089  0000  213004            	ld	hl,___str_1
-  1090  0003  e5                	push	hl
-  1091  0004  cd0000            	call	_puts
-  1092  0007  f1                	pop	af
-  1093  0008  cd0000            	call	_esp_detect_bps
-  1094  000b  7d                	ld	a, l
-  1095  000c  b7                	or	a, a
-  1096  000d  2016              	jr	NZ,l_main_esp_detect_bps_00102
-  1097  000f  210000            	ld	hl,_esp_bps
-  1098  0012  3600              	ld	(hl),0x00
-  1099  0014  23                	inc	hl
-  1100  0015  36c2              	ld	(hl),0xc2
-  1101  0017  23                	inc	hl
-  1102  0018  3601              	ld	(hl),0x01
-  1103  001a  af                	xor	a, a
-  1104  001b  23                	inc	hl
-  1105  001c  77                	ld	(hl), a
-  1106  001d  214804            	ld	hl,___str_2
-  1107  0020  e5                	push	hl
-  1108  0021  cd0000            	call	_printf
-  1109  0024  f1                	pop	af
-  1110                          l_main_esp_detect_bps_00102:
-  1111  0025  2a0200            	ld	hl, (_esp_bps + 2)
-  1112  0028  e5                	push	hl
-  1113  0029  2a0000            	ld	hl, (_esp_bps)
-  1114  002c  e5                	push	hl
-  1115  002d  216504            	ld	hl,___str_3
-  1116  0030  e5                	push	hl
-  1117  0031  cd0000            	call	_printf
-  1118  0034  f1                	pop	af
-  1119  0035  f1                	pop	af
-  1120  0036  f1                	pop	af
-  1121  0037  2a0200            	ld	hl, (_esp_bps + 2)
-  1122  003a  e5                	push	hl
-  1123  003b  2a0000            	ld	hl, (_esp_bps)
-  1124  003e  e5                	push	hl
-  1125  003f  cd0000            	call	_uart_compute_prescaler
-  1126  0042  f1                	pop	af
-  1127  0043  f1                	pop	af
-  1128  0044  d5                	push	de
-  1129  0045  e5                	push	hl
-  1130  0046  cd0000            	call	_uart_set_prescaler
-  1131  0049  f1                	pop	af
-  1132  004a  f1                	pop	af
-  1133  004b  c9                	ret
-  1134                          	SECTION rodata_compiler
-  1135                          _packet:
-  1136  0000  e3                	DEFB +0xe3
-  1137  0001  e3                	DEFB +0xe3
-  1138  0002  e3                	DEFB +0xe3
-  1139  0003  ff                	DEFB +0xff
-  1140  0004  ff                	DEFB +0xff
-  1141  0005  ff                	DEFB +0xff
-  1142  0006  ff                	DEFB +0xff
-  1143  0007  ff                	DEFB +0xff
-  1144  0008  ff                	DEFB +0xff
-  1145  0009  e3                	DEFB +0xe3
-  1146  000a  e3                	DEFB +0xe3
-  1147  000b  e3                	DEFB +0xe3
-  1148  000c  e3                	DEFB +0xe3
-  1149  000d  e3                	DEFB +0xe3
-  1150  000e  e3                	DEFB +0xe3
-  1151  000f  e3                	DEFB +0xe3
-  1152  0010  e3                	DEFB +0xe3
-  1153  0011  e3                	DEFB +0xe3
-  1154  0012  ff                	DEFB +0xff
-  1155  0013  0f                	DEFB +0x0f
-  1156  0014  0f                	DEFB +0x0f
-  1157  0015  0f                	DEFB +0x0f
-  1158  0016  0f                	DEFB +0x0f
-  1159  0017  0f                	DEFB +0x0f
-  1160  0018  0f                	DEFB +0x0f
-  1161  0019  ff                	DEFB +0xff
-  1162  001a  e3                	DEFB +0xe3
-  1163  001b  e3                	DEFB +0xe3
-  1164  001c  e3                	DEFB +0xe3
-  1165  001d  e3                	DEFB +0xe3
-  1166  001e  e3                	DEFB +0xe3
-  1167  001f  e3                	DEFB +0xe3
-  1168  0020  e3                	DEFB +0xe3
-  1169  0021  ff                	DEFB +0xff
-  1170  0022  0f                	DEFB +0x0f
-  1171  0023  0f                	DEFB +0x0f
-  1172  0024  0f                	DEFB +0x0f
-  1173  0025  0f                	DEFB +0x0f
-  1174  0026  0f                	DEFB +0x0f
-  1175  0027  0f                	DEFB +0x0f
-  1176  0028  0f                	DEFB +0x0f
-  1177  0029  0f                	DEFB +0x0f
-  1178  002a  ff                	DEFB +0xff
-  1179  002b  e3                	DEFB +0xe3
-  1180  002c  e3                	DEFB +0xe3
-  1181  002d  e3                	DEFB +0xe3
-  1182  002e  e3                	DEFB +0xe3
-  1183  002f  e3                	DEFB +0xe3
-  1184  0030  ff                	DEFB +0xff
-  1185  0031  0f                	DEFB +0x0f
-  1186  0032  0f                	DEFB +0x0f
-  1187  0033  0f                	DEFB +0x0f
-  1188  0034  ff                	DEFB +0xff
-  1189  0035  ff                	DEFB +0xff
-  1190  0036  ff                	DEFB +0xff
-  1191  0037  0f                	DEFB +0x0f
-  1192  0038  0f                	DEFB +0x0f
-  1193  0039  0f                	DEFB +0x0f
-  1194  003a  0f                	DEFB +0x0f
-  1195  003b  ff                	DEFB +0xff
-  1196  003c  e3                	DEFB +0xe3
-  1197  003d  e3                	DEFB +0xe3
-  1198  003e  e3                	DEFB +0xe3
-  1199  003f  e3                	DEFB +0xe3
-  1200  0040  ff                	DEFB +0xff
-  1201  0041  0f                	DEFB +0x0f
-  1202  0042  0f                	DEFB +0x0f
-  1203  0043  0f                	DEFB +0x0f
-  1204  0044  ff                	DEFB +0xff
-  1205  0045  0f                	DEFB +0x0f
-  1206  0046  ff                	DEFB +0xff
-  1207  0047  ff                	DEFB +0xff
-  1208  0048  0f                	DEFB +0x0f
-  1209  0049  0f                	DEFB +0x0f
-  1210  004a  0f                	DEFB +0x0f
-  1211  004b  ff                	DEFB +0xff
-  1212  004c  e3                	DEFB +0xe3
-  1213  004d  e3                	DEFB +0xe3
-  1214  004e  e3                	DEFB +0xe3
-  1215  004f  e3                	DEFB +0xe3
-  1216  0050  ff                	DEFB +0xff
-  1217  0051  0f                	DEFB +0x0f
-  1218  0052  0f                	DEFB +0x0f
-  1219  0053  0f                	DEFB +0x0f
-  1220  0054  ff                	DEFB +0xff
-  1221  0055  0f                	DEFB +0x0f
-  1222  0056  0f                	DEFB +0x0f
-  1223  0057  ff                	DEFB +0xff
-  1224  0058  0f                	DEFB +0x0f
-  1225  0059  0f                	DEFB +0x0f
-  1226  005a  0f                	DEFB +0x0f
-  1227  005b  ff                	DEFB +0xff
-  1228  005c  e3                	DEFB +0xe3
-  1229  005d  e3                	DEFB +0xe3
-  1230  005e  e3                	DEFB +0xe3
-  1231  005f  e3                	DEFB +0xe3
-  1232  0060  ff                	DEFB +0xff
-  1233  0061  0f                	DEFB +0x0f
-  1234  0062  0f                	DEFB +0x0f
-  1235  0063  0f                	DEFB +0x0f
-  1236  0064  ff                	DEFB +0xff
-  1237  0065  0f                	DEFB +0x0f
-  1238  0066  0f                	DEFB +0x0f
-  1239  0067  ff                	DEFB +0xff
-  1240  0068  0f                	DEFB +0x0f
-  1241  0069  0f                	DEFB +0x0f
-  1242  006a  0f                	DEFB +0x0f
-  1243  006b  ff                	DEFB +0xff
-  1244  006c  e3                	DEFB +0xe3
-  1245  006d  e3                	DEFB +0xe3
-  1246  006e  e3                	DEFB +0xe3
-  1247  006f  e3                	DEFB +0xe3
-  1248  0070  ff                	DEFB +0xff
-  1249  0071  0f                	DEFB +0x0f
-  1250  0072  0f                	DEFB +0x0f
-  1251  0073  0f                	DEFB +0x0f
-  1252  0074  ff                	DEFB +0xff
-  1253  0075  0f                	DEFB +0x0f
-  1254  0076  ff                	DEFB +0xff
-  1255  0077  ff                	DEFB +0xff
-  1256  0078  0f                	DEFB +0x0f
-  1257  0079  0f                	DEFB +0x0f
-  1258  007a  0f                	DEFB +0x0f
-  1259  007b  ff                	DEFB +0xff
-  1260  007c  e3                	DEFB +0xe3
-  1261  007d  e3                	DEFB +0xe3
-  1262  007e  e3                	DEFB +0xe3
-  1263  007f  e3                	DEFB +0xe3
-  1264  0080  ff                	DEFB +0xff
-  1265  0081  0f                	DEFB +0x0f
-  1266  0082  0f                	DEFB +0x0f
-  1267  0083  0f                	DEFB +0x0f
-  1268  0084  ff                	DEFB +0xff
-  1269  0085  ff                	DEFB +0xff
-  1270  0086  ff                	DEFB +0xff
-  1271  0087  0f                	DEFB +0x0f
-  1272  0088  0f                	DEFB +0x0f
-  1273  0089  0f                	DEFB +0x0f
-  1274  008a  0f                	DEFB +0x0f
-  1275  008b  ff                	DEFB +0xff
-  1276  008c  e3                	DEFB +0xe3
-  1277  008d  e3                	DEFB +0xe3
-  1278  008e  e3                	DEFB +0xe3
-  1279  008f  e3                	DEFB +0xe3
-  1280  0090  e3                	DEFB +0xe3
-  1281  0091  ff                	DEFB +0xff
-  1282  0092  0f                	DEFB +0x0f
-  1283  0093  0f                	DEFB +0x0f
-  1284  0094  0f                	DEFB +0x0f
-  1285  0095  0f                	DEFB +0x0f
-  1286  0096  0f                	DEFB +0x0f
-  1287  0097  0f                	DEFB +0x0f
-  1288  0098  0f                	DEFB +0x0f
-  1289  0099  0f                	DEFB +0x0f
-  1290  009a  ff                	DEFB +0xff
-  1291  009b  e3                	DEFB +0xe3
-  1292  009c  e3                	DEFB +0xe3
-  1293  009d  e3                	DEFB +0xe3
-  1294  009e  e3                	DEFB +0xe3
-  1295  009f  e3                	DEFB +0xe3
-  1296  00a0  e3                	DEFB +0xe3
-  1297  00a1  e3                	DEFB +0xe3
-  1298  00a2  ff                	DEFB +0xff
-  1299  00a3  0f                	DEFB +0x0f
-  1300  00a4  0f                	DEFB +0x0f
-  1301  00a5  0f                	DEFB +0x0f
-  1302  00a6  0f                	DEFB +0x0f
-  1303  00a7  0f                	DEFB +0x0f
-  1304  00a8  0f                	DEFB +0x0f
-  1305  00a9  ff                	DEFB +0xff
-  1306  00aa  e3                	DEFB +0xe3
-  1307  00ab  e3                	DEFB +0xe3
-  1308  00ac  e3                	DEFB +0xe3
-  1309  00ad  e3                	DEFB +0xe3
-  1310  00ae  e3                	DEFB +0xe3
-  1311  00af  e3                	DEFB +0xe3
-  1312  00b0  e3                	DEFB +0xe3
-  1313  00b1  e3                	DEFB +0xe3
-  1314  00b2  e3                	DEFB +0xe3
-  1315  00b3  ff                	DEFB +0xff
-  1316  00b4  ff                	DEFB +0xff
-  1317  00b5  ff                	DEFB +0xff
-  1318  00b6  ff                	DEFB +0xff
-  1319  00b7  ff                	DEFB +0xff
-  1320  00b8  ff                	DEFB +0xff
-  1321  00b9  e3                	DEFB +0xe3
-  1322  00ba  e3                	DEFB +0xe3
-  1323  00bb  e3                	DEFB +0xe3
-  1324  00bc  e3                	DEFB +0xe3
-  1325  00bd  e3                	DEFB +0xe3
-  1326  00be  e3                	DEFB +0xe3
-  1327  00bf  e3                	DEFB +0xe3
-  1328  00c0  e3                	DEFB +0xe3
-  1329  00c1  e3                	DEFB +0xe3
-  1330  00c2  e3                	DEFB +0xe3
-  1331  00c3  e3                	DEFB +0xe3
-  1332  00c4  e3                	DEFB +0xe3
-  1333  00c5  e3                	DEFB +0xe3
-  1334  00c6  e3                	DEFB +0xe3
-  1335  00c7  e3                	DEFB +0xe3
-  1336  00c8  e3                	DEFB +0xe3
-  1337  00c9  e3                	DEFB +0xe3
-  1338  00ca  e3                	DEFB +0xe3
-  1339  00cb  e3                	DEFB +0xe3
-  1340  00cc  e3                	DEFB +0xe3
-  1341  00cd  e3                	DEFB +0xe3
-  1342  00ce  e3                	DEFB +0xe3
-  1343  00cf  e3                	DEFB +0xe3
-  1344  00d0  e3                	DEFB +0xe3
-  1345  00d1  e3                	DEFB +0xe3
-  1346  00d2  e3                	DEFB +0xe3
-  1347  00d3  e3                	DEFB +0xe3
-  1348  00d4  e3                	DEFB +0xe3
-  1349  00d5  e3                	DEFB +0xe3
-  1350  00d6  e3                	DEFB +0xe3
-  1351  00d7  e3                	DEFB +0xe3
-  1352  00d8  e3                	DEFB +0xe3
-  1353  00d9  e3                	DEFB +0xe3
-  1354  00da  e3                	DEFB +0xe3
-  1355  00db  e3                	DEFB +0xe3
-  1356  00dc  e3                	DEFB +0xe3
-  1357  00dd  e3                	DEFB +0xe3
-  1358  00de  e3                	DEFB +0xe3
-  1359  00df  e3                	DEFB +0xe3
-  1360  00e0  e3                	DEFB +0xe3
-  1361  00e1  e3                	DEFB +0xe3
-  1362  00e2  e3                	DEFB +0xe3
-  1363  00e3  e3                	DEFB +0xe3
-  1364  00e4  e3                	DEFB +0xe3
-  1365  00e5  e3                	DEFB +0xe3
-  1366  00e6  e3                	DEFB +0xe3
-  1367  00e7  e3                	DEFB +0xe3
-  1368  00e8  e3                	DEFB +0xe3
-  1369  00e9  e3                	DEFB +0xe3
-  1370  00ea  e3                	DEFB +0xe3
-  1371  00eb  e3                	DEFB +0xe3
-  1372  00ec  e3                	DEFB +0xe3
-  1373  00ed  e3                	DEFB +0xe3
-  1374  00ee  e3                	DEFB +0xe3
-  1375  00ef  e3                	DEFB +0xe3
-  1376  00f0  e3                	DEFB +0xe3
-  1377  00f1  e3                	DEFB +0xe3
-  1378  00f2  e3                	DEFB +0xe3
-  1379  00f3  e3                	DEFB +0xe3
-  1380  00f4  e3                	DEFB +0xe3
-  1381  00f5  e3                	DEFB +0xe3
-  1382  00f6  e3                	DEFB +0xe3
-  1383  00f7  e3                	DEFB +0xe3
-  1384  00f8  e3                	DEFB +0xe3
-  1385  00f9  e3                	DEFB +0xe3
-  1386  00fa  e3                	DEFB +0xe3
-  1387  00fb  e3                	DEFB +0xe3
-  1388  00fc  e3                	DEFB +0xe3
-  1389  00fd  e3                	DEFB +0xe3
-  1390  00fe  e3                	DEFB +0xe3
-  1391  00ff  e3                	DEFB +0xe3
-  1392                          _sprite:
-  1393  0100  e3                	DEFB +0xe3
-  1394  0101  e3                	DEFB +0xe3
-  1395  0102  e3                	DEFB +0xe3
-  1396  0103  ff                	DEFB +0xff
-  1397  0104  ff                	DEFB +0xff
-  1398  0105  ff                	DEFB +0xff
-  1399  0106  ff                	DEFB +0xff
-  1400  0107  ff                	DEFB +0xff
-  1401  0108  ff                	DEFB +0xff
-  1402  0109  e3                	DEFB +0xe3
-  1403  010a  e3                	DEFB +0xe3
-  1404  010b  e3                	DEFB +0xe3
-  1405  010c  e3                	DEFB +0xe3
-  1406  010d  e3                	DEFB +0xe3
-  1407  010e  ff                	DEFB +0xff
-  1408  010f  0f                	DEFB +0x0f
-  1409  0110  0f                	DEFB +0x0f
-  1410  0111  0f                	DEFB +0x0f
-  1411  0112  0f                	DEFB +0x0f
-  1412  0113  0f                	DEFB +0x0f
-  1413  0114  0f                	DEFB +0x0f
-  1414  0115  ff                	DEFB +0xff
-  1415  0116  e3                	DEFB +0xe3
-  1416  0117  e3                	DEFB +0xe3
-  1417  0118  e3                	DEFB +0xe3
-  1418  0119  ff                	DEFB +0xff
-  1419  011a  0f                	DEFB +0x0f
-  1420  011b  0f                	DEFB +0x0f
-  1421  011c  0f                	DEFB +0x0f
-  1422  011d  0f                	DEFB +0x0f
-  1423  011e  0f                	DEFB +0x0f
-  1424  011f  0f                	DEFB +0x0f
-  1425  0120  0f                	DEFB +0x0f
-  1426  0121  0f                	DEFB +0x0f
-  1427  0122  ff                	DEFB +0xff
-  1428  0123  e3                	DEFB +0xe3
-  1429  0124  ff                	DEFB +0xff
-  1430  0125  0f                	DEFB +0x0f
-  1431  0126  0f                	DEFB +0x0f
-  1432  0127  0f                	DEFB +0x0f
-  1433  0128  ff                	DEFB +0xff
-  1434  0129  ff                	DEFB +0xff
-  1435  012a  ff                	DEFB +0xff
-  1436  012b  0f                	DEFB +0x0f
-  1437  012c  0f                	DEFB +0x0f
-  1438  012d  0f                	DEFB +0x0f
-  1439  012e  0f                	DEFB +0x0f
-  1440  012f  ff                	DEFB +0xff
-  1441  0130  ff                	DEFB +0xff
-  1442  0131  0f                	DEFB +0x0f
-  1443  0132  0f                	DEFB +0x0f
-  1444  0133  0f                	DEFB +0x0f
-  1445  0134  ff                	DEFB +0xff
-  1446  0135  0f                	DEFB +0x0f
-  1447  0136  ff                	DEFB +0xff
-  1448  0137  ff                	DEFB +0xff
-  1449  0138  0f                	DEFB +0x0f
-  1450  0139  0f                	DEFB +0x0f
-  1451  013a  0f                	DEFB +0x0f
-  1452  013b  ff                	DEFB +0xff
-  1453  013c  ff                	DEFB +0xff
-  1454  013d  0f                	DEFB +0x0f
-  1455  013e  0f                	DEFB +0x0f
-  1456  013f  0f                	DEFB +0x0f
-  1457  0140  ff                	DEFB +0xff
-  1458  0141  0f                	DEFB +0x0f
-  1459  0142  0f                	DEFB +0x0f
-  1460  0143  ff                	DEFB +0xff
-  1461  0144  0f                	DEFB +0x0f
-  1462  0145  0f                	DEFB +0x0f
-  1463  0146  0f                	DEFB +0x0f
-  1464  0147  ff                	DEFB +0xff
-  1465  0148  ff                	DEFB +0xff
-  1466  0149  0f                	DEFB +0x0f
-  1467  014a  0f                	DEFB +0x0f
-  1468  014b  0f                	DEFB +0x0f
-  1469  014c  ff                	DEFB +0xff
-  1470  014d  0f                	DEFB +0x0f
-  1471  014e  0f                	DEFB +0x0f
-  1472  014f  ff                	DEFB +0xff
-  1473  0150  0f                	DEFB +0x0f
-  1474  0151  0f                	DEFB +0x0f
-  1475  0152  0f                	DEFB +0x0f
-  1476  0153  ff                	DEFB +0xff
-  1477  0154  ff                	DEFB +0xff
-  1478  0155  0f                	DEFB +0x0f
-  1479  0156  0f                	DEFB +0x0f
-  1480  0157  0f                	DEFB +0x0f
-  1481  0158  ff                	DEFB +0xff
-  1482  0159  0f                	DEFB +0x0f
-  1483  015a  ff                	DEFB +0xff
-  1484  015b  ff                	DEFB +0xff
-  1485  015c  0f                	DEFB +0x0f
-  1486  015d  0f                	DEFB +0x0f
-  1487  015e  0f                	DEFB +0x0f
-  1488  015f  ff                	DEFB +0xff
-  1489  0160  ff                	DEFB +0xff
-  1490  0161  0f                	DEFB +0x0f
-  1491  0162  0f                	DEFB +0x0f
-  1492  0163  0f                	DEFB +0x0f
-  1493  0164  ff                	DEFB +0xff
-  1494  0165  ff                	DEFB +0xff
-  1495  0166  ff                	DEFB +0xff
-  1496  0167  0f                	DEFB +0x0f
-  1497  0168  0f                	DEFB +0x0f
-  1498  0169  0f                	DEFB +0x0f
-  1499  016a  0f                	DEFB +0x0f
-  1500  016b  ff                	DEFB +0xff
-  1501  016c  e3                	DEFB +0xe3
-  1502  016d  ff                	DEFB +0xff
-  1503  016e  0f                	DEFB +0x0f
-  1504  016f  0f                	DEFB +0x0f
-  1505  0170  0f                	DEFB +0x0f
-  1506  0171  0f                	DEFB +0x0f
-  1507  0172  0f                	DEFB +0x0f
-  1508  0173  0f                	DEFB +0x0f
-  1509  0174  0f                	DEFB +0x0f
-  1510  0175  0f                	DEFB +0x0f
-  1511  0176  ff                	DEFB +0xff
-  1512  0177  e3                	DEFB +0xe3
-  1513  0178  e3                	DEFB +0xe3
-  1514  0179  e3                	DEFB +0xe3
-  1515  017a  ff                	DEFB +0xff
-  1516  017b  0f                	DEFB +0x0f
-  1517  017c  0f                	DEFB +0x0f
-  1518  017d  0f                	DEFB +0x0f
-  1519  017e  0f                	DEFB +0x0f
-  1520  017f  0f                	DEFB +0x0f
-  1521  0180  0f                	DEFB +0x0f
-  1522  0181  ff                	DEFB +0xff
-  1523  0182  e3                	DEFB +0xe3
-  1524  0183  e3                	DEFB +0xe3
-  1525  0184  e3                	DEFB +0xe3
-  1526  0185  e3                	DEFB +0xe3
-  1527  0186  e3                	DEFB +0xe3
-  1528  0187  ff                	DEFB +0xff
-  1529  0188  ff                	DEFB +0xff
-  1530  0189  ff                	DEFB +0xff
-  1531  018a  ff                	DEFB +0xff
-  1532  018b  ff                	DEFB +0xff
-  1533  018c  ff                	DEFB +0xff
-  1534  018d  e3                	DEFB +0xe3
-  1535  018e  e3                	DEFB +0xe3
-  1536  018f  e3                	DEFB +0xe3
-  1537                          _cloudSpr:
-  1538  0190  ff                	DEFB +0xff
-  1539  0191  ff                	DEFB +0xff
-  1540  0192  ff                	DEFB +0xff
-  1541  0193  ff                	DEFB +0xff
-  1542  0194  ff                	DEFB +0xff
-  1543  0195  ff                	DEFB +0xff
-  1544  0196  ff                	DEFB +0xff
-  1545  0197  ff                	DEFB +0xff
-  1546  0198  ff                	DEFB +0xff
-  1547  0199  ff                	DEFB +0xff
-  1548  019a  ff                	DEFB +0xff
-  1549  019b  ff                	DEFB +0xff
-  1550  019c  ff                	DEFB +0xff
-  1551  019d  ff                	DEFB +0xff
-  1552  019e  ff                	DEFB +0xff
-  1553  019f  ff                	DEFB +0xff
-  1554  01a0  ff                	DEFB +0xff
-  1555  01a1  ff                	DEFB +0xff
-  1556  01a2  ff                	DEFB +0xff
-  1557  01a3  ff                	DEFB +0xff
-  1558  01a4  ff                	DEFB +0xff
-  1559  01a5  ff                	DEFB +0xff
-  1560  01a6  ff                	DEFB +0xff
-  1561  01a7  ff                	DEFB +0xff
-  1562  01a8  ff                	DEFB +0xff
-  1563  01a9  ff                	DEFB +0xff
-  1564  01aa  ff                	DEFB +0xff
-  1565  01ab  ff                	DEFB +0xff
-  1566  01ac  ff                	DEFB +0xff
-  1567  01ad  ff                	DEFB +0xff
-  1568  01ae  ff                	DEFB +0xff
-  1569  01af  ff                	DEFB +0xff
-  1570  01b0  ff                	DEFB +0xff
-  1571  01b1  ff                	DEFB +0xff
-  1572  01b2  ff                	DEFB +0xff
-  1573  01b3  ff                	DEFB +0xff
-  1574  01b4  ff                	DEFB +0xff
-  1575  01b5  ff                	DEFB +0xff
-  1576  01b6  ff                	DEFB +0xff
-  1577  01b7  ff                	DEFB +0xff
-  1578  01b8  ff                	DEFB +0xff
-  1579  01b9  ff                	DEFB +0xff
-  1580  01ba  ff                	DEFB +0xff
-  1581  01bb  ff                	DEFB +0xff
-  1582  01bc  ff                	DEFB +0xff
-  1583  01bd  ff                	DEFB +0xff
-  1584  01be  ff                	DEFB +0xff
-  1585  01bf  ff                	DEFB +0xff
-  1586  01c0  ff                	DEFB +0xff
-  1587  01c1  ff                	DEFB +0xff
-  1588  01c2  ff                	DEFB +0xff
-  1589  01c3  ff                	DEFB +0xff
-  1590  01c4  ff                	DEFB +0xff
-  1591  01c5  ff                	DEFB +0xff
-  1592  01c6  ff                	DEFB +0xff
-  1593  01c7  ff                	DEFB +0xff
-  1594  01c8  ff                	DEFB +0xff
-  1595  01c9  ff                	DEFB +0xff
-  1596  01ca  ff                	DEFB +0xff
-  1597  01cb  ff                	DEFB +0xff
-  1598  01cc  ff                	DEFB +0xff
-  1599  01cd  ff                	DEFB +0xff
-  1600  01ce  ff                	DEFB +0xff
-  1601  01cf  ff                	DEFB +0xff
-  1602  01d0  ff                	DEFB +0xff
-  1603  01d1  ff                	DEFB +0xff
-  1604  01d2  ff                	DEFB +0xff
-  1605  01d3  ff                	DEFB +0xff
-  1606  01d4  ff                	DEFB +0xff
-  1607  01d5  ff                	DEFB +0xff
-  1608  01d6  ff                	DEFB +0xff
-  1609  01d7  ff                	DEFB +0xff
-  1610  01d8  ff                	DEFB +0xff
-  1611  01d9  ff                	DEFB +0xff
-  1612  01da  ff                	DEFB +0xff
-  1613  01db  ff                	DEFB +0xff
-  1614  01dc  ff                	DEFB +0xff
-  1615  01dd  ff                	DEFB +0xff
-  1616  01de  ff                	DEFB +0xff
-  1617  01df  ff                	DEFB +0xff
-  1618  01e0  ff                	DEFB +0xff
-  1619  01e1  ff                	DEFB +0xff
-  1620  01e2  ff                	DEFB +0xff
-  1621  01e3  ff                	DEFB +0xff
-  1622  01e4  ff                	DEFB +0xff
-  1623  01e5  ff                	DEFB +0xff
-  1624  01e6  ff                	DEFB +0xff
-  1625  01e7  ff                	DEFB +0xff
-  1626  01e8  ff                	DEFB +0xff
-  1627  01e9  ff                	DEFB +0xff
-  1628  01ea  ff                	DEFB +0xff
-  1629  01eb  ff                	DEFB +0xff
-  1630  01ec  ff                	DEFB +0xff
-  1631  01ed  ff                	DEFB +0xff
-  1632  01ee  ff                	DEFB +0xff
-  1633  01ef  ff                	DEFB +0xff
-  1634  01f0  ff                	DEFB +0xff
-  1635  01f1  ff                	DEFB +0xff
-  1636  01f2  ff                	DEFB +0xff
-  1637  01f3  ff                	DEFB +0xff
-  1638  01f4  ff                	DEFB +0xff
-  1639  01f5  ff                	DEFB +0xff
-  1640  01f6  ff                	DEFB +0xff
-  1641  01f7  ff                	DEFB +0xff
-  1642  01f8  ff                	DEFB +0xff
-  1643  01f9  ff                	DEFB +0xff
-  1644  01fa  ff                	DEFB +0xff
-  1645  01fb  ff                	DEFB +0xff
-  1646  01fc  ff                	DEFB +0xff
-  1647  01fd  ff                	DEFB +0xff
-  1648  01fe  ff                	DEFB +0xff
-  1649  01ff  ff                	DEFB +0xff
-  1650  0200  ff                	DEFB +0xff
-  1651  0201  ff                	DEFB +0xff
-  1652  0202  ff                	DEFB +0xff
-  1653  0203  ff                	DEFB +0xff
-  1654  0204  ff                	DEFB +0xff
-  1655  0205  ff                	DEFB +0xff
-  1656  0206  ff                	DEFB +0xff
-  1657  0207  ff                	DEFB +0xff
-  1658  0208  ff                	DEFB +0xff
-  1659  0209  ff                	DEFB +0xff
-  1660  020a  ff                	DEFB +0xff
-  1661  020b  ff                	DEFB +0xff
-  1662  020c  ff                	DEFB +0xff
-  1663  020d  ff                	DEFB +0xff
-  1664  020e  ff                	DEFB +0xff
-  1665  020f  ff                	DEFB +0xff
-  1666  0210  ff                	DEFB +0xff
-  1667  0211  ff                	DEFB +0xff
-  1668  0212  ff                	DEFB +0xff
-  1669  0213  ff                	DEFB +0xff
-  1670  0214  ff                	DEFB +0xff
-  1671  0215  ff                	DEFB +0xff
-  1672  0216  ff                	DEFB +0xff
-  1673  0217  ff                	DEFB +0xff
-  1674  0218  ff                	DEFB +0xff
-  1675  0219  ff                	DEFB +0xff
-  1676  021a  ff                	DEFB +0xff
-  1677  021b  ff                	DEFB +0xff
-  1678  021c  ff                	DEFB +0xff
-  1679  021d  ff                	DEFB +0xff
-  1680  021e  ff                	DEFB +0xff
-  1681  021f  ff                	DEFB +0xff
-  1682  0220  ff                	DEFB +0xff
-  1683  0221  ff                	DEFB +0xff
-  1684  0222  ff                	DEFB +0xff
-  1685  0223  ff                	DEFB +0xff
-  1686  0224  ff                	DEFB +0xff
-  1687  0225  ff                	DEFB +0xff
-  1688  0226  ff                	DEFB +0xff
-  1689  0227  ff                	DEFB +0xff
-  1690  0228  ff                	DEFB +0xff
-  1691  0229  ff                	DEFB +0xff
-  1692  022a  ff                	DEFB +0xff
-  1693  022b  ff                	DEFB +0xff
-  1694  022c  ff                	DEFB +0xff
-  1695  022d  ff                	DEFB +0xff
-  1696  022e  ff                	DEFB +0xff
-  1697  022f  ff                	DEFB +0xff
-  1698  0230  ff                	DEFB +0xff
-  1699  0231  ff                	DEFB +0xff
-  1700  0232  ff                	DEFB +0xff
-  1701  0233  ff                	DEFB +0xff
-  1702  0234  ff                	DEFB +0xff
-  1703  0235  ff                	DEFB +0xff
-  1704  0236  ff                	DEFB +0xff
-  1705  0237  ff                	DEFB +0xff
-  1706  0238  ff                	DEFB +0xff
-  1707  0239  ff                	DEFB +0xff
-  1708  023a  ff                	DEFB +0xff
-  1709  023b  ff                	DEFB +0xff
-  1710  023c  ff                	DEFB +0xff
-  1711  023d  ff                	DEFB +0xff
-  1712  023e  ff                	DEFB +0xff
-  1713  023f  ff                	DEFB +0xff
-  1714  0240  ff                	DEFB +0xff
-  1715  0241  ff                	DEFB +0xff
-  1716  0242  ff                	DEFB +0xff
-  1717  0243  ff                	DEFB +0xff
-  1718  0244  ff                	DEFB +0xff
-  1719  0245  ff                	DEFB +0xff
-  1720  0246  ff                	DEFB +0xff
-  1721  0247  ff                	DEFB +0xff
-  1722  0248  ff                	DEFB +0xff
-  1723  0249  ff                	DEFB +0xff
-  1724  024a  ff                	DEFB +0xff
-  1725  024b  ff                	DEFB +0xff
-  1726  024c  ff                	DEFB +0xff
-  1727  024d  ff                	DEFB +0xff
-  1728  024e  ff                	DEFB +0xff
-  1729  024f  ff                	DEFB +0xff
-  1730  0250  b6                	DEFB +0xb6
-  1731  0251  ff                	DEFB +0xff
-  1732  0252  ff                	DEFB +0xff
-  1733  0253  ff                	DEFB +0xff
-  1734  0254  ff                	DEFB +0xff
-  1735  0255  ff                	DEFB +0xff
-  1736  0256  ff                	DEFB +0xff
-  1737  0257  ff                	DEFB +0xff
-  1738  0258  ff                	DEFB +0xff
-  1739  0259  ff                	DEFB +0xff
-  1740  025a  b6                	DEFB +0xb6
-  1741  025b  ff                	DEFB +0xff
-  1742  025c  ff                	DEFB +0xff
-  1743  025d  ff                	DEFB +0xff
-  1744  025e  ff                	DEFB +0xff
-  1745  025f  ff                	DEFB +0xff
-  1746  0260  b6                	DEFB +0xb6
-  1747  0261  ff                	DEFB +0xff
-  1748  0262  ff                	DEFB +0xff
-  1749  0263  ff                	DEFB +0xff
-  1750  0264  ff                	DEFB +0xff
-  1751  0265  ff                	DEFB +0xff
-  1752  0266  ff                	DEFB +0xff
-  1753  0267  ff                	DEFB +0xff
-  1754  0268  ff                	DEFB +0xff
-  1755  0269  b6                	DEFB +0xb6
-  1756  026a  ff                	DEFB +0xff
-  1757  026b  ff                	DEFB +0xff
-  1758  026c  ff                	DEFB +0xff
-  1759  026d  ff                	DEFB +0xff
-  1760  026e  ff                	DEFB +0xff
-  1761  026f  ff                	DEFB +0xff
-  1762  0270  e3                	DEFB +0xe3
-  1763  0271  b6                	DEFB +0xb6
-  1764  0272  b6                	DEFB +0xb6
-  1765  0273  ff                	DEFB +0xff
-  1766  0274  ff                	DEFB +0xff
-  1767  0275  ff                	DEFB +0xff
-  1768  0276  ff                	DEFB +0xff
-  1769  0277  b6                	DEFB +0xb6
-  1770  0278  b6                	DEFB +0xb6
-  1771  0279  e3                	DEFB +0xe3
-  1772  027a  b6                	DEFB +0xb6
-  1773  027b  ff                	DEFB +0xff
-  1774  027c  ff                	DEFB +0xff
-  1775  027d  ff                	DEFB +0xff
-  1776  027e  ff                	DEFB +0xff
-  1777  027f  b6                	DEFB +0xb6
-  1778  0280  e3                	DEFB +0xe3
-  1779  0281  e3                	DEFB +0xe3
-  1780  0282  e3                	DEFB +0xe3
-  1781  0283  b6                	DEFB +0xb6
-  1782  0284  b6                	DEFB +0xb6
-  1783  0285  b6                	DEFB +0xb6
-  1784  0286  b6                	DEFB +0xb6
-  1785  0287  e3                	DEFB +0xe3
-  1786  0288  e3                	DEFB +0xe3
-  1787  0289  e3                	DEFB +0xe3
-  1788  028a  e3                	DEFB +0xe3
-  1789  028b  b6                	DEFB +0xb6
-  1790  028c  b6                	DEFB +0xb6
-  1791  028d  b6                	DEFB +0xb6
-  1792  028e  b6                	DEFB +0xb6
-  1793  028f  e3                	DEFB +0xe3
-  1794                          _cloud:
-  1795  0290  ff                	DEFB +0xff
-  1796  0291  ff                	DEFB +0xff
-  1797  0292  ff                	DEFB +0xff
-  1798  0293  ff                	DEFB +0xff
-  1799  0294  ff                	DEFB +0xff
-  1800  0295  ff                	DEFB +0xff
-  1801  0296  ff                	DEFB +0xff
-  1802  0297  ff                	DEFB +0xff
-  1803  0298  ff                	DEFB +0xff
-  1804  0299  ff                	DEFB +0xff
-  1805  029a  ff                	DEFB +0xff
-  1806  029b  ff                	DEFB +0xff
-  1807  029c  ff                	DEFB +0xff
-  1808  029d  ff                	DEFB +0xff
-  1809  029e  ff                	DEFB +0xff
-  1810  029f  ff                	DEFB +0xff
-  1811  02a0  ff                	DEFB +0xff
-  1812  02a1  ff                	DEFB +0xff
-  1813  02a2  ff                	DEFB +0xff
-  1814  02a3  ff                	DEFB +0xff
-  1815  02a4  ff                	DEFB +0xff
-  1816  02a5  ff                	DEFB +0xff
-  1817  02a6  ff                	DEFB +0xff
-  1818  02a7  ff                	DEFB +0xff
-  1819  02a8  ff                	DEFB +0xff
-  1820  02a9  ff                	DEFB +0xff
-  1821  02aa  ff                	DEFB +0xff
-  1822  02ab  ff                	DEFB +0xff
-  1823  02ac  ff                	DEFB +0xff
-  1824  02ad  ff                	DEFB +0xff
-  1825  02ae  ff                	DEFB +0xff
-  1826  02af  ff                	DEFB +0xff
-  1827  02b0  ff                	DEFB +0xff
-  1828  02b1  ff                	DEFB +0xff
-  1829  02b2  ff                	DEFB +0xff
-  1830  02b3  ff                	DEFB +0xff
-  1831  02b4  ff                	DEFB +0xff
-  1832  02b5  ff                	DEFB +0xff
-  1833  02b6  ff                	DEFB +0xff
-  1834  02b7  ff                	DEFB +0xff
-  1835  02b8  ff                	DEFB +0xff
-  1836  02b9  ff                	DEFB +0xff
-  1837  02ba  ff                	DEFB +0xff
-  1838  02bb  ff                	DEFB +0xff
-  1839  02bc  ff                	DEFB +0xff
-  1840  02bd  ff                	DEFB +0xff
-  1841  02be  ff                	DEFB +0xff
-  1842  02bf  ff                	DEFB +0xff
-  1843  02c0  ff                	DEFB +0xff
-  1844  02c1  ff                	DEFB +0xff
-  1845  02c2  ff                	DEFB +0xff
-  1846  02c3  ff                	DEFB +0xff
-  1847  02c4  ff                	DEFB +0xff
-  1848  02c5  ff                	DEFB +0xff
-  1849  02c6  ff                	DEFB +0xff
-  1850  02c7  ff                	DEFB +0xff
-  1851  02c8  ff                	DEFB +0xff
-  1852  02c9  ff                	DEFB +0xff
-  1853  02ca  ff                	DEFB +0xff
-  1854  02cb  ff                	DEFB +0xff
-  1855  02cc  ff                	DEFB +0xff
-  1856  02cd  ff                	DEFB +0xff
-  1857  02ce  ff                	DEFB +0xff
-  1858  02cf  ff                	DEFB +0xff
-  1859  02d0  ff                	DEFB +0xff
-  1860  02d1  ff                	DEFB +0xff
-  1861  02d2  ff                	DEFB +0xff
-  1862  02d3  ff                	DEFB +0xff
-  1863  02d4  ff                	DEFB +0xff
-  1864  02d5  ff                	DEFB +0xff
-  1865  02d6  ff                	DEFB +0xff
-  1866  02d7  ff                	DEFB +0xff
-  1867  02d8  ff                	DEFB +0xff
-  1868  02d9  ff                	DEFB +0xff
-  1869  02da  ff                	DEFB +0xff
-  1870  02db  ff                	DEFB +0xff
-  1871  02dc  ff                	DEFB +0xff
-  1872  02dd  ff                	DEFB +0xff
-  1873  02de  ff                	DEFB +0xff
-  1874  02df  ff                	DEFB +0xff
-  1875  02e0  ff                	DEFB +0xff
-  1876  02e1  ff                	DEFB +0xff
-  1877  02e2  ff                	DEFB +0xff
-  1878  02e3  ff                	DEFB +0xff
-  1879  02e4  ff                	DEFB +0xff
-  1880  02e5  ff                	DEFB +0xff
-  1881  02e6  ff                	DEFB +0xff
-  1882  02e7  ff                	DEFB +0xff
-  1883  02e8  ff                	DEFB +0xff
-  1884  02e9  ff                	DEFB +0xff
-  1885  02ea  ff                	DEFB +0xff
-  1886  02eb  ff                	DEFB +0xff
-  1887  02ec  ff                	DEFB +0xff
-  1888  02ed  ff                	DEFB +0xff
-  1889  02ee  ff                	DEFB +0xff
-  1890  02ef  ff                	DEFB +0xff
-  1891  02f0  ff                	DEFB +0xff
-  1892  02f1  ff                	DEFB +0xff
-  1893  02f2  ff                	DEFB +0xff
-  1894  02f3  ff                	DEFB +0xff
-  1895  02f4  ff                	DEFB +0xff
-  1896  02f5  ff                	DEFB +0xff
-  1897  02f6  ff                	DEFB +0xff
-  1898  02f7  ff                	DEFB +0xff
-  1899  02f8  ff                	DEFB +0xff
-  1900  02f9  ff                	DEFB +0xff
-  1901  02fa  ff                	DEFB +0xff
-  1902  02fb  ff                	DEFB +0xff
-  1903  02fc  ff                	DEFB +0xff
-  1904  02fd  ff                	DEFB +0xff
-  1905  02fe  ff                	DEFB +0xff
-  1906  02ff  ff                	DEFB +0xff
-  1907  0300  ff                	DEFB +0xff
-  1908  0301  ff                	DEFB +0xff
-  1909  0302  ff                	DEFB +0xff
-  1910  0303  ff                	DEFB +0xff
-  1911  0304  ff                	DEFB +0xff
-  1912  0305  ff                	DEFB +0xff
-  1913  0306  ff                	DEFB +0xff
-  1914  0307  ff                	DEFB +0xff
-  1915  0308  ff                	DEFB +0xff
-  1916  0309  ff                	DEFB +0xff
-  1917  030a  ff                	DEFB +0xff
-  1918  030b  ff                	DEFB +0xff
-  1919  030c  ff                	DEFB +0xff
-  1920  030d  ff                	DEFB +0xff
-  1921  030e  ff                	DEFB +0xff
-  1922  030f  ff                	DEFB +0xff
-  1923  0310  ff                	DEFB +0xff
-  1924  0311  ff                	DEFB +0xff
-  1925  0312  ff                	DEFB +0xff
-  1926  0313  ff                	DEFB +0xff
-  1927  0314  ff                	DEFB +0xff
-  1928  0315  ff                	DEFB +0xff
-  1929  0316  ff                	DEFB +0xff
-  1930  0317  ff                	DEFB +0xff
-  1931  0318  ff                	DEFB +0xff
-  1932  0319  ff                	DEFB +0xff
-  1933  031a  ff                	DEFB +0xff
-  1934  031b  ff                	DEFB +0xff
-  1935  031c  ff                	DEFB +0xff
-  1936  031d  ff                	DEFB +0xff
-  1937  031e  ff                	DEFB +0xff
-  1938  031f  ff                	DEFB +0xff
-  1939  0320  ff                	DEFB +0xff
-  1940  0321  ff                	DEFB +0xff
-  1941  0322  ff                	DEFB +0xff
-  1942  0323  ff                	DEFB +0xff
-  1943  0324  ff                	DEFB +0xff
-  1944  0325  ff                	DEFB +0xff
-  1945  0326  ff                	DEFB +0xff
-  1946  0327  ff                	DEFB +0xff
-  1947  0328  ff                	DEFB +0xff
-  1948  0329  ff                	DEFB +0xff
-  1949  032a  ff                	DEFB +0xff
-  1950  032b  ff                	DEFB +0xff
-  1951  032c  ff                	DEFB +0xff
-  1952  032d  ff                	DEFB +0xff
-  1953  032e  ff                	DEFB +0xff
-  1954  032f  ff                	DEFB +0xff
-  1955  0330  ff                	DEFB +0xff
-  1956  0331  ff                	DEFB +0xff
-  1957  0332  ff                	DEFB +0xff
-  1958  0333  ff                	DEFB +0xff
-  1959  0334  ff                	DEFB +0xff
-  1960  0335  ff                	DEFB +0xff
-  1961  0336  ff                	DEFB +0xff
-  1962  0337  ff                	DEFB +0xff
-  1963  0338  ff                	DEFB +0xff
-  1964  0339  ff                	DEFB +0xff
-  1965  033a  ff                	DEFB +0xff
-  1966  033b  ff                	DEFB +0xff
-  1967  033c  ff                	DEFB +0xff
-  1968  033d  ff                	DEFB +0xff
-  1969  033e  ff                	DEFB +0xff
-  1970  033f  ff                	DEFB +0xff
-  1971  0340  ff                	DEFB +0xff
-  1972  0341  ff                	DEFB +0xff
-  1973  0342  ff                	DEFB +0xff
-  1974  0343  ff                	DEFB +0xff
-  1975  0344  ff                	DEFB +0xff
-  1976  0345  ff                	DEFB +0xff
-  1977  0346  ff                	DEFB +0xff
-  1978  0347  ff                	DEFB +0xff
-  1979  0348  ff                	DEFB +0xff
-  1980  0349  ff                	DEFB +0xff
-  1981  034a  ff                	DEFB +0xff
-  1982  034b  ff                	DEFB +0xff
-  1983  034c  ff                	DEFB +0xff
-  1984  034d  ff                	DEFB +0xff
-  1985  034e  ff                	DEFB +0xff
-  1986  034f  ff                	DEFB +0xff
-  1987  0350  ff                	DEFB +0xff
-  1988  0351  ff                	DEFB +0xff
-  1989  0352  ff                	DEFB +0xff
-  1990  0353  ff                	DEFB +0xff
-  1991  0354  ff                	DEFB +0xff
-  1992  0355  ff                	DEFB +0xff
-  1993  0356  ff                	DEFB +0xff
-  1994  0357  ff                	DEFB +0xff
-  1995  0358  ff                	DEFB +0xff
-  1996  0359  ff                	DEFB +0xff
-  1997  035a  ff                	DEFB +0xff
-  1998  035b  ff                	DEFB +0xff
-  1999  035c  ff                	DEFB +0xff
-  2000  035d  ff                	DEFB +0xff
-  2001  035e  ff                	DEFB +0xff
-  2002  035f  ff                	DEFB +0xff
-  2003  0360  ff                	DEFB +0xff
-  2004  0361  ff                	DEFB +0xff
-  2005  0362  ff                	DEFB +0xff
-  2006  0363  ff                	DEFB +0xff
-  2007  0364  ff                	DEFB +0xff
-  2008  0365  ff                	DEFB +0xff
-  2009  0366  ff                	DEFB +0xff
-  2010  0367  ff                	DEFB +0xff
-  2011  0368  ff                	DEFB +0xff
-  2012  0369  ff                	DEFB +0xff
-  2013  036a  ff                	DEFB +0xff
-  2014  036b  ff                	DEFB +0xff
-  2015  036c  ff                	DEFB +0xff
-  2016  036d  ff                	DEFB +0xff
-  2017  036e  ff                	DEFB +0xff
-  2018  036f  ff                	DEFB +0xff
-  2019  0370  ff                	DEFB +0xff
-  2020  0371  ff                	DEFB +0xff
-  2021  0372  ff                	DEFB +0xff
-  2022  0373  ff                	DEFB +0xff
-  2023  0374  ff                	DEFB +0xff
-  2024  0375  ff                	DEFB +0xff
-  2025  0376  ff                	DEFB +0xff
-  2026  0377  ff                	DEFB +0xff
-  2027  0378  ff                	DEFB +0xff
-  2028  0379  ff                	DEFB +0xff
-  2029  037a  ff                	DEFB +0xff
-  2030  037b  ff                	DEFB +0xff
-  2031  037c  ff                	DEFB +0xff
-  2032  037d  ff                	DEFB +0xff
-  2033  037e  ff                	DEFB +0xff
-  2034  037f  ff                	DEFB +0xff
-  2035  0380  ff                	DEFB +0xff
-  2036  0381  ff                	DEFB +0xff
-  2037  0382  ff                	DEFB +0xff
-  2038  0383  ff                	DEFB +0xff
-  2039  0384  ff                	DEFB +0xff
-  2040  0385  ff                	DEFB +0xff
-  2041  0386  ff                	DEFB +0xff
-  2042  0387  ff                	DEFB +0xff
-  2043  0388  ff                	DEFB +0xff
-  2044  0389  ff                	DEFB +0xff
-  2045  038a  ff                	DEFB +0xff
-  2046  038b  ff                	DEFB +0xff
-  2047  038c  ff                	DEFB +0xff
-  2048  038d  ff                	DEFB +0xff
-  2049  038e  ff                	DEFB +0xff
-  2050  038f  ff                	DEFB +0xff
-  2051  0390  ff                	DEFB +0xff
-  2052  0391  ff                	DEFB +0xff
-  2053  0392  ff                	DEFB +0xff
-  2054  0393  ff                	DEFB +0xff
-  2055  0394  ff                	DEFB +0xff
-  2056  0395  ff                	DEFB +0xff
-  2057  0396  ff                	DEFB +0xff
-  2058  0397  ff                	DEFB +0xff
-  2059  0398  ff                	DEFB +0xff
-  2060  0399  ff                	DEFB +0xff
-  2061  039a  ff                	DEFB +0xff
-  2062  039b  ff                	DEFB +0xff
-  2063  039c  ff                	DEFB +0xff
-  2064  039d  ff                	DEFB +0xff
-  2065  039e  ff                	DEFB +0xff
-  2066  039f  ff                	DEFB +0xff
-  2067  03a0  ff                	DEFB +0xff
-  2068  03a1  ff                	DEFB +0xff
-  2069  03a2  ff                	DEFB +0xff
-  2070  03a3  ff                	DEFB +0xff
-  2071  03a4  ff                	DEFB +0xff
-  2072  03a5  ff                	DEFB +0xff
-  2073  03a6  ff                	DEFB +0xff
-  2074  03a7  ff                	DEFB +0xff
-  2075  03a8  ff                	DEFB +0xff
-  2076  03a9  ff                	DEFB +0xff
-  2077  03aa  ff                	DEFB +0xff
-  2078  03ab  ff                	DEFB +0xff
-  2079  03ac  ff                	DEFB +0xff
-  2080  03ad  ff                	DEFB +0xff
-  2081  03ae  ff                	DEFB +0xff
-  2082  03af  ff                	DEFB +0xff
-  2083  03b0  ff                	DEFB +0xff
-  2084  03b1  ff                	DEFB +0xff
-  2085  03b2  ff                	DEFB +0xff
-  2086  03b3  ff                	DEFB +0xff
-  2087  03b4  ff                	DEFB +0xff
-  2088  03b5  ff                	DEFB +0xff
-  2089  03b6  ff                	DEFB +0xff
-  2090  03b7  ff                	DEFB +0xff
-  2091  03b8  ff                	DEFB +0xff
-  2092  03b9  ff                	DEFB +0xff
-  2093  03ba  ff                	DEFB +0xff
-  2094  03bb  ff                	DEFB +0xff
-  2095  03bc  ff                	DEFB +0xff
-  2096  03bd  ff                	DEFB +0xff
-  2097  03be  ff                	DEFB +0xff
-  2098  03bf  ff                	DEFB +0xff
-  2099  03c0  ff                	DEFB +0xff
-  2100  03c1  ff                	DEFB +0xff
-  2101  03c2  ff                	DEFB +0xff
-  2102  03c3  ff                	DEFB +0xff
-  2103  03c4  ff                	DEFB +0xff
-  2104  03c5  ff                	DEFB +0xff
-  2105  03c6  ff                	DEFB +0xff
-  2106  03c7  ff                	DEFB +0xff
-  2107  03c8  ff                	DEFB +0xff
-  2108  03c9  ff                	DEFB +0xff
-  2109  03ca  ff                	DEFB +0xff
-  2110  03cb  ff                	DEFB +0xff
-  2111  03cc  ff                	DEFB +0xff
-  2112  03cd  ff                	DEFB +0xff
-  2113  03ce  ff                	DEFB +0xff
-  2114  03cf  ff                	DEFB +0xff
-  2115  03d0  ff                	DEFB +0xff
-  2116  03d1  ff                	DEFB +0xff
-  2117  03d2  ff                	DEFB +0xff
-  2118  03d3  ff                	DEFB +0xff
-  2119  03d4  ff                	DEFB +0xff
-  2120  03d5  ff                	DEFB +0xff
-  2121  03d6  ff                	DEFB +0xff
-  2122  03d7  ff                	DEFB +0xff
-  2123  03d8  ff                	DEFB +0xff
-  2124  03d9  ff                	DEFB +0xff
-  2125  03da  ff                	DEFB +0xff
-  2126  03db  ff                	DEFB +0xff
-  2127  03dc  ff                	DEFB +0xff
-  2128  03dd  ff                	DEFB +0xff
-  2129  03de  ff                	DEFB +0xff
-  2130  03df  ff                	DEFB +0xff
-  2131  03e0  ff                	DEFB +0xff
-  2132  03e1  ff                	DEFB +0xff
-  2133  03e2  ff                	DEFB +0xff
-  2134  03e3  ff                	DEFB +0xff
-  2135  03e4  ff                	DEFB +0xff
-  2136  03e5  ff                	DEFB +0xff
-  2137  03e6  ff                	DEFB +0xff
-  2138  03e7  ff                	DEFB +0xff
-  2139  03e8  ff                	DEFB +0xff
-  2140  03e9  ff                	DEFB +0xff
-  2141  03ea  ff                	DEFB +0xff
-  2142  03eb  ff                	DEFB +0xff
-  2143  03ec  ff                	DEFB +0xff
-  2144  03ed  ff                	DEFB +0xff
-  2145  03ee  ff                	DEFB +0xff
-  2146  03ef  ff                	DEFB +0xff
-  2147  03f0  b6                	DEFB +0xb6
-  2148  03f1  ff                	DEFB +0xff
-  2149  03f2  ff                	DEFB +0xff
-  2150  03f3  ff                	DEFB +0xff
-  2151  03f4  ff                	DEFB +0xff
-  2152  03f5  ff                	DEFB +0xff
-  2153  03f6  ff                	DEFB +0xff
-  2154  03f7  ff                	DEFB +0xff
-  2155  03f8  ff                	DEFB +0xff
-  2156  03f9  ff                	DEFB +0xff
-  2157  03fa  b6                	DEFB +0xb6
-  2158  03fb  ff                	DEFB +0xff
-  2159  03fc  ff                	DEFB +0xff
-  2160  03fd  ff                	DEFB +0xff
-  2161  03fe  ff                	DEFB +0xff
-  2162  03ff  ff                	DEFB +0xff
-  2163  0400  b6                	DEFB +0xb6
-  2164  0401  ff                	DEFB +0xff
-  2165  0402  ff                	DEFB +0xff
-  2166  0403  ff                	DEFB +0xff
-  2167  0404  ff                	DEFB +0xff
-  2168  0405  ff                	DEFB +0xff
-  2169  0406  ff                	DEFB +0xff
-  2170  0407  ff                	DEFB +0xff
-  2171  0408  ff                	DEFB +0xff
-  2172  0409  b6                	DEFB +0xb6
-  2173  040a  ff                	DEFB +0xff
-  2174  040b  ff                	DEFB +0xff
-  2175  040c  ff                	DEFB +0xff
-  2176  040d  ff                	DEFB +0xff
-  2177  040e  ff                	DEFB +0xff
-  2178  040f  ff                	DEFB +0xff
-  2179  0410  e3                	DEFB +0xe3
-  2180  0411  b6                	DEFB +0xb6
-  2181  0412  b6                	DEFB +0xb6
-  2182  0413  ff                	DEFB +0xff
-  2183  0414  ff                	DEFB +0xff
-  2184  0415  ff                	DEFB +0xff
-  2185  0416  ff                	DEFB +0xff
-  2186  0417  b6                	DEFB +0xb6
-  2187  0418  b6                	DEFB +0xb6
-  2188  0419  e3                	DEFB +0xe3
-  2189  041a  b6                	DEFB +0xb6
-  2190  041b  ff                	DEFB +0xff
-  2191  041c  ff                	DEFB +0xff
-  2192  041d  ff                	DEFB +0xff
-  2193  041e  ff                	DEFB +0xff
-  2194  041f  b6                	DEFB +0xb6
-  2195  0420  e3                	DEFB +0xe3
-  2196  0421  e3                	DEFB +0xe3
-  2197  0422  e3                	DEFB +0xe3
-  2198  0423  b6                	DEFB +0xb6
-  2199  0424  b6                	DEFB +0xb6
-  2200  0425  b6                	DEFB +0xb6
-  2201  0426  b6                	DEFB +0xb6
-  2202  0427  e3                	DEFB +0xe3
-  2203  0428  e3                	DEFB +0xe3
-  2204  0429  e3                	DEFB +0xe3
-  2205  042a  e3                	DEFB +0xe3
-  2206  042b  b6                	DEFB +0xb6
-  2207  042c  b6                	DEFB +0xb6
-  2208  042d  b6                	DEFB +0xb6
-  2209  042e  b6                	DEFB +0xb6
-  2210  042f  e3                	DEFB +0xe3
-  2211                          	SECTION rodata_compiler
-  2212                          ___str_1:
-  2213  0430  446574656374696e  	DEFM "Detecting ESP baud rate"
+  1067                          _test_number:
+  1068                          	DEFS 1
+  1069                          _shadow_screen:
+  1070                          	DEFS 5
+  1071                          _off_screen:
+  1072                          	DEFS 5
+  1073                          
+  1074                          ENDIF
+  1075                          
+  1076                          ;--------------------------------------------------------
+  1077                          ; absolute external ram data
+  1078                          ;--------------------------------------------------------
+  1079                          	SECTION IGNORE
+  1080                          ;--------------------------------------------------------
+  1081                          ; global & static initialisations
+  1082                          ;--------------------------------------------------------
+  1083                          	SECTION code_crt_init
+  1084                          ;--------------------------------------------------------
+  1085                          ; Home
+  1086                          ;--------------------------------------------------------
+  1087                          	SECTION IGNORE
+  1088                          ;--------------------------------------------------------
+  1089                          ; code
+  1090                          ;--------------------------------------------------------
+  1091                          	SECTION code_compiler
+  1092                          ;	---------------------------------
+  1093                          ; Function main_esp_detect_bps
+  1094                          ; ---------------------------------
+  1095                          _main_esp_detect_bps:
+  1096  0000  210000            	ld	hl,___str_1
+  1097  0003  e5                	push	hl
+  1098  0004  cd0000            	call	_puts
+  1099  0007  f1                	pop	af
+  1100  0008  cd0000            	call	_esp_detect_bps
+  1101  000b  7d                	ld	a, l
+  1102  000c  b7                	or	a, a
+  1103  000d  2016              	jr	NZ,l_main_esp_detect_bps_00102
+  1104  000f  210000            	ld	hl,_esp_bps
+  1105  0012  3600              	ld	(hl),0x00
+  1106  0014  23                	inc	hl
+  1107  0015  36c2              	ld	(hl),0xc2
+  1108  0017  23                	inc	hl
+  1109  0018  3601              	ld	(hl),0x01
+  1110  001a  af                	xor	a, a
+  1111  001b  23                	inc	hl
+  1112  001c  77                	ld	(hl), a
+  1113  001d  211800            	ld	hl,___str_2
+  1114  0020  e5                	push	hl
+  1115  0021  cd0000            	call	_printf
+  1116  0024  f1                	pop	af
+  1117                          l_main_esp_detect_bps_00102:
+  1118  0025  2a0200            	ld	hl, (_esp_bps + 2)
+  1119  0028  e5                	push	hl
+  1120  0029  2a0000            	ld	hl, (_esp_bps)
+  1121  002c  e5                	push	hl
+  1122  002d  213500            	ld	hl,___str_3
+  1123  0030  e5                	push	hl
+  1124  0031  cd0000            	call	_printf
+  1125  0034  f1                	pop	af
+  1126  0035  f1                	pop	af
+  1127  0036  f1                	pop	af
+  1128  0037  2a0200            	ld	hl, (_esp_bps + 2)
+  1129  003a  e5                	push	hl
+  1130  003b  2a0000            	ld	hl, (_esp_bps)
+  1131  003e  e5                	push	hl
+  1132  003f  cd0000            	call	_uart_compute_prescaler
+  1133  0042  f1                	pop	af
+  1134  0043  f1                	pop	af
+  1135  0044  d5                	push	de
+  1136  0045  e5                	push	hl
+  1137  0046  cd0000            	call	_uart_set_prescaler
+  1138  0049  f1                	pop	af
+  1139  004a  f1                	pop	af
+  1140  004b  c9                	ret
+  1141                          	SECTION rodata_compiler
+  1142                          ___str_1:
+  1143  0000  446574656374696e  	DEFM "Detecting ESP baud rate"
               6720455350206261  
               75642072617465    
-  2214  0447  00                	DEFB 0x00
-  2215                          	SECTION rodata_compiler
-  2216                          ___str_2:
-  2217  0448  0a                	DEFB 0x0a
-  2218  0449  20204661696c6564  	DEFM "  Failed, selecting default"
+  1144  0017  00                	DEFB 0x00
+  1145                          	SECTION rodata_compiler
+  1146                          ___str_2:
+  1147  0018  0a                	DEFB 0x0a
+  1148  0019  20204661696c6564  	DEFM "  Failed, selecting default"
               2c2073656c656374  
               696e672064656661  
               756c74            
-  2219  0464  00                	DEFB 0x00
-  2220                          	SECTION rodata_compiler
-  2221                          ___str_3:
-  2222  0465  0a                	DEFB 0x0a
-  2223  0466  202053657474696e  	DEFM "  Setting uart to %lu"
+  1149  0034  00                	DEFB 0x00
+  1150                          	SECTION rodata_compiler
+  1151                          ___str_3:
+  1152  0035  0a                	DEFB 0x0a
+  1153  0036  202053657474696e  	DEFM "  Setting uart to %lu"
               6720756172742074  
               6f20256c75        
-  2224  047b  0a                	DEFB 0x0a
-  2225  047c  00                	DEFB 0x00
-  2226                          	SECTION code_compiler
-  2227                          ;	---------------------------------
-  2228                          ; Function init_hardware
-  2229                          ; ---------------------------------
-  2230                          _init_hardware:
-  2231  004c  ed910703          	nextreg	7,0x03
-  2232  0050  2e08              	ld	l,0x08
-  2233  0052  013b24            	ld	bc,0x243b
-  2234  0055  ed69              	out	(c),l
-  2235  0057  04                	inc	b
-  2236  0058  ed68              	in	l,(c)
-  2237  005a  cbf5              	set	6, l
-  2238  005c  7d                	ld	a,l
-  2239  005d  ed9208            	nextreg	8,a
-  2240  0060  3e08              	ld	a,0x08
-  2241  0062  f5                	push	af
-  2242  0063  33                	inc	sp
-  2243  0064  cd0000            	call	_layer2_set_main_screen_ram_bank
-  2244  0067  33                	inc	sp
-  2245  0068  3e0b              	ld	a,0x0b
-  2246  006a  f5                	push	af
-  2247  006b  33                	inc	sp
-  2248  006c  cd0000            	call	_layer2_set_shadow_screen_ram_bank
-  2249  006f  33                	inc	sp
-  2250  0070  c9                	ret
-  2251                          ;	---------------------------------
-  2252                          ; Function init_isr
-  2253                          ; ---------------------------------
-  2254                          _init_isr:
-  2255  0071  f3                	di
-  2256  0072  210060            	ld	hl,0x6000
-  2257  0075  cd0000            	call	_im2_init_fastcall
-  2258  0078  210060            	ld	hl,0x6000
-  2259  007b  3661              	ld	(hl),0x61
-  2260  007d  5d                	ld	e, l
-  2261  007e  54                	ld	d, h
-  2262  007f  13                	inc	de
-  2263  0080  010001            	ld	bc,0x0100
-  2264  0083  edb0              	ldir
-  2265  0085  216161            	ld	hl,0x6161
-  2266  0088  36fb              	ld	(hl),0xfb
-  2267  008a  2e62              	ld	l,0x62
-  2268  008c  36ed              	ld	(hl),0xed
-  2269  008e  2e63              	ld	l,0x63
-  2270  0090  364d              	ld	(hl),0x4d
-  2271  0092  fb                	ei
-  2272  0093  c9                	ret
-  2273                          ;	---------------------------------
-  2274                          ; Function create_start_screen
-  2275                          ; ---------------------------------
-  2276                          _create_start_screen:
-  2277  0094  2e06              	ld	l,0x06
-  2278  0096  cd0000            	call	_zx_border_fastcall
-  2279  0099  2e78              	ld	l,0x78
-  2280  009b  cd0000            	call	_zx_cls_fastcall
-  2281  009e  ed910703          	nextreg	0x07,0x03
-  2282  00a2  3e00              	ld	a,0x00
-  2283  00a4  013b15            	ld	bc,_IO_153B
-  2284  00a7  ed79              	out	(c),a
-  2285  00a9  217d04            	ld	hl,___str_5
-  2286  00ac  e5                	push	hl
-  2287  00ad  cd0000            	call	_puts
-  2288  00b0  f1                	pop	af
-  2289  00b1  210000            	ld	hl,_esp_response_time_ms
-  2290  00b4  3647              	ld	(hl),0x47
-  2291  00b6  af                	xor	a, a
-  2292  00b7  23                	inc	hl
-  2293  00b8  77                	ld	(hl), a
-  2294  00b9  21ff00            	ld	hl,0x00ff
-  2295  00bc  e5                	push	hl
-  2296  00bd  210000            	ld	hl,_buffer
-  2297  00c0  e5                	push	hl
-  2298  00c1  cd0000            	call	_uart_rx_readline_last
-  2299  00c4  f1                	pop	af
-  2300  00c5  f1                	pop	af
-  2301  00c6  210000            	ld	hl,_esp_response_time_ms
-  2302  00c9  3647              	ld	(hl),0x47
-  2303  00cb  af                	xor	a, a
-  2304  00cc  23                	inc	hl
-  2305  00cd  77                	ld	(hl), a
-  2306  00ce  218804            	ld	hl,___str_7
-  2307  00d1  e5                	push	hl
-  2308  00d2  cd0000            	call	_puts
-  2309  00d5  21ff00            	ld	hl,0x00ff
-  2310  00d8  e3                	ex	(sp),hl
-  2311  00d9  210000            	ld	hl,_buffer
-  2312  00dc  e5                	push	hl
-  2313  00dd  cd0000            	call	_uart_rx_readline_last
-  2314  00e0  f1                	pop	af
-  2315  00e1  f1                	pop	af
-  2316  00e2  210000            	ld	hl,_STRING_ESP_TX_AT_GMR
-  2317  00e5  cd0000            	call	_uart_tx
-  2318  00e8  210000            	ld	hl,_buffer
-  2319  00eb  3600              	ld	(hl),0x00
-  2320                          l_create_start_screen_00101:
-  2321  00ed  210000            	ld	hl,_buffer
-  2322  00f0  cd0000            	call	_puts_fastcall
-  2323  00f3  210000            	ld	hl,_buffer
-  2324  00f6  3600              	ld	(hl),0x00
-  2325  00f8  21ff00            	ld	hl,0x00ff
-  2326  00fb  e5                	push	hl
-  2327  00fc  210000            	ld	hl,_buffer
-  2328  00ff  e5                	push	hl
-  2329  0100  cd0000            	call	_uart_rx_readline
-  2330  0103  f1                	pop	af
-  2331  0104  f1                	pop	af
-  2332  0105  3a0000            	ld	a, (_buffer + 0)
-  2333  0108  b7                	or	a, a
-  2334  0109  20e2              	jr	NZ,l_create_start_screen_00101
-  2335  010b  219e04            	ld	hl,___str_9
-  2336  010e  e5                	push	hl
-  2337  010f  cd0000            	call	_puts
-  2338  0112  f1                	pop	af
-  2339  0113  c9                	ret
-  2340                          	SECTION rodata_compiler
-  2341                          ___str_5:
-  2342  047d  5561727420696e69  	DEFM "Uart init"
+  1154  004b  0a                	DEFB 0x0a
+  1155  004c  00                	DEFB 0x00
+  1156                          	SECTION code_compiler
+  1157                          ;	---------------------------------
+  1158                          ; Function init_hardware
+  1159                          ; ---------------------------------
+  1160                          _init_hardware:
+  1161  004c  ed910703          	nextreg	7,0x03
+  1162  0050  2e08              	ld	l,0x08
+  1163  0052  013b24            	ld	bc,0x243b
+  1164  0055  ed69              	out	(c),l
+  1165  0057  04                	inc	b
+  1166  0058  ed68              	in	l,(c)
+  1167  005a  cbf5              	set	6, l
+  1168  005c  7d                	ld	a,l
+  1169  005d  ed9208            	nextreg	8,a
+  1170  0060  3e08              	ld	a,0x08
+  1171  0062  f5                	push	af
+  1172  0063  33                	inc	sp
+  1173  0064  cd0000            	call	_layer2_set_main_screen_ram_bank
+  1174  0067  33                	inc	sp
+  1175  0068  3e0b              	ld	a,0x0b
+  1176  006a  f5                	push	af
+  1177  006b  33                	inc	sp
+  1178  006c  cd0000            	call	_layer2_set_shadow_screen_ram_bank
+  1179  006f  33                	inc	sp
+  1180  0070  c9                	ret
+  1181                          ;	---------------------------------
+  1182                          ; Function init_isr
+  1183                          ; ---------------------------------
+  1184                          _init_isr:
+  1185  0071  f3                	di
+  1186  0072  210060            	ld	hl,0x6000
+  1187  0075  cd0000            	call	_im2_init_fastcall
+  1188  0078  210060            	ld	hl,0x6000
+  1189  007b  3661              	ld	(hl),0x61
+  1190  007d  5d                	ld	e, l
+  1191  007e  54                	ld	d, h
+  1192  007f  13                	inc	de
+  1193  0080  010001            	ld	bc,0x0100
+  1194  0083  edb0              	ldir
+  1195  0085  216161            	ld	hl,0x6161
+  1196  0088  36fb              	ld	(hl),0xfb
+  1197  008a  2e62              	ld	l,0x62
+  1198  008c  36ed              	ld	(hl),0xed
+  1199  008e  2e63              	ld	l,0x63
+  1200  0090  364d              	ld	(hl),0x4d
+  1201  0092  fb                	ei
+  1202  0093  c9                	ret
+  1203                          ;	---------------------------------
+  1204                          ; Function create_start_screen
+  1205                          ; ---------------------------------
+  1206                          _create_start_screen:
+  1207  0094  2e06              	ld	l,0x06
+  1208  0096  cd0000            	call	_zx_border_fastcall
+  1209  0099  2e78              	ld	l,0x78
+  1210  009b  cd0000            	call	_zx_cls_fastcall
+  1211  009e  ed910703          	nextreg	0x07,0x03
+  1212  00a2  3e00              	ld	a,0x00
+  1213  00a4  013b15            	ld	bc,_IO_153B
+  1214  00a7  ed79              	out	(c),a
+  1215  00a9  214d00            	ld	hl,___str_5
+  1216  00ac  e5                	push	hl
+  1217  00ad  cd0000            	call	_puts
+  1218  00b0  f1                	pop	af
+  1219  00b1  210000            	ld	hl,_esp_response_time_ms
+  1220  00b4  3647              	ld	(hl),0x47
+  1221  00b6  af                	xor	a, a
+  1222  00b7  23                	inc	hl
+  1223  00b8  77                	ld	(hl), a
+  1224  00b9  21ff00            	ld	hl,0x00ff
+  1225  00bc  e5                	push	hl
+  1226  00bd  210000            	ld	hl,_buffer
+  1227  00c0  e5                	push	hl
+  1228  00c1  cd0000            	call	_uart_rx_readline_last
+  1229  00c4  f1                	pop	af
+  1230  00c5  f1                	pop	af
+  1231  00c6  210000            	ld	hl,_esp_response_time_ms
+  1232  00c9  3647              	ld	(hl),0x47
+  1233  00cb  af                	xor	a, a
+  1234  00cc  23                	inc	hl
+  1235  00cd  77                	ld	(hl), a
+  1236  00ce  215800            	ld	hl,___str_7
+  1237  00d1  e5                	push	hl
+  1238  00d2  cd0000            	call	_puts
+  1239  00d5  21ff00            	ld	hl,0x00ff
+  1240  00d8  e3                	ex	(sp),hl
+  1241  00d9  210000            	ld	hl,_buffer
+  1242  00dc  e5                	push	hl
+  1243  00dd  cd0000            	call	_uart_rx_readline_last
+  1244  00e0  f1                	pop	af
+  1245  00e1  f1                	pop	af
+  1246  00e2  210000            	ld	hl,_STRING_ESP_TX_AT_GMR
+  1247  00e5  cd0000            	call	_uart_tx
+  1248  00e8  210000            	ld	hl,_buffer
+  1249  00eb  3600              	ld	(hl),0x00
+  1250                          l_create_start_screen_00101:
+  1251  00ed  210000            	ld	hl,_buffer
+  1252  00f0  cd0000            	call	_puts_fastcall
+  1253  00f3  210000            	ld	hl,_buffer
+  1254  00f6  3600              	ld	(hl),0x00
+  1255  00f8  21ff00            	ld	hl,0x00ff
+  1256  00fb  e5                	push	hl
+  1257  00fc  210000            	ld	hl,_buffer
+  1258  00ff  e5                	push	hl
+  1259  0100  cd0000            	call	_uart_rx_readline
+  1260  0103  f1                	pop	af
+  1261  0104  f1                	pop	af
+  1262  0105  3a0000            	ld	a, (_buffer + 0)
+  1263  0108  b7                	or	a, a
+  1264  0109  20e2              	jr	NZ,l_create_start_screen_00101
+  1265  010b  216e00            	ld	hl,___str_9
+  1266  010e  e5                	push	hl
+  1267  010f  cd0000            	call	_puts
+  1268  0112  f1                	pop	af
+  1269  0113  c9                	ret
+  1270                          	SECTION rodata_compiler
+  1271                          ___str_5:
+  1272  004d  5561727420696e69  	DEFM "Uart init"
               74                
-  2343  0486  0d                	DEFB 0x0d
-  2344  0487  00                	DEFB 0x00
-  2345                          	SECTION rodata_compiler
-  2346                          ___str_7:
-  2347  0488  4553502041542b47  	DEFM "ESP AT+GMR follows..."
+  1273  0056  0d                	DEFB 0x0d
+  1274  0057  00                	DEFB 0x00
+  1275                          	SECTION rodata_compiler
+  1276                          ___str_7:
+  1277  0058  4553502041542b47  	DEFM "ESP AT+GMR follows..."
               4d5220666f6c6c6f  
               77732e2e2e        
-  2348  049d  00                	DEFB 0x00
-  2349                          	SECTION rodata_compiler
-  2350                          ___str_9:
-  2351  049e  507265737320616e  	DEFM "Press any key to start"
+  1278  006d  00                	DEFB 0x00
+  1279                          	SECTION rodata_compiler
+  1280                          ___str_9:
+  1281  006e  507265737320616e  	DEFM "Press any key to start"
               79206b657920746f  
               207374617274      
-  2352  04b4  00                	DEFB 0x00
-  2353                          	SECTION code_compiler
-  2354                          ;	---------------------------------
-  2355                          ; Function create_sprites
-  2356                          ; ---------------------------------
-  2357                          _create_sprites:
-  2358  0114  dde5              	push	ix
-  2359  0116  dd210000          	ld	ix,0
-  2360  011a  dd39              	add	ix,sp
-  2361  011c  21f6ff            	ld	hl, -10
-  2362  011f  39                	add	hl, sp
-  2363  0120  f9                	ld	sp, hl
-  2364  0121  af                	xor	a, a
-  2365  0122  f5                	push	af
-  2366  0123  33                	inc	sp
-  2367  0124  cd0000            	call	_set_sprite_slot
-  2368  0127  33                	inc	sp
-  2369  0128  210000            	ld	hl,_packet
-  2370  012b  e5                	push	hl
-  2371  012c  cd0000            	call	_set_sprite_pattern
-  2372  012f  f1                	pop	af
-  2373  0130  af                	xor	a, a
-  2374  0131  f5                	push	af
-  2375  0132  33                	inc	sp
-  2376  0133  cd0000            	call	_set_sprite_slot
-  2377  0136  33                	inc	sp
-  2378  0137  210c00            	ld	hl,_testSprite + 1
-  2379  013a  56                	ld	d, (hl)
-  2380  013b  210b00            	ld	hl,_testSprite + 0
-  2381  013e  46                	ld	b, (hl)
-  2382  013f  3e01              	ld	a,0x01
-  2383  0141  f5                	push	af
-  2384  0142  33                	inc	sp
-  2385  0143  af                	xor	a, a
-  2386  0144  f5                	push	af
-  2387  0145  33                	inc	sp
-  2388  0146  af                	xor	a, a
-  2389  0147  f5                	push	af
-  2390  0148  33                	inc	sp
-  2391  0149  d5                	push	de
-  2392  014a  33                	inc	sp
-  2393  014b  c5                	push	bc
-  2394  014c  33                	inc	sp
-  2395  014d  af                	xor	a, a
-  2396  014e  f5                	push	af
-  2397  014f  33                	inc	sp
-  2398  0150  cd0000            	call	_set_sprite_attributes_ext
-  2399  0153  f1                	pop	af
-  2400  0154  f1                	pop	af
-  2401  0155  2664              	ld	h,0x64
-  2402  0157  e3                	ex	(sp),hl
-  2403  0158  33                	inc	sp
-  2404  0159  cd0000            	call	_set_sprite_slot
-  2405  015c  33                	inc	sp
-  2406  015d  219001            	ld	hl,_cloudSpr
-  2407  0160  e5                	push	hl
-  2408  0161  cd0000            	call	_set_sprite_pattern
-  2409  0164  2664              	ld	h,0x64
-  2410  0166  e3                	ex	(sp),hl
-  2411  0167  33                	inc	sp
-  2412  0168  cd0000            	call	_set_sprite_slot
-  2413  016b  33                	inc	sp
-  2414  016c  3e01              	ld	a,0x01
-  2415  016e  f5                	push	af
-  2416  016f  33                	inc	sp
-  2417  0170  af                	xor	a, a
-  2418  0171  f5                	push	af
-  2419  0172  33                	inc	sp
-  2420  0173  af                	xor	a, a
-  2421  0174  57                	ld	d,a
-  2422  0175  1e28              	ld	e,0x28
-  2423  0177  d5                	push	de
-  2424  0178  11641e            	ld	de,0x1e64
-  2425  017b  d5                	push	de
-  2426  017c  cd0000            	call	_set_sprite_attributes_ext
-  2427  017f  f1                	pop	af
-  2428  0180  f1                	pop	af
-  2429  0181  2665              	ld	h,0x65
-  2430  0183  e3                	ex	(sp),hl
-  2431  0184  33                	inc	sp
-  2432  0185  cd0000            	call	_set_sprite_slot
-  2433  0188  33                	inc	sp
-  2434  0189  219001            	ld	hl,_cloudSpr
-  2435  018c  e5                	push	hl
-  2436  018d  cd0000            	call	_set_sprite_pattern
-  2437  0190  2665              	ld	h,0x65
-  2438  0192  e3                	ex	(sp),hl
-  2439  0193  33                	inc	sp
-  2440  0194  cd0000            	call	_set_sprite_slot
-  2441  0197  33                	inc	sp
-  2442  0198  3e01              	ld	a,0x01
-  2443  019a  f5                	push	af
-  2444  019b  33                	inc	sp
-  2445  019c  af                	xor	a, a
-  2446  019d  f5                	push	af
-  2447  019e  33                	inc	sp
-  2448  019f  af                	xor	a, a
-  2449  01a0  57                	ld	d,a
-  2450  01a1  1e28              	ld	e,0x28
-  2451  01a3  d5                	push	de
-  2452  01a4  1165d8            	ld	de,0xd865
-  2453  01a7  d5                	push	de
-  2454  01a8  cd0000            	call	_set_sprite_attributes_ext
-  2455  01ab  f1                	pop	af
-  2456  01ac  f1                	pop	af
-  2457  01ad  f1                	pop	af
-  2458  01ae  dd36f71e          	ld	(ix-9),0x1e
-  2459  01b2  dd36f858          	ld	(ix-8),0x58
-  2460  01b6  dd36f900          	ld	(ix-7),0x00
-  2461  01ba  dd36fa03          	ld	(ix-6),0x03
-  2462  01be  dd36fb00          	ld	(ix-5),0x00
-  2463  01c2  dd36fc00          	ld	(ix-4),0x00
-  2464  01c6  dd36fd01          	ld	(ix-3),0x01
-  2465  01ca  010000            	ld	bc,0x0000
-  2466                          l_create_sprites_00103:
-  2467  01cd  79                	ld	a, c
-  2468  01ce  d60a              	sub	a,0x0a
-  2469  01d0  78                	ld	a, b
-  2470  01d1  17                	rla
-  2471  01d2  3f                	ccf
-  2472  01d3  1f                	rra
-  2473  01d4  de80              	sbc	a,0x80
-  2474  01d6  d26102            	jp	NC, l_create_sprites_00105
-  2475  01d9  69                	ld	l, c
-  2476  01da  60                	ld	h, b
-  2477  01db  29                	add	hl, hl
-  2478  01dc  09                	add	hl, bc
-  2479  01dd  29                	add	hl, hl
-  2480  01de  09                	add	hl, bc
-  2481  01df  eb                	ex	de, hl
-  2482  01e0  210000            	ld	hl,_incomingPacketGobs
-  2483  01e3  19                	add	hl, de
-  2484  01e4  eb                	ex	de, hl
-  2485  01e5  6b                	ld	l, e
-  2486  01e6  62                	ld	h, d
-  2487  01e7  d5                	push	de
-  2488  01e8  c5                	push	bc
-  2489  01e9  eb                	ex	de,hl
-  2490  01ea  210500            	ld	hl,5
-  2491  01ed  39                	add	hl, sp
-  2492  01ee  010700            	ld	bc,0x0007
-  2493  01f1  edb0              	ldir
-  2494  01f3  c1                	pop	bc
-  2495  01f4  d1                	pop	de
-  2496  01f5  210100            	ld	hl,0x0001
-  2497  01f8  19                	add	hl, de
-  2498  01f9  dd75fe            	ld	(ix-2),l
-  2499  01fc  dd74ff            	ld	(ix-1),h
-  2500  01ff  79                	ld	a, c
-  2501  0200  ed23              	swap	a
-  2502  0202  07                	rlca
-  2503  0203  e6e0              	and	a,0xe0
-  2504  0205  dd6efe            	ld	l,(ix-2)
-  2505  0208  dd66ff            	ld	h,(ix-1)
-  2506  020b  77                	ld	(hl), a
-  2507  020c  210400            	ld	hl,0x0004
-  2508  020f  19                	add	hl, de
-  2509  0210  dd71f6            	ld	(ix-10),c
-  2510  0213  71                	ld	(hl), c
-  2511  0214  c5                	push	bc
-  2512  0215  d5                	push	de
-  2513  0216  dd7ef6            	ld	a,(ix-10)
-  2514  0219  f5                	push	af
-  2515  021a  33                	inc	sp
-  2516  021b  cd0000            	call	_set_sprite_slot
-  2517  021e  33                	inc	sp
-  2518  021f  210000            	ld	hl,_packet
-  2519  0222  e5                	push	hl
-  2520  0223  cd0000            	call	_set_sprite_pattern
-  2521  0226  f1                	pop	af
-  2522  0227  dd7ef6            	ld	a,(ix-10)
-  2523  022a  f5                	push	af
-  2524  022b  33                	inc	sp
-  2525  022c  cd0000            	call	_set_sprite_slot
-  2526  022f  33                	inc	sp
-  2527  0230  d1                	pop	de
-  2528  0231  c1                	pop	bc
-  2529  0232  dd6efe            	ld	l,(ix-2)
-  2530  0235  dd66ff            	ld	h,(ix-1)
-  2531  0238  7e                	ld	a, (hl)
-  2532  0239  dd77ff            	ld	(ix-1),a
-  2533  023c  1a                	ld	a, (de)
-  2534  023d  210500            	ld	hl,5
-  2535  0240  19                	add	hl, de
-  2536  0241  5e                	ld	e, (hl)
-  2537  0242  c5                	push	bc
-  2538  0243  2601              	ld	h,0x01
-  2539  0245  e5                	push	hl
-  2540  0246  33                	inc	sp
-  2541  0247  2600              	ld	h,0x00
-  2542  0249  e5                	push	hl
-  2543  024a  33                	inc	sp
-  2544  024b  2600              	ld	h,0x00
-  2545  024d  e5                	push	hl
-  2546  024e  33                	inc	sp
-  2547  024f  dd66ff            	ld	h,(ix-1)
-  2548  0252  e5                	push	hl
-  2549  0253  33                	inc	sp
-  2550  0254  57                	ld	d,a
-  2551  0255  d5                	push	de
-  2552  0256  cd0000            	call	_set_sprite_attributes_ext
-  2553  0259  f1                	pop	af
-  2554  025a  f1                	pop	af
-  2555  025b  f1                	pop	af
-  2556  025c  c1                	pop	bc
-  2557  025d  03                	inc	bc
-  2558  025e  c3cd01            	jp	l_create_sprites_00103
-  2559                          l_create_sprites_00105:
-  2560  0261  ddf9              	ld	sp, ix
-  2561  0263  dde1              	pop	ix
-  2562  0265  c9                	ret
-  2563                          ;	---------------------------------
-  2564                          ; Function UpdateGameObjects
-  2565                          ; ---------------------------------
-  2566                          _UpdateGameObjects:
-  2567  0266  dde5              	push	ix
-  2568  0268  dd210000          	ld	ix,0
-  2569  026c  dd39              	add	ix,sp
-  2570  026e  f5                	push	af
-  2571  026f  010000            	ld	bc,0x0000
-  2572                          l_UpdateGameObjects_00106:
-  2573  0272  79                	ld	a, c
-  2574  0273  d60a              	sub	a,0x0a
-  2575  0275  78                	ld	a, b
-  2576  0276  17                	rla
-  2577  0277  3f                	ccf
-  2578  0278  1f                	rra
-  2579  0279  de80              	sbc	a,0x80
-  2580  027b  3040              	jr	NC,l_UpdateGameObjects_00108
-  2581  027d  69                	ld	l, c
-  2582  027e  60                	ld	h, b
-  2583  027f  29                	add	hl, hl
-  2584  0280  09                	add	hl, bc
-  2585  0281  29                	add	hl, hl
-  2586  0282  09                	add	hl, bc
-  2587  0283  eb                	ex	de, hl
-  2588  0284  210000            	ld	hl,_incomingPacketGobs
-  2589  0287  19                	add	hl, de
-  2590  0288  eb                	ex	de, hl
-  2591  0289  33                	inc	sp
-  2592  028a  33                	inc	sp
-  2593  028b  d5                	push	de
-  2594  028c  c5                	push	bc
-  2595  028d  d5                	push	de
-  2596  028e  dd6efe            	ld	l,(ix-2)
-  2597  0291  dd66ff            	ld	h,(ix-1)
-  2598  0294  e5                	push	hl
-  2599  0295  cd0000            	call	_GobUpdate
-  2600  0298  f1                	pop	af
-  2601  0299  d1                	pop	de
-  2602  029a  c1                	pop	bc
-  2603  029b  6b                	ld	l, e
-  2604  029c  62                	ld	h, d
-  2605  029d  23                	inc	hl
-  2606  029e  6e                	ld	l, (hl)
-  2607  029f  3e06              	ld	a,0x06
-  2608  02a1  ed32              	add	de, a
-  2609  02a3  7d                	ld	a, l
-  2610  02a4  d628              	sub	a,0x28
-  2611  02a6  3005              	jr	NC,l_UpdateGameObjects_00102
-  2612  02a8  3e01              	ld	a,0x01
-  2613  02aa  12                	ld	(de), a
-  2614  02ab  1802              	jr	l_UpdateGameObjects_00103
-  2615                          l_UpdateGameObjects_00102:
-  2616  02ad  af                	xor	a, a
-  2617  02ae  12                	ld	(de), a
-  2618                          l_UpdateGameObjects_00103:
-  2619  02af  c5                	push	bc
-  2620  02b0  d1                	pop	de
-  2621  02b1  e1                	pop	hl
-  2622  02b2  e5                	push	hl
-  2623  02b3  d5                	push	de
-  2624  02b4  e5                	push	hl
-  2625  02b5  cd0000            	call	_GobDraw
-  2626  02b8  f1                	pop	af
-  2627  02b9  c1                	pop	bc
-  2628  02ba  03                	inc	bc
-  2629  02bb  18b5              	jr	l_UpdateGameObjects_00106
-  2630                          l_UpdateGameObjects_00108:
-  2631  02bd  ddf9              	ld	sp, ix
-  2632  02bf  dde1              	pop	ix
-  2633  02c1  c9                	ret
-  2634                          ;	---------------------------------
-  2635                          ; Function DrawCloudEdge
-  2636                          ; ---------------------------------
-  2637                          _DrawCloudEdge:
-  2638  02c2  dde5              	push	ix
-  2639  02c4  dd210000          	ld	ix,0
-  2640  02c8  dd39              	add	ix,sp
-  2641  02ca  010000            	ld	bc,0x0000
-  2642  02cd  1e00              	ld	e,0x00
-  2643                          l_DrawCloudEdge_00102:
-  2644  02cf  79                	ld	a, c
-  2645  02d0  c5                	push	bc
-  2646  02d1  d5                	push	de
-  2647  02d2  dd6e04            	ld	l,(ix+4)
-  2648  02d5  dd6605            	ld	h,(ix+5)
-  2649  02d8  e5                	push	hl
-  2650  02d9  261a              	ld	h,0x1a
-  2651  02db  e5                	push	hl
-  2652  02dc  33                	inc	sp
-  2653  02dd  211000            	ld	hl,0x0010
-  2654  02e0  e5                	push	hl
-  2655  02e1  219002            	ld	hl,_cloud
-  2656  02e4  e5                	push	hl
-  2657  02e5  2628              	ld	h,0x28
-  2658  02e7  e5                	push	hl
-  2659  02e8  33                	inc	sp
-  2660  02e9  f5                	push	af
-  2661  02ea  33                	inc	sp
-  2662  02eb  cd0000            	call	_layer2_blit_transparent
-  2663  02ee  210900            	ld	hl,9
-  2664  02f1  39                	add	hl, sp
-  2665  02f2  f9                	ld	sp, hl
-  2666  02f3  d1                	pop	de
-  2667  02f4  c1                	pop	bc
-  2668  02f5  3e10              	ld	a,0x10
-  2669  02f7  ed33              	add	bc, a
-  2670  02f9  1c                	inc	e
-  2671  02fa  7b                	ld	a, e
-  2672  02fb  d610              	sub	a,0x10
-  2673  02fd  38d0              	jr	C,l_DrawCloudEdge_00102
-  2674  02ff  dde1              	pop	ix
-  2675  0301  c9                	ret
-  2676                          ;	---------------------------------
-  2677                          ; Function DrawGame
-  2678                          ; ---------------------------------
-  2679                          _DrawGame:
-  2680  0302  210600            	ld	hl,_off_screen
-  2681  0305  e5                	push	hl
-  2682  0306  1128ff            	ld	de,0xff28
-  2683  0309  d5                	push	de
-  2684  030a  210001            	ld	hl,0x0100
-  2685  030d  e5                	push	hl
-  2686  030e  af                	xor	a, a
-  2687  030f  f5                	push	af
-  2688  0310  33                	inc	sp
-  2689  0311  af                	xor	a, a
-  2690  0312  f5                	push	af
-  2691  0313  33                	inc	sp
-  2692  0314  cd0000            	call	_layer2_fill_rect
-  2693  0317  f1                	pop	af
-  2694  0318  f1                	pop	af
-  2695  0319  f1                	pop	af
-  2696  031a  210600            	ld	hl,_off_screen
-  2697  031d  e3                	ex	(sp),hl
-  2698  031e  af                	xor	a, a
-  2699  031f  57                	ld	d,a
-  2700  0320  1e9a              	ld	e,0x9a
-  2701  0322  d5                	push	de
-  2702  0323  210001            	ld	hl,0x0100
-  2703  0326  e5                	push	hl
-  2704  0327  3e28              	ld	a,0x28
-  2705  0329  f5                	push	af
-  2706  032a  33                	inc	sp
-  2707  032b  af                	xor	a, a
-  2708  032c  f5                	push	af
-  2709  032d  33                	inc	sp
-  2710  032e  cd0000            	call	_layer2_fill_rect
-  2711  0331  f1                	pop	af
-  2712  0332  f1                	pop	af
-  2713  0333  f1                	pop	af
-  2714  0334  210600            	ld	hl,_off_screen
-  2715  0337  e3                	ex	(sp),hl
-  2716  0338  cdc202            	call	_DrawCloudEdge
-  2717  033b  f1                	pop	af
-  2718  033c  c9                	ret
-  2719                          ;	---------------------------------
-  2720                          ; Function main
-  2721                          ; ---------------------------------
-  2722                          _main:
-  2723  033d  dde5              	push	ix
-  2724  033f  2180ff            	ld	hl, -128
-  2725  0342  39                	add	hl, sp
-  2726  0343  f9                	ld	sp, hl
-  2727  0344  cd4c00            	call	_init_hardware
-  2728  0347  cd7100            	call	_init_isr
-  2729  034a  cd1401            	call	_create_sprites
-  2730  034d  af                	xor	a, a
-  2731  034e  f5                	push	af
-  2732  034f  33                	inc	sp
-  2733  0350  af                	xor	a, a
-  2734  0351  f5                	push	af
-  2735  0352  33                	inc	sp
-  2736  0353  af                	xor	a, a
-  2737  0354  57                	ld	d,a
-  2738  0355  1e01              	ld	e,0x01
-  2739  0357  d5                	push	de
-  2740  0358  cd0000            	call	_set_sprite_layers_system
-  2741  035b  f1                	pop	af
-  2742  035c  f1                	pop	af
-  2743  035d  cd9400            	call	_create_start_screen
-  2744  0360  cd0203            	call	_DrawGame
-  2745  0363  cd0203            	call	_DrawGame
-  2746                          l_main_00109:
-  2747  0366  76                	halt
-  2748  0367  cd6602            	call	_UpdateGameObjects
-  2749  036a  210c00            	ld	hl, +(_testSprite + 1) + 0
-  2750  036d  4e                	ld	c, (hl)
-  2751  036e  0600              	ld	b,0x00
-  2752  0370  c5                	push	bc
-  2753  0371  21b504            	ld	hl,___str_10
-  2754  0374  e5                	push	hl
-  2755  0375  210400            	ld	hl,4
-  2756  0378  39                	add	hl, sp
-  2757  0379  e5                	push	hl
-  2758  037a  cd0000            	call	_sprintf
-  2759  037d  f1                	pop	af
-  2760  037e  f1                	pop	af
-  2761  037f  210600            	ld	hl,_off_screen
-  2762  0382  e3                	ex	(sp),hl
-  2763  0383  1108aa            	ld	de,0xaa08
-  2764  0386  d5                	push	de
-  2765  0387  213800            	ld	hl,0x0038
-  2766  038a  e5                	push	hl
-  2767  038b  116018            	ld	de,0x1860
-  2768  038e  d5                	push	de
-  2769  038f  cd0000            	call	_layer2_fill_rect
-  2770  0392  f1                	pop	af
-  2771  0393  f1                	pop	af
-  2772  0394  f1                	pop	af
-  2773  0395  210600            	ld	hl,_off_screen
-  2774  0398  e3                	ex	(sp),hl
-  2775  0399  3eef              	ld	a,0xef
-  2776  039b  f5                	push	af
-  2777  039c  33                	inc	sp
-  2778  039d  210300            	ld	hl,3
-  2779  03a0  39                	add	hl, sp
-  2780  03a1  e5                	push	hl
-  2781  03a2  11030c            	ld	de,0x0c03
-  2782  03a5  d5                	push	de
-  2783  03a6  cd0000            	call	_layer2_draw_text
-  2784  03a9  f1                	pop	af
-  2785  03aa  f1                	pop	af
-  2786  03ab  f1                	pop	af
-  2787  03ac  33                	inc	sp
-  2788  03ad  3e00              	ld	a, +((_off_screen) / 256)
-  2789  03af  f606              	or	a, +((_off_screen) & 0xFF)
-  2790  03b1  280b              	jr	Z,l_main_00105
-  2791  03b3  3a0600            	ld	a, (_off_screen + 0)
-  2792  03b6  3d                	dec	a
-  2793  03b7  2005              	jr	NZ,l_main_00105
-  2794  03b9  cd0000            	call	_layer2_flip_main_shadow_screen
-  2795  03bc  18a8              	jr	l_main_00109
-  2796                          l_main_00105:
-  2797  03be  3e00              	ld	a, +((_off_screen) / 256)
-  2798  03c0  f606              	or	a, +((_off_screen) & 0xFF)
-  2799  03c2  28a2              	jr	Z,l_main_00109
-  2800  03c4  3a0600            	ld	a, (_off_screen + 0)
-  2801  03c7  d602              	sub	a,0x02
-  2802  03c9  209b              	jr	NZ,l_main_00109
-  2803  03cb  210600            	ld	hl,_off_screen
-  2804  03ce  e5                	push	hl
-  2805  03cf  cd0000            	call	_layer2_copy_off_screen
-  2806  03d2  f1                	pop	af
-  2807  03d3  1891              	jr	l_main_00109
-  2808                          	SECTION rodata_compiler
-  2809                          ___str_10:
-  2810  04b5  793d2575          	DEFM "y=%u"
-  2811  04b9  00                	DEFB 0x00
-  2812                          	SECTION data_compiler
-  2813                          _test_number:
-  2814  0000  00                	DEFB +0x00
-  2815                          _shadow_screen:
-  2816  0001  01                	DEFB +0x01
-  2817  0002  00                	DEFB +0x00
-  2818  0003  00                	DEFB +0x00
-  2819  0004  00                	DEFB +0x00
-  2820  0005  00                	DEFB +0x00
-  2821                          _off_screen:
-  2822  0006  02                	DEFB +0x02
-  2823  0007  00                	DEFB +0x00
-  2824  0008  01                	DEFB +0x01
-  2825  0009  03                	DEFB +0x03
-  2826  000a  00                	DEFB +0x00
-  2827                          _testSprite:
-  2828  000b  1e                	DEFB +0x1e
-  2829  000c  58                	DEFB +0x58
-  2830  000d  00                	DEFB +0x00
-  2831  000e  03                	DEFB +0x03
-  2832  000f  00                	DEFB +0x00
-  2833  0010  01                	DEFB +0x01
-  2834  0011  00                	DEFB +0x00
-  2835                          	SECTION IGNORE
-  2836                          
+  1282  0084  00                	DEFB 0x00
+  1283                          	SECTION code_compiler
+  1284                          ;	---------------------------------
+  1285                          ; Function create_sprites
+  1286                          ; ---------------------------------
+  1287                          _create_sprites:
+  1288  0114  dde5              	push	ix
+  1289  0116  dd210000          	ld	ix,0
+  1290  011a  dd39              	add	ix,sp
+  1291  011c  21f6ff            	ld	hl, -10
+  1292  011f  39                	add	hl, sp
+  1293  0120  f9                	ld	sp, hl
+  1294  0121  3e64              	ld	a,0x64
+  1295  0123  f5                	push	af
+  1296  0124  33                	inc	sp
+  1297  0125  cd0000            	call	_set_sprite_slot
+  1298  0128  33                	inc	sp
+  1299  0129  210000            	ld	hl,_cloudSpr
+  1300  012c  e5                	push	hl
+  1301  012d  cd0000            	call	_set_sprite_pattern
+  1302  0130  2664              	ld	h,0x64
+  1303  0132  e3                	ex	(sp),hl
+  1304  0133  33                	inc	sp
+  1305  0134  cd0000            	call	_set_sprite_slot
+  1306  0137  33                	inc	sp
+  1307  0138  3e01              	ld	a,0x01
+  1308  013a  f5                	push	af
+  1309  013b  33                	inc	sp
+  1310  013c  af                	xor	a, a
+  1311  013d  f5                	push	af
+  1312  013e  33                	inc	sp
+  1313  013f  af                	xor	a, a
+  1314  0140  57                	ld	d,a
+  1315  0141  1e28              	ld	e,0x28
+  1316  0143  d5                	push	de
+  1317  0144  11641e            	ld	de,0x1e64
+  1318  0147  d5                	push	de
+  1319  0148  cd0000            	call	_set_sprite_attributes_ext
+  1320  014b  f1                	pop	af
+  1321  014c  f1                	pop	af
+  1322  014d  2665              	ld	h,0x65
+  1323  014f  e3                	ex	(sp),hl
+  1324  0150  33                	inc	sp
+  1325  0151  cd0000            	call	_set_sprite_slot
+  1326  0154  33                	inc	sp
+  1327  0155  210000            	ld	hl,_cloudSpr
+  1328  0158  e5                	push	hl
+  1329  0159  cd0000            	call	_set_sprite_pattern
+  1330  015c  2665              	ld	h,0x65
+  1331  015e  e3                	ex	(sp),hl
+  1332  015f  33                	inc	sp
+  1333  0160  cd0000            	call	_set_sprite_slot
+  1334  0163  33                	inc	sp
+  1335  0164  3e01              	ld	a,0x01
+  1336  0166  f5                	push	af
+  1337  0167  33                	inc	sp
+  1338  0168  af                	xor	a, a
+  1339  0169  f5                	push	af
+  1340  016a  33                	inc	sp
+  1341  016b  af                	xor	a, a
+  1342  016c  57                	ld	d,a
+  1343  016d  1e28              	ld	e,0x28
+  1344  016f  d5                	push	de
+  1345  0170  1165d8            	ld	de,0xd865
+  1346  0173  d5                	push	de
+  1347  0174  cd0000            	call	_set_sprite_attributes_ext
+  1348  0177  f1                	pop	af
+  1349  0178  f1                	pop	af
+  1350  0179  2666              	ld	h,0x66
+  1351  017b  e3                	ex	(sp),hl
+  1352  017c  33                	inc	sp
+  1353  017d  cd0000            	call	_set_sprite_slot
+  1354  0180  33                	inc	sp
+  1355  0181  210000            	ld	hl,_serverSpr0
+  1356  0184  e5                	push	hl
+  1357  0185  cd0000            	call	_set_sprite_pattern
+  1358  0188  2666              	ld	h,0x66
+  1359  018a  e3                	ex	(sp),hl
+  1360  018b  33                	inc	sp
+  1361  018c  cd0000            	call	_set_sprite_slot
+  1362  018f  33                	inc	sp
+  1363  0190  3e01              	ld	a,0x01
+  1364  0192  f5                	push	af
+  1365  0193  33                	inc	sp
+  1366  0194  af                	xor	a, a
+  1367  0195  f5                	push	af
+  1368  0196  33                	inc	sp
+  1369  0197  af                	xor	a, a
+  1370  0198  57                	ld	d,a
+  1371  0199  1e9a              	ld	e,0x9a
+  1372  019b  d5                	push	de
+  1373  019c  1166d0            	ld	de,0xd066
+  1374  019f  d5                	push	de
+  1375  01a0  cd0000            	call	_set_sprite_attributes_ext
+  1376  01a3  f1                	pop	af
+  1377  01a4  f1                	pop	af
+  1378  01a5  2667              	ld	h,0x67
+  1379  01a7  e3                	ex	(sp),hl
+  1380  01a8  33                	inc	sp
+  1381  01a9  cd0000            	call	_set_sprite_slot
+  1382  01ac  33                	inc	sp
+  1383  01ad  210000            	ld	hl,_serverSpr1
+  1384  01b0  e5                	push	hl
+  1385  01b1  cd0000            	call	_set_sprite_pattern
+  1386  01b4  2667              	ld	h,0x67
+  1387  01b6  e3                	ex	(sp),hl
+  1388  01b7  33                	inc	sp
+  1389  01b8  cd0000            	call	_set_sprite_slot
+  1390  01bb  33                	inc	sp
+  1391  01bc  3e01              	ld	a,0x01
+  1392  01be  f5                	push	af
+  1393  01bf  33                	inc	sp
+  1394  01c0  af                	xor	a, a
+  1395  01c1  f5                	push	af
+  1396  01c2  33                	inc	sp
+  1397  01c3  af                	xor	a, a
+  1398  01c4  57                	ld	d,a
+  1399  01c5  1e9a              	ld	e,0x9a
+  1400  01c7  d5                	push	de
+  1401  01c8  1167e0            	ld	de,0xe067
+  1402  01cb  d5                	push	de
+  1403  01cc  cd0000            	call	_set_sprite_attributes_ext
+  1404  01cf  f1                	pop	af
+  1405  01d0  f1                	pop	af
+  1406  01d1  2668              	ld	h,0x68
+  1407  01d3  e3                	ex	(sp),hl
+  1408  01d4  33                	inc	sp
+  1409  01d5  cd0000            	call	_set_sprite_slot
+  1410  01d8  33                	inc	sp
+  1411  01d9  210000            	ld	hl,_serverSpr2
+  1412  01dc  e5                	push	hl
+  1413  01dd  cd0000            	call	_set_sprite_pattern
+  1414  01e0  2668              	ld	h,0x68
+  1415  01e2  e3                	ex	(sp),hl
+  1416  01e3  33                	inc	sp
+  1417  01e4  cd0000            	call	_set_sprite_slot
+  1418  01e7  33                	inc	sp
+  1419  01e8  3e01              	ld	a,0x01
+  1420  01ea  f5                	push	af
+  1421  01eb  33                	inc	sp
+  1422  01ec  af                	xor	a, a
+  1423  01ed  f5                	push	af
+  1424  01ee  33                	inc	sp
+  1425  01ef  af                	xor	a, a
+  1426  01f0  57                	ld	d,a
+  1427  01f1  1eaa              	ld	e,0xaa
+  1428  01f3  d5                	push	de
+  1429  01f4  1168d0            	ld	de,0xd068
+  1430  01f7  d5                	push	de
+  1431  01f8  cd0000            	call	_set_sprite_attributes_ext
+  1432  01fb  f1                	pop	af
+  1433  01fc  f1                	pop	af
+  1434  01fd  2669              	ld	h,0x69
+  1435  01ff  e3                	ex	(sp),hl
+  1436  0200  33                	inc	sp
+  1437  0201  cd0000            	call	_set_sprite_slot
+  1438  0204  33                	inc	sp
+  1439  0205  210000            	ld	hl,_serverSpr3
+  1440  0208  e5                	push	hl
+  1441  0209  cd0000            	call	_set_sprite_pattern
+  1442  020c  2669              	ld	h,0x69
+  1443  020e  e3                	ex	(sp),hl
+  1444  020f  33                	inc	sp
+  1445  0210  cd0000            	call	_set_sprite_slot
+  1446  0213  33                	inc	sp
+  1447  0214  3e01              	ld	a,0x01
+  1448  0216  f5                	push	af
+  1449  0217  33                	inc	sp
+  1450  0218  af                	xor	a, a
+  1451  0219  f5                	push	af
+  1452  021a  33                	inc	sp
+  1453  021b  af                	xor	a, a
+  1454  021c  57                	ld	d,a
+  1455  021d  1eaa              	ld	e,0xaa
+  1456  021f  d5                	push	de
+  1457  0220  1169e0            	ld	de,0xe069
+  1458  0223  d5                	push	de
+  1459  0224  cd0000            	call	_set_sprite_attributes_ext
+  1460  0227  f1                	pop	af
+  1461  0228  f1                	pop	af
+  1462  0229  266a              	ld	h,0x6a
+  1463  022b  e3                	ex	(sp),hl
+  1464  022c  33                	inc	sp
+  1465  022d  cd0000            	call	_set_sprite_slot
+  1466  0230  33                	inc	sp
+  1467  0231  210000            	ld	hl,_specnextSpr0
+  1468  0234  e5                	push	hl
+  1469  0235  cd0000            	call	_set_sprite_pattern
+  1470  0238  266a              	ld	h,0x6a
+  1471  023a  e3                	ex	(sp),hl
+  1472  023b  33                	inc	sp
+  1473  023c  cd0000            	call	_set_sprite_slot
+  1474  023f  33                	inc	sp
+  1475  0240  3e01              	ld	a,0x01
+  1476  0242  f5                	push	af
+  1477  0243  33                	inc	sp
+  1478  0244  af                	xor	a, a
+  1479  0245  f5                	push	af
+  1480  0246  33                	inc	sp
+  1481  0247  af                	xor	a, a
+  1482  0248  57                	ld	d,a
+  1483  0249  1ea4              	ld	e,0xa4
+  1484  024b  d5                	push	de
+  1485  024c  116a1c            	ld	de,0x1c6a
+  1486  024f  d5                	push	de
+  1487  0250  cd0000            	call	_set_sprite_attributes_ext
+  1488  0253  f1                	pop	af
+  1489  0254  f1                	pop	af
+  1490  0255  266b              	ld	h,0x6b
+  1491  0257  e3                	ex	(sp),hl
+  1492  0258  33                	inc	sp
+  1493  0259  cd0000            	call	_set_sprite_slot
+  1494  025c  33                	inc	sp
+  1495  025d  210000            	ld	hl,_specnextSpr1
+  1496  0260  e5                	push	hl
+  1497  0261  cd0000            	call	_set_sprite_pattern
+  1498  0264  266b              	ld	h,0x6b
+  1499  0266  e3                	ex	(sp),hl
+  1500  0267  33                	inc	sp
+  1501  0268  cd0000            	call	_set_sprite_slot
+  1502  026b  33                	inc	sp
+  1503  026c  3e01              	ld	a,0x01
+  1504  026e  f5                	push	af
+  1505  026f  33                	inc	sp
+  1506  0270  af                	xor	a, a
+  1507  0271  f5                	push	af
+  1508  0272  33                	inc	sp
+  1509  0273  af                	xor	a, a
+  1510  0274  57                	ld	d,a
+  1511  0275  1ea4              	ld	e,0xa4
+  1512  0277  d5                	push	de
+  1513  0278  116b2c            	ld	de,0x2c6b
+  1514  027b  d5                	push	de
+  1515  027c  cd0000            	call	_set_sprite_attributes_ext
+  1516  027f  f1                	pop	af
+  1517  0280  f1                	pop	af
+  1518  0281  f1                	pop	af
+  1519  0282  dd36f71e          	ld	(ix-9),0x1e
+  1520  0286  dd36f858          	ld	(ix-8),0x58
+  1521  028a  dd36f900          	ld	(ix-7),0x00
+  1522  028e  dd36fa03          	ld	(ix-6),0x03
+  1523  0292  dd36fb00          	ld	(ix-5),0x00
+  1524  0296  dd36fc00          	ld	(ix-4),0x00
+  1525  029a  dd36fd01          	ld	(ix-3),0x01
+  1526  029e  af                	xor	a, a
+  1527  029f  dd77fe            	ld	(ix-2),a
+  1528  02a2  dd77ff            	ld	(ix-1),a
+  1529                          l_create_sprites_00104:
+  1530  02a5  dd7efe            	ld	a,(ix-2)
+  1531  02a8  d60a              	sub	a,0x0a
+  1532  02aa  dd7eff            	ld	a,(ix-1)
+  1533  02ad  17                	rla
+  1534  02ae  3f                	ccf
+  1535  02af  1f                	rra
+  1536  02b0  de80              	sbc	a,0x80
+  1537  02b2  d23603            	jp	NC, l_create_sprites_00101
+  1538  02b5  dd4efe            	ld	c,(ix-2)
+  1539  02b8  dd46ff            	ld	b,(ix-1)
+  1540  02bb  69                	ld	l, c
+  1541  02bc  60                	ld	h, b
+  1542  02bd  29                	add	hl, hl
+  1543  02be  09                	add	hl, bc
+  1544  02bf  29                	add	hl, hl
+  1545  02c0  09                	add	hl, bc
+  1546  02c1  110000            	ld	de,_incomingPacketGobs
+  1547  02c4  19                	add	hl, de
+  1548  02c5  4d                	ld	c, l
+  1549  02c6  44                	ld	b, h
+  1550  02c7  59                	ld	e, c
+  1551  02c8  50                	ld	d, b
+  1552  02c9  c5                	push	bc
+  1553  02ca  210300            	ld	hl,3
+  1554  02cd  39                	add	hl, sp
+  1555  02ce  010700            	ld	bc,0x0007
+  1556  02d1  edb0              	ldir
+  1557  02d3  c1                	pop	bc
+  1558  02d4  59                	ld	e, c
+  1559  02d5  50                	ld	d, b
+  1560  02d6  13                	inc	de
+  1561  02d7  dd7efe            	ld	a,(ix-2)
+  1562  02da  ed23              	swap	a
+  1563  02dc  07                	rlca
+  1564  02dd  e6e0              	and	a,0xe0
+  1565  02df  12                	ld	(de), a
+  1566  02e0  210400            	ld	hl,0x0004
+  1567  02e3  09                	add	hl, bc
+  1568  02e4  dd7efe            	ld	a,(ix-2)
+  1569  02e7  dd77f6            	ld	(ix-10),a
+  1570  02ea  77                	ld	(hl),a
+  1571  02eb  c5                	push	bc
+  1572  02ec  d5                	push	de
+  1573  02ed  dd7ef6            	ld	a,(ix-10)
+  1574  02f0  f5                	push	af
+  1575  02f1  33                	inc	sp
+  1576  02f2  cd0000            	call	_set_sprite_slot
+  1577  02f5  33                	inc	sp
+  1578  02f6  210000            	ld	hl,_packet
+  1579  02f9  e5                	push	hl
+  1580  02fa  cd0000            	call	_set_sprite_pattern
+  1581  02fd  f1                	pop	af
+  1582  02fe  dd7ef6            	ld	a,(ix-10)
+  1583  0301  f5                	push	af
+  1584  0302  33                	inc	sp
+  1585  0303  cd0000            	call	_set_sprite_slot
+  1586  0306  33                	inc	sp
+  1587  0307  d1                	pop	de
+  1588  0308  c1                	pop	bc
+  1589  0309  1a                	ld	a, (de)
+  1590  030a  5f                	ld	e, a
+  1591  030b  0a                	ld	a, (bc)
+  1592  030c  57                	ld	d, a
+  1593  030d  210500            	ld	hl,5
+  1594  0310  09                	add	hl, bc
+  1595  0311  6e                	ld	l, (hl)
+  1596  0312  3e01              	ld	a,0x01
+  1597  0314  f5                	push	af
+  1598  0315  33                	inc	sp
+  1599  0316  af                	xor	a, a
+  1600  0317  f5                	push	af
+  1601  0318  33                	inc	sp
+  1602  0319  af                	xor	a, a
+  1603  031a  f5                	push	af
+  1604  031b  33                	inc	sp
+  1605  031c  7b                	ld	a, e
+  1606  031d  f5                	push	af
+  1607  031e  33                	inc	sp
+  1608  031f  d5                	push	de
+  1609  0320  33                	inc	sp
+  1610  0321  7d                	ld	a, l
+  1611  0322  f5                	push	af
+  1612  0323  33                	inc	sp
+  1613  0324  cd0000            	call	_set_sprite_attributes_ext
+  1614  0327  f1                	pop	af
+  1615  0328  f1                	pop	af
+  1616  0329  f1                	pop	af
+  1617  032a  dd34fe            	inc	(ix-2)
+  1618  032d  c2a502            	jp	NZ,l_create_sprites_00104
+  1619  0330  dd34ff            	inc	(ix-1)
+  1620  0333  c3a502            	jp	l_create_sprites_00104
+  1621                          l_create_sprites_00101:
+  1622  0336  010000            	ld	bc,0x0000
+  1623                          l_create_sprites_00107:
+  1624  0339  79                	ld	a, c
+  1625  033a  d60a              	sub	a,0x0a
+  1626  033c  78                	ld	a, b
+  1627  033d  17                	rla
+  1628  033e  3f                	ccf
+  1629  033f  1f                	rra
+  1630  0340  de80              	sbc	a,0x80
+  1631  0342  d2d903            	jp	NC, l_create_sprites_00109
+  1632  0345  79                	ld	a, c
+  1633  0346  c60a              	add	a,0x0a
+  1634  0348  dd77f6            	ld	(ix-10),a
+  1635  034b  69                	ld	l, c
+  1636  034c  60                	ld	h, b
+  1637  034d  29                	add	hl, hl
+  1638  034e  09                	add	hl, bc
+  1639  034f  29                	add	hl, hl
+  1640  0350  09                	add	hl, bc
+  1641  0351  dd75fe            	ld	(ix-2),l
+  1642  0354  dd74ff            	ld	(ix-1),h
+  1643  0357  3e46              	ld	a, +((_outgoingPacketGobs) & 0xFF)
+  1644  0359  dd86fe            	add	a,(ix-2)
+  1645  035c  5f                	ld	e, a
+  1646  035d  3e00              	ld	a, +((_outgoingPacketGobs) / 256)
+  1647  035f  dd8eff            	adc	a,(ix-1)
+  1648  0362  57                	ld	d, a
+  1649  0363  6b                	ld	l, e
+  1650  0364  62                	ld	h, d
+  1651  0365  d5                	push	de
+  1652  0366  c5                	push	bc
+  1653  0367  eb                	ex	de,hl
+  1654  0368  210500            	ld	hl,5
+  1655  036b  39                	add	hl, sp
+  1656  036c  010700            	ld	bc,0x0007
+  1657  036f  edb0              	ldir
+  1658  0371  c1                	pop	bc
+  1659  0372  d1                	pop	de
+  1660  0373  3ed8              	ld	a,0xd8
+  1661  0375  12                	ld	(de), a
+  1662  0376  210100            	ld	hl,0x0001
+  1663  0379  19                	add	hl, de
+  1664  037a  dd75fe            	ld	(ix-2),l
+  1665  037d  dd74ff            	ld	(ix-1),h
+  1666  0380  79                	ld	a, c
+  1667  0381  ed23              	swap	a
+  1668  0383  07                	rlca
+  1669  0384  e6e0              	and	a,0xe0
+  1670  0386  dd6efe            	ld	l,(ix-2)
+  1671  0389  dd66ff            	ld	h,(ix-1)
+  1672  038c  77                	ld	(hl), a
+  1673  038d  6b                	ld	l, e
+  1674  038e  62                	ld	h, d
+  1675  038f  23                	inc	hl
+  1676  0390  23                	inc	hl
+  1677  0391  23                	inc	hl
+  1678  0392  7e                	ld	a, (hl)
+  1679  0393  ed44              	neg
+  1680  0395  77                	ld	(hl), a
+  1681  0396  210400            	ld	hl,0x0004
+  1682  0399  19                	add	hl, de
+  1683  039a  dd7ef6            	ld	a,(ix-10)
+  1684  039d  77                	ld	(hl), a
+  1685  039e  c5                	push	bc
+  1686  039f  d5                	push	de
+  1687  03a0  f5                	push	af
+  1688  03a1  33                	inc	sp
+  1689  03a2  cd0000            	call	_set_sprite_slot
+  1690  03a5  33                	inc	sp
+  1691  03a6  d1                	pop	de
+  1692  03a7  c1                	pop	bc
+  1693  03a8  dd6efe            	ld	l,(ix-2)
+  1694  03ab  dd66ff            	ld	h,(ix-1)
+  1695  03ae  7e                	ld	a, (hl)
+  1696  03af  dd77ff            	ld	(ix-1),a
+  1697  03b2  1a                	ld	a, (de)
+  1698  03b3  210500            	ld	hl,5
+  1699  03b6  19                	add	hl, de
+  1700  03b7  56                	ld	d, (hl)
+  1701  03b8  c5                	push	bc
+  1702  03b9  2601              	ld	h,0x01
+  1703  03bb  e5                	push	hl
+  1704  03bc  33                	inc	sp
+  1705  03bd  2600              	ld	h,0x00
+  1706  03bf  e5                	push	hl
+  1707  03c0  33                	inc	sp
+  1708  03c1  2600              	ld	h,0x00
+  1709  03c3  e5                	push	hl
+  1710  03c4  33                	inc	sp
+  1711  03c5  dd66ff            	ld	h,(ix-1)
+  1712  03c8  e5                	push	hl
+  1713  03c9  33                	inc	sp
+  1714  03ca  f5                	push	af
+  1715  03cb  33                	inc	sp
+  1716  03cc  d5                	push	de
+  1717  03cd  33                	inc	sp
+  1718  03ce  cd0000            	call	_set_sprite_attributes_ext
+  1719  03d1  f1                	pop	af
+  1720  03d2  f1                	pop	af
+  1721  03d3  f1                	pop	af
+  1722  03d4  c1                	pop	bc
+  1723  03d5  03                	inc	bc
+  1724  03d6  c33903            	jp	l_create_sprites_00107
+  1725                          l_create_sprites_00109:
+  1726  03d9  ddf9              	ld	sp, ix
+  1727  03db  dde1              	pop	ix
+  1728  03dd  c9                	ret
+  1729                          ;	---------------------------------
+  1730                          ; Function UpdateGameObjects
+  1731                          ; ---------------------------------
+  1732                          _UpdateGameObjects:
+  1733  03de  dde5              	push	ix
+  1734  03e0  dd210000          	ld	ix,0
+  1735  03e4  dd39              	add	ix,sp
+  1736  03e6  f5                	push	af
+  1737  03e7  f5                	push	af
+  1738  03e8  010000            	ld	bc,_incomingPacketGobs+0
+  1739  03eb  af                	xor	a, a
+  1740  03ec  dd77fe            	ld	(ix-2),a
+  1741  03ef  dd77ff            	ld	(ix-1),a
+  1742                          l_UpdateGameObjects_00112:
+  1743  03f2  dd7efe            	ld	a,(ix-2)
+  1744  03f5  d60a              	sub	a,0x0a
+  1745  03f7  3e00              	ld	a,0x00
+  1746  03f9  17                	rla
+  1747  03fa  3f                	ccf
+  1748  03fb  1f                	rra
+  1749  03fc  de80              	sbc	a,0x80
+  1750  03fe  304e              	jr	NC,l_UpdateGameObjects_00105
+  1751  0400  dd5efe            	ld	e,(ix-2)
+  1752  0403  dd56ff            	ld	d,(ix-1)
+  1753  0406  6b                	ld	l, e
+  1754  0407  62                	ld	h, d
+  1755  0408  29                	add	hl, hl
+  1756  0409  19                	add	hl, de
+  1757  040a  29                	add	hl, hl
+  1758  040b  19                	add	hl, de
+  1759  040c  09                	add	hl, bc
+  1760  040d  eb                	ex	de, hl
+  1761  040e  33                	inc	sp
+  1762  040f  33                	inc	sp
+  1763  0410  d5                	push	de
+  1764  0411  c5                	push	bc
+  1765  0412  d5                	push	de
+  1766  0413  dd6efc            	ld	l,(ix-4)
+  1767  0416  dd66fd            	ld	h,(ix-3)
+  1768  0419  e5                	push	hl
+  1769  041a  cd0000            	call	_GobUpdate
+  1770  041d  f1                	pop	af
+  1771  041e  d1                	pop	de
+  1772  041f  c1                	pop	bc
+  1773  0420  6b                	ld	l, e
+  1774  0421  62                	ld	h, d
+  1775  0422  23                	inc	hl
+  1776  0423  6e                	ld	l, (hl)
+  1777  0424  3e06              	ld	a,0x06
+  1778  0426  ed32              	add	de, a
+  1779  0428  7d                	ld	a, l
+  1780  0429  d628              	sub	a,0x28
+  1781  042b  3805              	jr	C,l_UpdateGameObjects_00101
+  1782  042d  3ea4              	ld	a,0xa4
+  1783  042f  95                	sub	a, l
+  1784  0430  3005              	jr	NC,l_UpdateGameObjects_00102
+  1785                          l_UpdateGameObjects_00101:
+  1786  0432  3e01              	ld	a,0x01
+  1787  0434  12                	ld	(de), a
+  1788  0435  1802              	jr	l_UpdateGameObjects_00103
+  1789                          l_UpdateGameObjects_00102:
+  1790  0437  af                	xor	a, a
+  1791  0438  12                	ld	(de), a
+  1792                          l_UpdateGameObjects_00103:
+  1793  0439  c5                	push	bc
+  1794  043a  d1                	pop	de
+  1795  043b  e1                	pop	hl
+  1796  043c  e5                	push	hl
+  1797  043d  d5                	push	de
+  1798  043e  e5                	push	hl
+  1799  043f  cd0000            	call	_GobDraw
+  1800  0442  f1                	pop	af
+  1801  0443  c1                	pop	bc
+  1802  0444  dd34fe            	inc	(ix-2)
+  1803  0447  20a9              	jr	NZ,l_UpdateGameObjects_00112
+  1804  0449  dd34ff            	inc	(ix-1)
+  1805  044c  18a4              	jr	l_UpdateGameObjects_00112
+  1806                          l_UpdateGameObjects_00105:
+  1807  044e  010000            	ld	bc,0x0000
+  1808                          l_UpdateGameObjects_00115:
+  1809  0451  79                	ld	a, c
+  1810  0452  d60a              	sub	a,0x0a
+  1811  0454  78                	ld	a, b
+  1812  0455  17                	rla
+  1813  0456  3f                	ccf
+  1814  0457  1f                	rra
+  1815  0458  de80              	sbc	a,0x80
+  1816  045a  3050              	jr	NC,l_UpdateGameObjects_00117
+  1817  045c  69                	ld	l, c
+  1818  045d  60                	ld	h, b
+  1819  045e  29                	add	hl, hl
+  1820  045f  09                	add	hl, bc
+  1821  0460  29                	add	hl, hl
+  1822  0461  09                	add	hl, bc
+  1823  0462  eb                	ex	de, hl
+  1824  0463  214600            	ld	hl,_outgoingPacketGobs
+  1825  0466  19                	add	hl, de
+  1826  0467  eb                	ex	de, hl
+  1827  0468  dd73fd            	ld	(ix-3),e
+  1828  046b  dd72fe            	ld	(ix-2),d
+  1829  046e  c5                	push	bc
+  1830  046f  d5                	push	de
+  1831  0470  dd6efd            	ld	l,(ix-3)
+  1832  0473  dd66fe            	ld	h,(ix-2)
+  1833  0476  e5                	push	hl
+  1834  0477  cd0000            	call	_GobUpdate
+  1835  047a  f1                	pop	af
+  1836  047b  d1                	pop	de
+  1837  047c  c1                	pop	bc
+  1838  047d  6b                	ld	l, e
+  1839  047e  62                	ld	h, d
+  1840  047f  23                	inc	hl
+  1841  0480  7e                	ld	a, (hl)
+  1842  0481  dd77ff            	ld	(ix-1),a
+  1843  0484  210600            	ld	hl,0x0006
+  1844  0487  19                	add	hl, de
+  1845  0488  dd7eff            	ld	a,(ix-1)
+  1846  048b  d628              	sub	a,0x28
+  1847  048d  3807              	jr	C,l_UpdateGameObjects_00106
+  1848  048f  3ea4              	ld	a,0xa4
+  1849  0491  dd96ff            	sub	a,(ix-1)
+  1850  0494  3004              	jr	NC,l_UpdateGameObjects_00107
+  1851                          l_UpdateGameObjects_00106:
+  1852  0496  3601              	ld	(hl),0x01
+  1853  0498  1802              	jr	l_UpdateGameObjects_00108
+  1854                          l_UpdateGameObjects_00107:
+  1855  049a  3600              	ld	(hl),0x00
+  1856                          l_UpdateGameObjects_00108:
+  1857  049c  c5                	push	bc
+  1858  049d  dd6efd            	ld	l,(ix-3)
+  1859  04a0  dd66fe            	ld	h,(ix-2)
+  1860  04a3  e5                	push	hl
+  1861  04a4  cd0000            	call	_GobDraw
+  1862  04a7  f1                	pop	af
+  1863  04a8  c1                	pop	bc
+  1864  04a9  03                	inc	bc
+  1865  04aa  18a5              	jr	l_UpdateGameObjects_00115
+  1866                          l_UpdateGameObjects_00117:
+  1867  04ac  ddf9              	ld	sp, ix
+  1868  04ae  dde1              	pop	ix
+  1869  04b0  c9                	ret
+  1870                          ;	---------------------------------
+  1871                          ; Function DrawCloudEdge
+  1872                          ; ---------------------------------
+  1873                          _DrawCloudEdge:
+  1874  04b1  dde5              	push	ix
+  1875  04b3  dd210000          	ld	ix,0
+  1876  04b7  dd39              	add	ix,sp
+  1877  04b9  010000            	ld	bc,0x0000
+  1878  04bc  1e00              	ld	e,0x00
+  1879                          l_DrawCloudEdge_00102:
+  1880  04be  79                	ld	a, c
+  1881  04bf  c5                	push	bc
+  1882  04c0  d5                	push	de
+  1883  04c1  dd6e04            	ld	l,(ix+4)
+  1884  04c4  dd6605            	ld	h,(ix+5)
+  1885  04c7  e5                	push	hl
+  1886  04c8  261a              	ld	h,0x1a
+  1887  04ca  e5                	push	hl
+  1888  04cb  33                	inc	sp
+  1889  04cc  211000            	ld	hl,0x0010
+  1890  04cf  e5                	push	hl
+  1891  04d0  210000            	ld	hl,_cloud
+  1892  04d3  e5                	push	hl
+  1893  04d4  2628              	ld	h,0x28
+  1894  04d6  e5                	push	hl
+  1895  04d7  33                	inc	sp
+  1896  04d8  f5                	push	af
+  1897  04d9  33                	inc	sp
+  1898  04da  cd0000            	call	_layer2_blit_transparent
+  1899  04dd  210900            	ld	hl,9
+  1900  04e0  39                	add	hl, sp
+  1901  04e1  f9                	ld	sp, hl
+  1902  04e2  d1                	pop	de
+  1903  04e3  c1                	pop	bc
+  1904  04e4  3e10              	ld	a,0x10
+  1905  04e6  ed33              	add	bc, a
+  1906  04e8  1c                	inc	e
+  1907  04e9  7b                	ld	a, e
+  1908  04ea  d610              	sub	a,0x10
+  1909  04ec  38d0              	jr	C,l_DrawCloudEdge_00102
+  1910  04ee  dde1              	pop	ix
+  1911  04f0  c9                	ret
+  1912                          ;	---------------------------------
+  1913                          ; Function DrawGame
+  1914                          ; ---------------------------------
+  1915                          _DrawGame:
+  1916  04f1  210600            	ld	hl,_off_screen
+  1917  04f4  e5                	push	hl
+  1918  04f5  1128ff            	ld	de,0xff28
+  1919  04f8  d5                	push	de
+  1920  04f9  210001            	ld	hl,0x0100
+  1921  04fc  e5                	push	hl
+  1922  04fd  af                	xor	a, a
+  1923  04fe  f5                	push	af
+  1924  04ff  33                	inc	sp
+  1925  0500  af                	xor	a, a
+  1926  0501  f5                	push	af
+  1927  0502  33                	inc	sp
+  1928  0503  cd0000            	call	_layer2_fill_rect
+  1929  0506  f1                	pop	af
+  1930  0507  f1                	pop	af
+  1931  0508  f1                	pop	af
+  1932  0509  210600            	ld	hl,_off_screen
+  1933  050c  e3                	ex	(sp),hl
+  1934  050d  119a7b            	ld	de,0x7b9a
+  1935  0510  d5                	push	de
+  1936  0511  210001            	ld	hl,0x0100
+  1937  0514  e5                	push	hl
+  1938  0515  3e28              	ld	a,0x28
+  1939  0517  f5                	push	af
+  1940  0518  33                	inc	sp
+  1941  0519  af                	xor	a, a
+  1942  051a  f5                	push	af
+  1943  051b  33                	inc	sp
+  1944  051c  cd0000            	call	_layer2_fill_rect
+  1945  051f  f1                	pop	af
+  1946  0520  f1                	pop	af
+  1947  0521  f1                	pop	af
+  1948  0522  210600            	ld	hl,_off_screen
+  1949  0525  e3                	ex	(sp),hl
+  1950  0526  cdb104            	call	_DrawCloudEdge
+  1951  0529  f1                	pop	af
+  1952  052a  c9                	ret
+  1953                          ;	---------------------------------
+  1954                          ; Function main
+  1955                          ; ---------------------------------
+  1956                          _main:
+  1957  052b  cd4c00            	call	_init_hardware
+  1958  052e  cd7100            	call	_init_isr
+  1959  0531  cd1401            	call	_create_sprites
+  1960  0534  af                	xor	a, a
+  1961  0535  f5                	push	af
+  1962  0536  33                	inc	sp
+  1963  0537  af                	xor	a, a
+  1964  0538  f5                	push	af
+  1965  0539  33                	inc	sp
+  1966  053a  af                	xor	a, a
+  1967  053b  57                	ld	d,a
+  1968  053c  1e01              	ld	e,0x01
+  1969  053e  d5                	push	de
+  1970  053f  cd0000            	call	_set_sprite_layers_system
+  1971  0542  f1                	pop	af
+  1972  0543  f1                	pop	af
+  1973  0544  cd9400            	call	_create_start_screen
+  1974  0547  cdf104            	call	_DrawGame
+  1975  054a  cdf104            	call	_DrawGame
+  1976                          l_main_00109:
+  1977  054d  76                	halt
+  1978  054e  cdde03            	call	_UpdateGameObjects
+  1979  0551  3e00              	ld	a, +((_off_screen) / 256)
+  1980  0553  f606              	or	a, +((_off_screen) & 0xFF)
+  1981  0555  280b              	jr	Z,l_main_00105
+  1982  0557  3a0600            	ld	a, (_off_screen + 0)
+  1983  055a  3d                	dec	a
+  1984  055b  2005              	jr	NZ,l_main_00105
+  1985  055d  cd0000            	call	_layer2_flip_main_shadow_screen
+  1986  0560  18eb              	jr	l_main_00109
+  1987                          l_main_00105:
+  1988  0562  3e00              	ld	a, +((_off_screen) / 256)
+  1989  0564  f606              	or	a, +((_off_screen) & 0xFF)
+  1990  0566  28e5              	jr	Z,l_main_00109
+  1991  0568  3a0600            	ld	a, (_off_screen + 0)
+  1992  056b  d602              	sub	a,0x02
+  1993  056d  20de              	jr	NZ,l_main_00109
+  1994  056f  210600            	ld	hl,_off_screen
+  1995  0572  e5                	push	hl
+  1996  0573  cd0000            	call	_layer2_copy_off_screen
+  1997  0576  f1                	pop	af
+  1998  0577  18d4              	jr	l_main_00109
+  1999                          	SECTION data_compiler
+  2000                          _test_number:
+  2001  0000  00                	DEFB +0x00
+  2002                          _shadow_screen:
+  2003  0001  01                	DEFB +0x01
+  2004  0002  00                	DEFB +0x00
+  2005  0003  00                	DEFB +0x00
+  2006  0004  00                	DEFB +0x00
+  2007  0005  00                	DEFB +0x00
+  2008                          _off_screen:
+  2009  0006  02                	DEFB +0x02
+  2010  0007  00                	DEFB +0x00
+  2011  0008  01                	DEFB +0x01
+  2012  0009  03                	DEFB +0x03
+  2013  000a  00                	DEFB +0x00
+  2014                          	SECTION IGNORE
+  2015                          

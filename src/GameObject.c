@@ -8,11 +8,25 @@ void GobUpdate(GameObject* gob)
     uint8_t orgX = gob->x;
     // if(gob->x <  255 - gob->sx)
        gob->x += gob->sx;
-    uint8_t orgY = gob->y;
-    if(gob->y <  SCREEN_Y - gob->sy)
-       gob->y += gob->sy;   
-    else
-       gob->y = 0;
+    //uint8_t orgY = gob->y;
+
+    // Going down
+    if(gob->sy > 0)
+    {
+        if(gob->y <  SCREEN_Y - gob->sy)
+            gob->y += gob->sy;   
+        else
+            gob->y = 0;
+    }
+
+    // Going up
+    if(gob->sy < 0)
+    {
+        if(gob->y > -gob->sy )
+            gob->y += gob->sy;   
+        else
+            gob->y = (uint8_t)(SCREEN_Y-1); 
+    }
 }
 
 void GobDraw(GameObject* gob)
