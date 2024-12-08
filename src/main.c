@@ -73,6 +73,7 @@ typedef struct sprite_info {
     int8_t dy; // Vertical displacement in pixels
 } sprite_info_t;
 
+
 /*******************************************************************************
  * Function Prototypes
  ******************************************************************************/
@@ -106,6 +107,9 @@ static void test_draw_text(layer2_screen_t *screen);
 static void test_blit(layer2_screen_t *screen);
 
 static void test_blit_transparent(layer2_screen_t *screen);
+
+static void UpdateAndDrawAll(void);
+
 
 /*******************************************************************************
  * Variables
@@ -161,23 +165,6 @@ static void init_isr(void)
     z80_bpoke(0x6162, 0xED);
     z80_bpoke(0x6163, 0x4D);
     intrinsic_ei();
-}
-
-static void create_start_screen(void)
-{
-    zx_border(INK_YELLOW);
-    zx_cls(BRIGHT | INK_BLACK | PAPER_WHITE);
-
-    ZXN_NEXTREG(0x07, 0x03);  // 28MHz
-   
-    IO_153B = 0x00;  // Select ESP for UART(?)
-
-    // Init ESP.
-    NetComInit();
-
-    printf("Press any key to start\n");
-    in_wait_key();
-    //printAt(1, 15, "Press any key to switch screen");
 }
 
 #define CLOUD_PATTERN_SLOT 0
@@ -340,50 +327,121 @@ static void DrawGameBackground(void)
     }
 }
 
+static void create_start_screen(void)
+{
+    zx_border(INK_YELLOW);
+    zx_cls(BRIGHT | INK_BLACK | PAPER_WHITE);
+
+    ZXN_NEXTREG(0x07, 0x03);  // 28MHz
+   
+    IO_153B = 0x00;  // Select ESP for UART(?)
+
+    // Init ESP.
+    NetComInit();
+    printf("Press any key to start\n");
+    in_wait_key();
+
+   // Send NOP to the server.
+    uint8_t serverCommandsNop = 0;
+    uint8_t packetLen = 1;
+    uint8_t err = uart_send_data_packet(&serverCommandsNop, packetLen);
+    printf("uart_send_data_packet(). err=%u, buffer=%s\n", 
+        err, buffer);
+    UpdateAndDrawAll();
+
+    // Read NOP send response.
+    // The response should be: "Recv 1 bytes\n\rSEND OK\n\r"
+    err = uart_read_response("SEND OK");
+    printf("uart_read_response(). err=%u, buffer=%s\n", 
+        err, buffer);
+    UpdateAndDrawAll();
+   
+    // Read received data for NOP.
+    // The response should be: "Recv 1 bytes\n\rSEND OK\n\r"
+    //err = uart_read_response("+IPD,");
+    //UpdateAndDrawAll();
+    NopResponse resp;
+    err = uart_get_received_data((char*)&resp, sizeof(NopResponse));
+    printf("uart_get_received_data(). err=%u, buffer=%s\n",
+         err, buffer);
+    UpdateAndDrawAll();
+   
+    printf("Resp from server: cmd=%d, flags=%d\n", resp.cmd, resp.flags);
+
+    printf("Press any key to start\n");
+    in_wait_key();
+}
+
+static void UpdateAndDrawAll(void)
+{
+    //DrawGame();
+
+    // Wait for vertical blanking interval.
+    intrinsic_halt();
+    UpdateGameObjects();
+
+    // char text[128];
+    // sprintf(text, "y=%u", testSprite.y);
+    // layer2_fill_rect(12*8, 3*8, 8*7, 8, 0xaa, &off_screen);
+    // layer2_draw_text(3,  12, text, 0xEF, &off_screen);
+
+    //printAt(23, 19); printf("yy = %d", testSprite.y); 
+
+    // if (in_inkey())
+    // {
+    //     in_wait_nokey();
+    //     select_test();
+    // }
+
+    // Swap the double buffered screen.
+    if (IS_SHADOW_SCREEN(&off_screen))
+    {
+        layer2_flip_main_shadow_screen();
+    }
+    else if (IS_OFF_SCREEN(&off_screen))
+    {
+        layer2_copy_off_screen(&off_screen);
+    }
+}
 
 int main(void)
 {
     init_hardware();
     init_isr();
-
-    create_start_screen();
     
+    layer2_fill_rect(0, 0,  256, 192, 0xE3, &off_screen);
+    // Swap the double buffered screen.
+    if (IS_SHADOW_SCREEN(&off_screen))
+    {
+        layer2_flip_main_shadow_screen();
+    }
+    else if (IS_OFF_SCREEN(&off_screen))
+    {
+        layer2_copy_off_screen(&off_screen);
+    }
+    layer2_fill_rect(0, 0,  256, 192, 0xE3, &off_screen);
+    // Swap the double buffered screen.
+    if (IS_SHADOW_SCREEN(&off_screen))
+    {
+        layer2_flip_main_shadow_screen();
+    }
+    else if (IS_OFF_SCREEN(&off_screen))
+    {
+        layer2_copy_off_screen(&off_screen);
+    }
+
     create_sprites();
     set_sprite_layers_system(true, false, LAYER_PRIORITIES_S_L_U, false);
 
+    create_start_screen();
+
     DrawGameBackground();
     DrawGameBackground(); 
-
+ 
+    // Loop until the end of the game.
     while (true)
-    {
-        //DrawGame();
-
-        // Wait for vertical blanking interval.
-        intrinsic_halt();
-        UpdateGameObjects();
-
-        // char text[128];
-        // sprintf(text, "y=%u", testSprite.y);
-        // layer2_fill_rect(12*8, 3*8, 8*7, 8, 0xaa, &off_screen);
-        // layer2_draw_text(3,  12, text, 0xEF, &off_screen);
-
-        //printAt(23, 19); printf("yy = %d", testSprite.y); 
-
-        // if (in_inkey())
-        // {
-        //     in_wait_nokey();
-        //     select_test();
-        // }
-
-        // Swap the double buffered screen.
-        if (IS_SHADOW_SCREEN(&off_screen))
-        {
-            layer2_flip_main_shadow_screen();
-        }
-        else if (IS_OFF_SCREEN(&off_screen))
-        {
-            layer2_copy_off_screen(&off_screen);
-        }
+    {   
+        UpdateAndDrawAll();
     }
 
     // Trig a soft reset. The Next hardware registers and I/O ports will be reset by NextZXOS after a soft reset.

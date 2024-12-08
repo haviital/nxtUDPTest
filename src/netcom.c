@@ -54,6 +54,9 @@ void NetComInit(void)
     //uart_send_at_cmd_and_print("AT+CWLAP=\"Koti_9751\"\r\n");
 #endif
 
+    // Disable echo
+    uart_send_at_cmd_and_print("ATE0\r\n");
+
     // Connect to wifi AP.
     char atcmd[256];
     sprintf(atcmd, "AT+CWJAP=\"%s\",\"%s\"\r\n", g_wifiSsid, g_wifiPassword);
@@ -62,10 +65,11 @@ void NetComInit(void)
 
     // Get my IP address
     // AT+CIFSR
-    uart_send_at_cmd_and_print("AT+CIFSR\r\n");
+    //uart_send_at_cmd_and_print("AT+CIFSR\r\n");
 
     // Enable single connection mode
     //AT+CIPMUX=0
+    //esp_response_time_ms = 66 + ESP_FW_RESPONSE_TIME_MS*10;   // normal timeout
     uart_send_at_cmd_and_print("AT+CIPMUX=0\r\n");
 
     // Start UDP connection.
@@ -76,18 +80,6 @@ void NetComInit(void)
         UDP_SERVER_ADDRESS, UDP_SERVER_PORT,UDP_LOCAL_PORT );
     uart_send_at_cmd_and_print(atcmd); 
 
-    // Send data
-    // AT+CIPSEND=<length>
-    uint8_t serverCommandsNop = 0;
-    uint8_t packetLen = 1;
-    sprintf(atcmd, "AT+CIPSEND=%u\r\n", packetLen );
-    uart_send_at_cmd_and_print(atcmd);
-
-    // Send actual raw data.
-    uart_send_raw_data_and_print(&serverCommandsNop, packetLen);
-
-    // Close UDP connection
-    // AT+CIPCLOSE=0
 }
 
 
