@@ -24,5 +24,7 @@ extern void uart_tx(unsigned char *s) __z88dk_fastcall;
 
 extern unsigned char uart_rx_readline(unsigned char *s, unsigned int len);
 extern unsigned char uart_rx_readline_last(unsigned char *s, unsigned int len);
+extern void uart_raw_data_tx(unsigned char *s, uint8_t len);
+extern void uart_send_raw_data_and_print(unsigned char *cmd, uint8_t len);
 
 #endif

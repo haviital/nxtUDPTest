@@ -111,6 +111,13 @@ static void test_blit_transparent(layer2_screen_t *screen);
  * Variables
  ******************************************************************************/
 
+// Global
+
+char g_wifiSsid[64] = "5GCPE_5DFEC5";
+char g_wifiPassword[128] = "7EME26865L";
+
+// Local
+
 static uint8_t test_number = 0;
 
 static layer2_screen_t shadow_screen = {SHADOW_SCREEN};
@@ -239,7 +246,8 @@ static void create_sprites(void)
         set_sprite_slot(sprIndex);
         set_sprite_pattern(packet);
         set_sprite_slot(sprIndex);
-        set_sprite_attributes_ext(incomingPacketGobs[i].spritePatternIndex, incomingPacketGobs[i].x, incomingPacketGobs[i].y, 0, 0, true);
+        set_sprite_attributes_ext(incomingPacketGobs[i].spritePatternIndex, 
+            incomingPacketGobs[i].x, incomingPacketGobs[i].y, 0, 0, !incomingPacketGobs[i].isHidden);
     }
 
     // Outgoing data packet gobs
@@ -254,7 +262,8 @@ static void create_sprites(void)
         //set_sprite_slot(i);
         //set_sprite_pattern(packet);
         set_sprite_slot(sprIndex);
-        set_sprite_attributes_ext(outgoingPacketGobs[i].spritePatternIndex, outgoingPacketGobs[i].x, outgoingPacketGobs[i].y, 0, 0, true);
+        set_sprite_attributes_ext(outgoingPacketGobs[i].spritePatternIndex, outgoingPacketGobs[i].x, 
+                outgoingPacketGobs[i].y, 0, 0, !outgoingPacketGobs[i].isHidden);
     }
 }
 

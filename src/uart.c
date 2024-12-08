@@ -30,6 +30,28 @@ void uart_send_at_cmd_and_print(unsigned char *cmd)
     while (*buffer);
 }
 
+void uart_send_raw_data_and_print(unsigned char *cmd, uint8_t len)
+{
+    // Send AT command to UART.
+    //printf("call: %s\n", cmd);
+    uart_raw_data_tx(cmd, len);
+    *buffer = 0;
+
+    // Read response from UART. Print to to screen.
+    do
+    {
+        puts(buffer);  
+        *buffer = 0;
+        unsigned char ret = uart_rx_readline(buffer, sizeof(buffer)-1);
+      //   if(ret==URR_TIMEOUT)
+      //       puts("--> Error: timeout\n"); 
+      //  else 
+      if(ret==URR_INCOMPLETE)
+            puts("--> Error: incomplete\n");         
+    }
+    while (*buffer);
+}
+
 // UART BAUD RATE
 
 uint32_t video_timing[] = {
@@ -63,6 +85,20 @@ void uart_tx(unsigned char *s) __z88dk_fastcall
       IO_133B = *s++;
    }
 }
+
+void uart_raw_data_tx(unsigned char *s, uint8_t len)
+{
+   for( uint8_t i=len; i!=0; i--)
+   {
+      while (IO_133B & 0x02)
+      {
+         //user_break();
+      }
+      
+      IO_133B = *s++;
+   }
+}
+
 
 // UART RX
 

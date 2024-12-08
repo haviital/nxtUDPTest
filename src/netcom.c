@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include "netcom.h"
 #include "esp.h"
 #include "uart.h"
 
@@ -23,10 +24,12 @@ void NetComInit(void)
     //printf("ESP AT+GMR follows...\n");
     uart_rx_readline_last(buffer, sizeof(buffer)-1);   // clear Rx
 
-    // Send AT command to UART and print response.
+   // Send AT command to UART and print response.
     uart_send_at_cmd_and_print(STRING_ESP_TX_AT_GMR);
 
-    // Print the wifi init status
+#if 0 
+
+     // Print the wifi init status
     //uart_send_at_cmd_and_print("AT+CWINIT?\r\n");
 
     // Print the wifi mode
@@ -49,7 +52,44 @@ void NetComInit(void)
 
    //
     //uart_send_at_cmd_and_print("AT+CWLAP=\"Koti_9751\"\r\n");
+#endif
+
+    // Connect to wifi AP.
+    char atcmd[256];
+    sprintf(atcmd, "AT+CWJAP=\"%s\",\"%s\"\r\n", g_wifiSsid, g_wifiPassword);
+    esp_response_time_ms = 66 + ESP_FW_RESPONSE_TIME_MS * 100*10;   // longer timeout
+    uart_send_at_cmd_and_print(atcmd); 
+
+    // Get my IP address
+    // AT+CIFSR
+    uart_send_at_cmd_and_print("AT+CIFSR\r\n");
+
+    // Enable single connection mode
+    //AT+CIPMUX=0
+    uart_send_at_cmd_and_print("AT+CIPMUX=0\r\n");
+
+    // Start UDP connection.
+    // 2 means UDP(?)
+    // 0 means wifi passthrough
+    // AT+CIPSTART="UDP","<remote_ip>",<remote_port>,<local_port>,0
+    sprintf(atcmd, "AT+CIPSTART=\"UDP\",\"%s\",%s,%s,0\r\n", 
+        UDP_SERVER_ADDRESS, UDP_SERVER_PORT,UDP_LOCAL_PORT );
+    uart_send_at_cmd_and_print(atcmd); 
+
+    // Send data
+    // AT+CIPSEND=<length>
+    uint8_t serverCommandsNop = 0;
+    uint8_t packetLen = 1;
+    sprintf(atcmd, "AT+CIPSEND=%u\r\n", packetLen );
+    uart_send_at_cmd_and_print(atcmd);
+
+    // Send actual raw data.
+    uart_send_raw_data_and_print(&serverCommandsNop, packetLen);
+
+    // Close UDP connection
+    // AT+CIPCLOSE=0
 }
+
 
 /*
 void main_esp_detect_bps(void)
