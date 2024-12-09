@@ -126,7 +126,7 @@ uint8_t uart_read_response(char* expected)
       // There should come: "OK\n\r>\n\r"
       if(strncmp(buffer, expected, strlen(expected))==0)
       {
-         printf("Found expected:%s\n", expected);
+         //printf("Found expected:%s\n", expected);
          break;  // Ok!
       }
       *buffer = 0;
@@ -165,7 +165,7 @@ uint8_t uart_get_received_data(char* data, uint8_t size)
    if(i==10)
       return 1;
    uint8_t dataLen = atoi(&(buffer[5]));
-   printf("dataLen=%u, size=%u\n", dataLen, size);
+   //printf("dataLen=%u, size=%u\n", dataLen, size);
    if(dataLen!=size)
    {
       return 2;

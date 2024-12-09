@@ -108,8 +108,6 @@ static void test_blit(layer2_screen_t *screen);
 
 static void test_blit_transparent(layer2_screen_t *screen);
 
-static void UpdateAndDrawAll(void);
-
 
 /*******************************************************************************
  * Variables
@@ -126,7 +124,7 @@ static uint8_t test_number = 0;
 
 static layer2_screen_t shadow_screen = {SHADOW_SCREEN};
 
-static layer2_screen_t off_screen = {OFF_SCREEN, 0, 1, 3};
+layer2_screen_t off_screen = {OFF_SCREEN, 0, 1, 3};
 
 #define INCOMING_PACKET_GOB_COUNT 10
 static GameObject incomingPacketGobs[INCOMING_PACKET_GOB_COUNT];
@@ -289,6 +287,14 @@ static void UpdateGameObjects(void)
     }
 }
 
+void DrawStatusText(char* text)
+{
+    uint8_t len = strlen(text);
+    uint8_t startPosX = 128 - (len/2);
+    layer2_fill_rect(1, 3*8, 256, 8, 0xff, &off_screen); // Clear field.
+    layer2_draw_text(3, 0/*startPosX*/, text, 0xc, &off_screen);
+    UpdateAndDrawAll();
+}
 
 static void DrawCloudEdge(layer2_screen_t *screen)
 {
@@ -336,25 +342,34 @@ static void create_start_screen(void)
    
     IO_153B = 0x00;  // Select ESP for UART(?)
 
+    printAt(10, 0);
+
     // Init ESP.
     NetComInit();
-    printf("Press any key to start\n");
-    in_wait_key();
+    //printf("Press any key to start\n");
+    //in_wait_key();
+
+    DrawStatusText("Ping server");
 
    // Send NOP to the server.
     uint8_t serverCommandsNop = 0;
     uint8_t packetLen = 1;
     uint8_t err = uart_send_data_packet(&serverCommandsNop, packetLen);
-    printf("uart_send_data_packet(). err=%u, buffer=%s\n", 
-        err, buffer);
-    UpdateAndDrawAll();
+    if(err)
+        printf("uart_send_data_packet(). err=%u, buffer=%s\n", 
+            err, buffer);
+    //UpdateAndDrawAll();
 
+    if(!err) 
+        DrawStatusText("Ping server (sent to UART)");
     // Read NOP send response.
     // The response should be: "Recv 1 bytes\n\rSEND OK\n\r"
     err = uart_read_response("SEND OK");
-    printf("uart_read_response(). err=%u, buffer=%s\n", 
-        err, buffer);
-    UpdateAndDrawAll();
+    if(err)
+        printf("uart_read_response(). err=%u, buffer=%s\n", 
+            err, buffer);
+    if(!err) 
+        DrawStatusText("Ping server (sent to Server)");
    
     // Read received data for NOP.
     // The response should be: "Recv 1 bytes\n\rSEND OK\n\r"
@@ -362,17 +377,19 @@ static void create_start_screen(void)
     //UpdateAndDrawAll();
     NopResponse resp;
     err = uart_get_received_data((char*)&resp, sizeof(NopResponse));
-    printf("uart_get_received_data(). err=%u, buffer=%s\n",
-         err, buffer);
-    UpdateAndDrawAll();
+    if(err)
+        printf("uart_get_received_data(). err=%u, buffer=%s\n",
+            err, buffer);
    
-    printf("Resp from server: cmd=%d, flags=%d\n", resp.cmd, resp.flags);
+    // printf("Resp from server: cmd=%d, flags=%d\n", resp.cmd, resp.flags);
+    if(!err)
+        DrawStatusText("Server responded");
 
     printf("Press any key to start\n");
     in_wait_key();
 }
 
-static void UpdateAndDrawAll(void)
+void UpdateAndDrawAll(void)
 {
     //DrawGame();
 
@@ -433,11 +450,11 @@ int main(void)
     create_sprites();
     set_sprite_layers_system(true, false, LAYER_PRIORITIES_S_L_U, false);
 
-    create_start_screen();
-
     DrawGameBackground();
     DrawGameBackground(); 
  
+    create_start_screen();
+    
     // Loop until the end of the game.
     while (true)
     {   

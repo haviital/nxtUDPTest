@@ -2,6 +2,7 @@
 #define ESP_H
 
 #include <stdint.h>
+#include "lib/zxn/zxnext_layer2.h"
 
 // MESSAGES
 
@@ -22,5 +23,9 @@ extern uint16_t esp_response_time_ms;   // timeout in milliseconds
 
 extern unsigned char esp_response_ok(void);
 extern unsigned char esp_detect_bps(void);
+
+extern void UpdateAndDrawAll(void);
+//extern layer2_screen_t off_screen;
+extern void DrawStatusText(char* text);
 
 #endif

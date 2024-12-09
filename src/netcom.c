@@ -14,7 +14,9 @@ void NetComInit(void)
     // XN_NEXTREG(0x02, 0);
     // z80_delay_ms(8000U*8U);      // 8s, about 8x longer for 28MHz
 
-    printf("Uart init\r\n");
+    //printf("Init\r\n");
+    DrawStatusText("Init");
+
     esp_response_time_ms = 66 + ESP_FW_RESPONSE_TIME_MS;   // two bit periods at 300bps
     uart_rx_readline_last(buffer, sizeof(buffer)-1);   // clear Rx
 
@@ -22,10 +24,10 @@ void NetComInit(void)
     esp_response_time_ms = 66 + ESP_FW_RESPONSE_TIME_MS * 100;   // two bit periods at 300bps
    
     //printf("ESP AT+GMR follows...\n");
-    uart_rx_readline_last(buffer, sizeof(buffer)-1);   // clear Rx
+    //uart_rx_readline_last(buffer, sizeof(buffer)-1);   // clear Rx
 
-   // Send AT command to UART and print response.
-    uart_send_at_cmd_and_print(STRING_ESP_TX_AT_GMR);
+    // Send AT command to UART and print response.
+    //uart_send_at_cmd_and_print(STRING_ESP_TX_AT_GMR);
 
 #if 0 
 
@@ -54,6 +56,8 @@ void NetComInit(void)
     //uart_send_at_cmd_and_print("AT+CWLAP=\"Koti_9751\"\r\n");
 #endif
 
+   DrawStatusText("Connecting to Wifi");
+
     // Disable echo
     uart_send_at_cmd_and_print("ATE0\r\n");
 
@@ -63,6 +67,8 @@ void NetComInit(void)
     esp_response_time_ms = 66 + ESP_FW_RESPONSE_TIME_MS * 100*10;   // longer timeout
     uart_send_at_cmd_and_print(atcmd); 
 
+    DrawStatusText("Connected to Wifi");
+
     // Get my IP address
     // AT+CIFSR
     //uart_send_at_cmd_and_print("AT+CIFSR\r\n");
@@ -71,6 +77,7 @@ void NetComInit(void)
     //AT+CIPMUX=0
     //esp_response_time_ms = 66 + ESP_FW_RESPONSE_TIME_MS*10;   // normal timeout
     uart_send_at_cmd_and_print("AT+CIPMUX=0\r\n");
+    DrawStatusText("Create Server connection");
 
     // Start UDP connection.
     // 2 means UDP(?)
@@ -79,7 +86,6 @@ void NetComInit(void)
     sprintf(atcmd, "AT+CIPSTART=\"UDP\",\"%s\",%s,%s,0\r\n", 
         UDP_SERVER_ADDRESS, UDP_SERVER_PORT,UDP_LOCAL_PORT );
     uart_send_at_cmd_and_print(atcmd); 
-
 }
 
 
