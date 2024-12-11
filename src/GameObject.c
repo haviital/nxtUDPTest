@@ -15,8 +15,8 @@ void GobUpdate(GameObject* gob)
     {
         if(gob->y <  SCREEN_Y - gob->sy)
             gob->y += gob->sy;   
-        else
-            gob->y = 0;
+    //    else
+    //        gob->y = 0;
     }
 
     // Going up
@@ -24,8 +24,8 @@ void GobUpdate(GameObject* gob)
     {
         if(gob->y > -gob->sy )
             gob->y += gob->sy;   
-        else
-            gob->y = (uint8_t)(SCREEN_Y-1); 
+        //else
+        //    gob->y = (uint8_t)(SCREEN_Y-1); 
     }
 }
 
@@ -33,5 +33,5 @@ void GobDraw(GameObject* gob)
 {
     // Update sprite position.
     set_sprite_slot(gob->spriteIndex);
-    set_sprite_attributes_ext(gob->spritePatternIndex, gob->x, gob->y, 0, 0, !gob->isHidden);
+    set_sprite_attributes_ext(gob->spritePatternIndex, gob->x, gob->y, 0, 0, !gob->isHidden && gob->isActive);
 }

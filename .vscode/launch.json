@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        
         {
             "type": "dezog",
             "request": "launch",
@@ -21,10 +22,15 @@
             },
             "sjasmplus": [
                 {
-                    "path": "Add your assembler list or sld file"
+                    "path": "Add your assembler list or sld filez"
                 }
             ],
-            "preLaunchTask": "CSpect",
+            "z88dkv2": [{
+                "path": "build/test.lis",
+                "srcDirs": [""],
+                "mapFile": "build/test.map",
+                "excludeFiles": [  ]
+            }],
             "commandsAfterLaunch": [],
             "history": {
                 "reverseDebugInstructionCount": 1000000,

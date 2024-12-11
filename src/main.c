@@ -132,6 +132,8 @@ static GameObject incomingPacketGobs[INCOMING_PACKET_GOB_COUNT];
 #define OUTGOING_PACKET_GOB_COUNT 10
 static GameObject outgoingPacketGobs[OUTGOING_PACKET_GOB_COUNT];
 
+void StartNewPacket(void);
+
 /*******************************************************************************
  * Functions
  ******************************************************************************/
@@ -221,7 +223,8 @@ static void create_sprites(void)
     // *** Moving sprites
 
     // Incoming data packet gobs
-    GameObject defaultGob = {.x = 30, .y= 88, .sx=0, .sy=3, .spriteIndex=0, .spritePatternIndex = CLOUD_PATTERN_SLOT, .isHidden=true};
+    GameObject defaultGob = {.x = 30, .y= 88, .sx=0, .sy=3, .spriteIndex=0, 
+        .spritePatternIndex = CLOUD_PATTERN_SLOT, .isHidden=false, .isActive=false};
     for(int i=0; i<INCOMING_PACKET_GOB_COUNT; i++)
     {
         int sprIndex = i;
@@ -236,10 +239,12 @@ static void create_sprites(void)
     }
 
     // Outgoing data packet gobs
+    GameObject defaultGob2 = {.x = 30, .y= 88, .sx=0, .sy=3, .spriteIndex=0, 
+        .spritePatternIndex = CLOUD_PATTERN_SLOT, .isHidden=false, .isActive=false};
     for(int i=0; i<OUTGOING_PACKET_GOB_COUNT; i++)
     {
         int sprIndex = i + INCOMING_PACKET_GOB_COUNT;
-        outgoingPacketGobs[i] = defaultGob;
+        outgoingPacketGobs[i] = defaultGob2;
         outgoingPacketGobs[i].x = 216;
         outgoingPacketGobs[i].y = i*32;
         outgoingPacketGobs[i].sy = -outgoingPacketGobs[i].sy;
@@ -248,52 +253,8 @@ static void create_sprites(void)
         //set_sprite_pattern(packet);
         set_sprite_slot(sprIndex);
         set_sprite_attributes_ext(outgoingPacketGobs[i].spritePatternIndex, outgoingPacketGobs[i].x, 
-                outgoingPacketGobs[i].y, 0, 0, !outgoingPacketGobs[i].isHidden);
+                outgoingPacketGobs[i].y, 0, 0, !outgoingPacketGobs[i].isHidden && outgoingPacketGobs[i].isActive );
     }
-}
-
-static void UpdateGameObjects(void)
-{
-    for(int i=0; i<INCOMING_PACKET_GOB_COUNT; i++)
-    {
-        // Calculate next position of sprite.
-        //testSprite.x += testSprite.dx;
-        //testSprite.y += testSprite.dy;
-        GobUpdate(&incomingPacketGobs[i]);
-
-        // Hide if inside clouds
-        if(incomingPacketGobs[i].y < CLOUD_SPRITE_Y || incomingPacketGobs[i].y>164)
-            incomingPacketGobs[i].isHidden = true;
-        else
-            incomingPacketGobs[i].isHidden = false;
-
-        GobDraw(&incomingPacketGobs[i]);
-    }
-
-    for(int i=0; i<OUTGOING_PACKET_GOB_COUNT; i++)
-    {
-        // Calculate next position of sprite.
-        //testSprite.x += testSprite.dx;
-        //testSprite.y += testSprite.dy;
-        GobUpdate(&outgoingPacketGobs[i]);
-
-        // Hide if inside clouds
-        if(outgoingPacketGobs[i].y < CLOUD_SPRITE_Y || outgoingPacketGobs[i].y>164)
-            outgoingPacketGobs[i].isHidden = true;
-        else
-            outgoingPacketGobs[i].isHidden = false;
-
-         GobDraw(&outgoingPacketGobs[i]);
-    }
-}
-
-void DrawStatusText(char* text)
-{
-    uint8_t len = strlen(text);
-    uint8_t startPosX = 128 - (len/2);
-    layer2_fill_rect(1, 3*8, 256, 8, 0xff, &off_screen); // Clear field.
-    layer2_draw_text(3, 0/*startPosX*/, text, 0xc, &off_screen);
-    UpdateAndDrawAll();
 }
 
 static void DrawCloudEdge(layer2_screen_t *screen)
@@ -383,10 +344,100 @@ static void create_start_screen(void)
    
     // printf("Resp from server: cmd=%d, flags=%d\n", resp.cmd, resp.flags);
     if(!err)
-        DrawStatusText("Server responded");
+    {
+        DrawStatusText("Server responded!");
+        //StartNewPacket();
 
-    printf("Press any key to start\n");
-    in_wait_key();
+        GameObject* gobp = &incomingPacketGobs[0];
+        gobp->isActive = true;
+        gobp->x = 216;
+        gobp->y = 154;
+        gobp->sx = 0;
+        gobp->sy = -3;
+    }
+
+    //printf("Press any key to start\n");
+    //in_wait_key();
+}
+
+void StartNewPacket(void)
+{
+    // Find first inactive (free) gob.
+    int i=0;
+    for(; i<INCOMING_PACKET_GOB_COUNT; i++)
+        if(!incomingPacketGobs[i].isActive)
+            break;
+
+    // If a free packet was found,  
+    if(i<INCOMING_PACKET_GOB_COUNT)
+    {
+        GameObject* gobp = &incomingPacketGobs[i];
+        gobp->isActive = true;
+        gobp->x = 101;
+        gobp->y = 216;
+        gobp->sx = 0;
+        gobp->sy = -3;
+    }
+}
+
+void DrawStatusText(char* text)
+{
+    uint8_t len = strlen(text);
+    uint8_t startPosX = 128 - (len/2);
+    layer2_fill_rect(1, 3*8, 256, 8, 0xff, &off_screen); // Clear field.
+    layer2_draw_text(3, 0/*startPosX*/, text, 0xc, &off_screen);
+    UpdateAndDrawAll();
+}
+
+static void UpdateGameObjects(void)
+{
+    for(int i=0; i<INCOMING_PACKET_GOB_COUNT; i++)
+    {
+        // Calculate next position of sprite.
+        //testSprite.x += testSprite.dx;
+        //testSprite.y += testSprite.dy;
+        GameObject* gob = &incomingPacketGobs[i];
+        if(gob->isActive)
+            GobUpdate(gob);
+
+        // Hide if inside clouds
+        if(gob->y < CLOUD_SPRITE_Y || gob->y > 164)
+            gob->isHidden = true;
+        else
+            gob->isHidden = false;
+
+        // Afer moved from the server up to cloud, start moving from cloud down to Next.
+        if(gob->sy < 0 && gob->y < 40 )
+        {
+            gob->x = 30;
+            gob->sx = 0;
+            gob->sy = 3;           
+        }
+
+        // TODO: when reached Next => inactive
+
+        // Note: draw also an inactive gob so that the sprite is set to invisible.
+        GobDraw(gob);
+    }
+
+#if 0
+    for(int i=0; i<OUTGOING_PACKET_GOB_COUNT; i++)
+    {
+        // Calculate next position of sprite.
+        //testSprite.x += testSprite.dx;
+        //testSprite.y += testSprite.dy;
+        if(outgoingPacketGobs[i].isActive)
+            GobUpdate(&outgoingPacketGobs[i]);
+
+        // Hide if inside clouds
+        if(outgoingPacketGobs[i].y < CLOUD_SPRITE_Y || outgoingPacketGobs[i].y>164)
+            outgoingPacketGobs[i].isHidden = true;
+        else
+            outgoingPacketGobs[i].isHidden = false;
+
+         GobDraw(&outgoingPacketGobs[i]);
+    }
+#endif    
 }
 
 void UpdateAndDrawAll(void)
@@ -454,7 +505,7 @@ int main(void)
     DrawGameBackground(); 
  
     create_start_screen();
-    
+
     // Loop until the end of the game.
     while (true)
     {   
