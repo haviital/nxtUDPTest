@@ -26,6 +26,6 @@ extern unsigned char esp_detect_bps(void);
 
 extern void UpdateAndDrawAll(void);
 //extern layer2_screen_t off_screen;
-extern void DrawStatusText(char* text);
+extern void DrawStatusTextAndPageFlip(char* text);
 
 #endif

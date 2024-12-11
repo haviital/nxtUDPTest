@@ -1,4 +1,4 @@
-C:/Users/Hannu/AppData/Local/Temp/zcc000011F0DA053.asm:
+C:/Users/Hannu/AppData/Local/Temp/zcc000062140B873.asm:
      1                          MODULE esp_c
      2                          LINE 0, "src/esp.c"
 src/esp.c:
@@ -236,367 +236,369 @@ src/esp.c:
    231                          ;--------------------------------------------------------
    232                          ; Externals used
    233                          ;--------------------------------------------------------
-   234                          	GLOBAL _uart_get_received_data
-   235                          	GLOBAL _uart_read_response
-   236                          	GLOBAL _uart_send_data_packet
-   237                          	GLOBAL _uart_available_rx
-   238                          	GLOBAL _uart_send_raw_data_and_print
-   239                          	GLOBAL _uart_raw_data_tx
-   240                          	GLOBAL _uart_rx_readline_last
-   241                          	GLOBAL _uart_rx_readline
-   242                          	GLOBAL _uart_tx
-   243                          	GLOBAL _uart_set_prescaler
-   244                          	GLOBAL _uart_compute_prescaler
-   245                          	GLOBAL _uart_send_at_cmd_and_print
-   246                          	GLOBAL _DrawStatusText
-   247                          	GLOBAL _UpdateAndDrawAll
-   248                          	GLOBAL _layer2_blit_off_screen_sub_column
-   249                          	GLOBAL _layer2_blit_off_screen_column
-   250                          	GLOBAL _layer2_blit_off_screen_sub_row
-   251                          	GLOBAL _layer2_blit_transparent
-   252                          	GLOBAL _layer2_blit
-   253                          	GLOBAL _layer2_fill_rect
-   254                          	GLOBAL _layer2_set_font
-   255                          	GLOBAL _layer2_draw_text
-   256                          	GLOBAL _layer2_draw_rect
-   257                          	GLOBAL _layer2_draw_line
-   258                          	GLOBAL _layer2_draw_pixel
-   259                          	GLOBAL _layer2_copy_off_screen
-   260                          	GLOBAL _layer2_load_palette
-   261                          	GLOBAL _layer2_load_screen
-   262                          	GLOBAL _layer2_clear_screen
-   263                          	GLOBAL _layer2_get_offset_y
-   264                          	GLOBAL _layer2_set_offset_y
-   265                          	GLOBAL _layer2_get_offset_x
-   266                          	GLOBAL _layer2_set_offset_x
-   267                          	GLOBAL _layer2_reset_palette
-   268                          	GLOBAL _layer2_set_palette
-   269                          	GLOBAL _layer2_set_rw_palette
-   270                          	GLOBAL _layer2_set_display_palette
-   271                          	GLOBAL _layer2_get_global_transparency_color
-   272                          	GLOBAL _layer2_set_global_transparency_color
-   273                          	GLOBAL _layer2_flip_main_shadow_screen
-   274                          	GLOBAL _layer2_get_shadow_screen_ram_bank
-   275                          	GLOBAL _layer2_set_shadow_screen_ram_bank
-   276                          	GLOBAL _layer2_get_main_screen_ram_bank
-   277                          	GLOBAL _layer2_set_main_screen_ram_bank
-   278                          	GLOBAL _layer2_set_layer_priorities
-   279                          	GLOBAL _layer2_configure
-   280                          	GLOBAL _ffsll_callee
-   281                          	GLOBAL _ffsll
-   282                          	GLOBAL _strxfrm_callee
-   283                          	GLOBAL _strxfrm
-   284                          	GLOBAL _strupr_fastcall
-   285                          	GLOBAL _strupr
-   286                          	GLOBAL _strtok_r_callee
-   287                          	GLOBAL _strtok_r
-   288                          	GLOBAL _strtok_callee
-   289                          	GLOBAL _strtok
-   290                          	GLOBAL _strstrip_fastcall
-   291                          	GLOBAL _strstrip
-   292                          	GLOBAL _strstr_callee
-   293                          	GLOBAL _strstr
-   294                          	GLOBAL _strspn_callee
-   295                          	GLOBAL _strspn
-   296                          	GLOBAL _strsep_callee
-   297                          	GLOBAL _strsep
-   298                          	GLOBAL _strrstrip_fastcall
-   299                          	GLOBAL _strrstrip
-   300                          	GLOBAL _strrstr_callee
-   301                          	GLOBAL _strrstr
-   302                          	GLOBAL _strrspn_callee
-   303                          	GLOBAL _strrspn
-   304                          	GLOBAL _strrev_fastcall
-   305                          	GLOBAL _strrev
-   306                          	GLOBAL _strrcspn_callee
-   307                          	GLOBAL _strrcspn
-   308                          	GLOBAL _strrchr_callee
-   309                          	GLOBAL _strrchr
-   310                          	GLOBAL _strpbrk_callee
-   311                          	GLOBAL _strpbrk
-   312                          	GLOBAL _strnlen_callee
-   313                          	GLOBAL _strnlen
-   314                          	GLOBAL _strnicmp_callee
-   315                          	GLOBAL _strnicmp
-   316                          	GLOBAL _strndup_callee
-   317                          	GLOBAL _strndup
-   318                          	GLOBAL _strncpy_callee
-   319                          	GLOBAL _strncpy
-   320                          	GLOBAL _strncmp_callee
-   321                          	GLOBAL _strncmp
-   322                          	GLOBAL _strnchr_callee
-   323                          	GLOBAL _strnchr
-   324                          	GLOBAL _strncat_callee
-   325                          	GLOBAL _strncat
-   326                          	GLOBAL _strncasecmp_callee
-   327                          	GLOBAL _strncasecmp
-   328                          	GLOBAL _strlwr_fastcall
-   329                          	GLOBAL _strlwr
-   330                          	GLOBAL _strlen_fastcall
-   331                          	GLOBAL _strlen
-   332                          	GLOBAL _strlcpy_callee
-   333                          	GLOBAL _strlcpy
-   334                          	GLOBAL _strlcat_callee
-   335                          	GLOBAL _strlcat
-   336                          	GLOBAL _stricmp_callee
-   337                          	GLOBAL _stricmp
-   338                          	GLOBAL _strerror_fastcall
-   339                          	GLOBAL _strerror
-   340                          	GLOBAL _strdup_fastcall
-   341                          	GLOBAL _strdup
-   342                          	GLOBAL _strcspn_callee
-   343                          	GLOBAL _strcspn
-   344                          	GLOBAL _strcpy_callee
-   345                          	GLOBAL _strcpy
-   346                          	GLOBAL _strcoll_callee
-   347                          	GLOBAL _strcoll
-   348                          	GLOBAL _strcmp_callee
-   349                          	GLOBAL _strcmp
-   350                          	GLOBAL _strchrnul_callee
-   351                          	GLOBAL _strchrnul
-   352                          	GLOBAL _strchr_callee
-   353                          	GLOBAL _strchr
-   354                          	GLOBAL _strcat_callee
-   355                          	GLOBAL _strcat
-   356                          	GLOBAL _strcasecmp_callee
-   357                          	GLOBAL _strcasecmp
-   358                          	GLOBAL _stpncpy_callee
-   359                          	GLOBAL _stpncpy
-   360                          	GLOBAL _stpcpy_callee
-   361                          	GLOBAL _stpcpy
-   362                          	GLOBAL _memswap_callee
-   363                          	GLOBAL _memswap
-   364                          	GLOBAL _memset_wr_callee
-   365                          	GLOBAL _memset_wr
-   366                          	GLOBAL _memset_callee
-   367                          	GLOBAL _memset
-   368                          	GLOBAL _memrchr_callee
-   369                          	GLOBAL _memrchr
-   370                          	GLOBAL _memmove_callee
-   371                          	GLOBAL _memmove
-   372                          	GLOBAL _memmem_callee
-   373                          	GLOBAL _memmem
-   374                          	GLOBAL _memcpy_callee
-   375                          	GLOBAL _memcpy
-   376                          	GLOBAL _memcmp_callee
-   377                          	GLOBAL _memcmp
-   378                          	GLOBAL _memchr_callee
-   379                          	GLOBAL _memchr
-   380                          	GLOBAL _memccpy_callee
-   381                          	GLOBAL _memccpy
-   382                          	GLOBAL _ffsl_fastcall
-   383                          	GLOBAL _ffsl
-   384                          	GLOBAL _ffs_fastcall
-   385                          	GLOBAL _ffs
-   386                          	GLOBAL __strrstrip__fastcall
-   387                          	GLOBAL __strrstrip_
-   388                          	GLOBAL __memupr__callee
-   389                          	GLOBAL __memupr_
-   390                          	GLOBAL __memstrcpy__callee
-   391                          	GLOBAL __memstrcpy_
-   392                          	GLOBAL __memlwr__callee
-   393                          	GLOBAL __memlwr_
-   394                          	GLOBAL _rawmemchr_callee
-   395                          	GLOBAL _rawmemchr
-   396                          	GLOBAL _strnset_callee
-   397                          	GLOBAL _strnset
-   398                          	GLOBAL _strset_callee
-   399                          	GLOBAL _strset
-   400                          	GLOBAL _rindex_callee
-   401                          	GLOBAL _rindex
-   402                          	GLOBAL _index_callee
-   403                          	GLOBAL _index
-   404                          	GLOBAL _bzero_callee
-   405                          	GLOBAL _bzero
-   406                          	GLOBAL _bcopy_callee
-   407                          	GLOBAL _bcopy
-   408                          	GLOBAL _bcmp_callee
-   409                          	GLOBAL _bcmp
-   410                          	GLOBAL _tmpnam_ex_fastcall
-   411                          	GLOBAL _tmpnam_ex
-   412                          	GLOBAL _tmpnam_fastcall
-   413                          	GLOBAL _tmpnam
-   414                          	GLOBAL _vscanf_unlocked_callee
-   415                          	GLOBAL _vscanf_unlocked
-   416                          	GLOBAL _vprintf_unlocked_callee
-   417                          	GLOBAL _vprintf_unlocked
-   418                          	GLOBAL _vfscanf_unlocked_callee
-   419                          	GLOBAL _vfscanf_unlocked
-   420                          	GLOBAL _vfprintf_unlocked_callee
-   421                          	GLOBAL _vfprintf_unlocked
-   422                          	GLOBAL _ungetc_unlocked_callee
-   423                          	GLOBAL _ungetc_unlocked
-   424                          	GLOBAL _scanf_unlocked
-   425                          	GLOBAL _rewind_unlocked_fastcall
-   426                          	GLOBAL _rewind_unlocked
-   427                          	GLOBAL _puts_unlocked_fastcall
-   428                          	GLOBAL _puts_unlocked
-   429                          	GLOBAL _putchar_unlocked_fastcall
-   430                          	GLOBAL _putchar_unlocked
-   431                          	GLOBAL _putc_unlocked_callee
-   432                          	GLOBAL _putc_unlocked
-   433                          	GLOBAL _printf_unlocked
-   434                          	GLOBAL _gets_unlocked_fastcall
-   435                          	GLOBAL _gets_unlocked
-   436                          	GLOBAL _getline_unlocked_callee
-   437                          	GLOBAL _getline_unlocked
-   438                          	GLOBAL _getdelim_unlocked_callee
-   439                          	GLOBAL _getdelim_unlocked
-   440                          	GLOBAL _getchar_unlocked
-   441                          	GLOBAL _getc_unlocked_fastcall
-   442                          	GLOBAL _getc_unlocked
-   443                          	GLOBAL _fwrite_unlocked_callee
-   444                          	GLOBAL _fwrite_unlocked
-   445                          	GLOBAL _ftell_unlocked_fastcall
-   446                          	GLOBAL _ftell_unlocked
-   447                          	GLOBAL _fsetpos_unlocked_callee
-   448                          	GLOBAL _fsetpos_unlocked
-   449                          	GLOBAL _fseek_unlocked_callee
-   450                          	GLOBAL _fseek_unlocked
-   451                          	GLOBAL _fscanf_unlocked
-   452                          	GLOBAL _freopen_unlocked_callee
-   453                          	GLOBAL _freopen_unlocked
-   454                          	GLOBAL _fread_unlocked_callee
-   455                          	GLOBAL _fread_unlocked
-   456                          	GLOBAL _fputs_unlocked_callee
-   457                          	GLOBAL _fputs_unlocked
-   458                          	GLOBAL _fputc_unlocked_callee
-   459                          	GLOBAL _fputc_unlocked
-   460                          	GLOBAL _fprintf_unlocked
-   461                          	GLOBAL _fileno_unlocked_fastcall
-   462                          	GLOBAL _fileno_unlocked
-   463                          	GLOBAL _fgets_unlocked_callee
-   464                          	GLOBAL _fgets_unlocked
-   465                          	GLOBAL _fgetpos_unlocked_callee
-   466                          	GLOBAL _fgetpos_unlocked
-   467                          	GLOBAL _fgetc_unlocked_fastcall
-   468                          	GLOBAL _fgetc_unlocked
-   469                          	GLOBAL _fflush_unlocked_fastcall
-   470                          	GLOBAL _fflush_unlocked
-   471                          	GLOBAL _ferror_unlocked_fastcall
-   472                          	GLOBAL _ferror_unlocked
-   473                          	GLOBAL _feof_unlocked_fastcall
-   474                          	GLOBAL _feof_unlocked
-   475                          	GLOBAL _fclose_unlocked_fastcall
-   476                          	GLOBAL _fclose_unlocked
-   477                          	GLOBAL _clearerr_unlocked_fastcall
-   478                          	GLOBAL _clearerr_unlocked
-   479                          	GLOBAL _vsscanf_callee
-   480                          	GLOBAL _vsscanf
-   481                          	GLOBAL _vsprintf_callee
-   482                          	GLOBAL _vsprintf
-   483                          	GLOBAL _vsnprintf_callee
-   484                          	GLOBAL _vsnprintf
-   485                          	GLOBAL _vscanf_callee
-   486                          	GLOBAL _vscanf
-   487                          	GLOBAL _vprintf_callee
-   488                          	GLOBAL _vprintf
-   489                          	GLOBAL _vfscanf_callee
-   490                          	GLOBAL _vfscanf
-   491                          	GLOBAL _vfprintf_callee
-   492                          	GLOBAL _vfprintf
-   493                          	GLOBAL _vasprintf_callee
-   494                          	GLOBAL _vasprintf
-   495                          	GLOBAL _ungetc_callee
-   496                          	GLOBAL _ungetc
-   497                          	GLOBAL _sscanf
-   498                          	GLOBAL _sprintf
-   499                          	GLOBAL _snprintf
-   500                          	GLOBAL _scanf
-   501                          	GLOBAL _rewind_fastcall
-   502                          	GLOBAL _rewind
-   503                          	GLOBAL _puts_fastcall
-   504                          	GLOBAL _puts
-   505                          	GLOBAL _putchar_fastcall
-   506                          	GLOBAL _putchar
-   507                          	GLOBAL _putc_callee
-   508                          	GLOBAL _putc
-   509                          	GLOBAL _printf
-   510                          	GLOBAL _perror_fastcall
-   511                          	GLOBAL _perror
-   512                          	GLOBAL _open_memstream_callee
-   513                          	GLOBAL _open_memstream
-   514                          	GLOBAL _obstack_vprintf_callee
-   515                          	GLOBAL _obstack_vprintf
-   516                          	GLOBAL _obstack_printf
-   517                          	GLOBAL _gets_fastcall
-   518                          	GLOBAL _gets
-   519                          	GLOBAL _getline_callee
-   520                          	GLOBAL _getline
-   521                          	GLOBAL _getdelim_callee
-   522                          	GLOBAL _getdelim
-   523                          	GLOBAL _getchar
-   524                          	GLOBAL _getc_fastcall
-   525                          	GLOBAL _getc
-   526                          	GLOBAL _fwrite_callee
-   527                          	GLOBAL _fwrite
-   528                          	GLOBAL _funlockfile_fastcall
-   529                          	GLOBAL _funlockfile
-   530                          	GLOBAL _ftrylockfile_fastcall
-   531                          	GLOBAL _ftrylockfile
-   532                          	GLOBAL _ftell_fastcall
-   533                          	GLOBAL _ftell
-   534                          	GLOBAL _fsetpos_callee
-   535                          	GLOBAL _fsetpos
-   536                          	GLOBAL _fseek_callee
-   537                          	GLOBAL _fseek
-   538                          	GLOBAL _fscanf
-   539                          	GLOBAL _freopen_callee
-   540                          	GLOBAL _freopen
-   541                          	GLOBAL _fread_callee
-   542                          	GLOBAL _fread
-   543                          	GLOBAL _fputs_callee
-   544                          	GLOBAL _fputs
-   545                          	GLOBAL _fputc_callee
-   546                          	GLOBAL _fputc
-   547                          	GLOBAL _fprintf
-   548                          	GLOBAL _fopen_callee
-   549                          	GLOBAL _fopen
-   550                          	GLOBAL _fmemopen_callee
-   551                          	GLOBAL _fmemopen
-   552                          	GLOBAL _flockfile_fastcall
-   553                          	GLOBAL _flockfile
-   554                          	GLOBAL _fileno_fastcall
-   555                          	GLOBAL _fileno
-   556                          	GLOBAL _fgets_callee
-   557                          	GLOBAL _fgets
-   558                          	GLOBAL _fgetpos_callee
-   559                          	GLOBAL _fgetpos
-   560                          	GLOBAL _fgetc_fastcall
-   561                          	GLOBAL _fgetc
-   562                          	GLOBAL _fflush_fastcall
-   563                          	GLOBAL _fflush
-   564                          	GLOBAL _ferror_fastcall
-   565                          	GLOBAL _ferror
-   566                          	GLOBAL _feof_fastcall
-   567                          	GLOBAL _feof
-   568                          	GLOBAL _fdopen_callee
-   569                          	GLOBAL _fdopen
-   570                          	GLOBAL _fclose_fastcall
-   571                          	GLOBAL _fclose
-   572                          	GLOBAL _clearerr_fastcall
-   573                          	GLOBAL _clearerr
-   574                          	GLOBAL _asprintf
-   575                          	GLOBAL __fmemopen__callee
-   576                          	GLOBAL __fmemopen_
-   577                          	GLOBAL _stderr
-   578                          	GLOBAL _stdout
-   579                          	GLOBAL _stdin
-   580                          	GLOBAL __MAX_FOPEN
-   581                          ;--------------------------------------------------------
-   582                          ; special function registers
+   234                          	GLOBAL _atoi
+   235                          	GLOBAL _itoa
+   236                          	GLOBAL _uart_get_received_data
+   237                          	GLOBAL _uart_read_response
+   238                          	GLOBAL _uart_send_data_packet
+   239                          	GLOBAL _uart_available_rx
+   240                          	GLOBAL _uart_send_raw_data_and_print
+   241                          	GLOBAL _uart_raw_data_tx
+   242                          	GLOBAL _uart_rx_readline_last
+   243                          	GLOBAL _uart_rx_readline
+   244                          	GLOBAL _uart_tx
+   245                          	GLOBAL _uart_set_prescaler
+   246                          	GLOBAL _uart_compute_prescaler
+   247                          	GLOBAL _uart_send_at_cmd_and_print
+   248                          	GLOBAL _DrawStatusTextAndPageFlip
+   249                          	GLOBAL _UpdateAndDrawAll
+   250                          	GLOBAL _layer2_blit_off_screen_sub_column
+   251                          	GLOBAL _layer2_blit_off_screen_column
+   252                          	GLOBAL _layer2_blit_off_screen_sub_row
+   253                          	GLOBAL _layer2_blit_transparent
+   254                          	GLOBAL _layer2_blit
+   255                          	GLOBAL _layer2_fill_rect
+   256                          	GLOBAL _layer2_set_font
+   257                          	GLOBAL _layer2_draw_text
+   258                          	GLOBAL _layer2_draw_rect
+   259                          	GLOBAL _layer2_draw_line
+   260                          	GLOBAL _layer2_draw_pixel
+   261                          	GLOBAL _layer2_copy_off_screen
+   262                          	GLOBAL _layer2_load_palette
+   263                          	GLOBAL _layer2_load_screen
+   264                          	GLOBAL _layer2_clear_screen
+   265                          	GLOBAL _layer2_get_offset_y
+   266                          	GLOBAL _layer2_set_offset_y
+   267                          	GLOBAL _layer2_get_offset_x
+   268                          	GLOBAL _layer2_set_offset_x
+   269                          	GLOBAL _layer2_reset_palette
+   270                          	GLOBAL _layer2_set_palette
+   271                          	GLOBAL _layer2_set_rw_palette
+   272                          	GLOBAL _layer2_set_display_palette
+   273                          	GLOBAL _layer2_get_global_transparency_color
+   274                          	GLOBAL _layer2_set_global_transparency_color
+   275                          	GLOBAL _layer2_flip_main_shadow_screen
+   276                          	GLOBAL _layer2_get_shadow_screen_ram_bank
+   277                          	GLOBAL _layer2_set_shadow_screen_ram_bank
+   278                          	GLOBAL _layer2_get_main_screen_ram_bank
+   279                          	GLOBAL _layer2_set_main_screen_ram_bank
+   280                          	GLOBAL _layer2_set_layer_priorities
+   281                          	GLOBAL _layer2_configure
+   282                          	GLOBAL _ffsll_callee
+   283                          	GLOBAL _ffsll
+   284                          	GLOBAL _strxfrm_callee
+   285                          	GLOBAL _strxfrm
+   286                          	GLOBAL _strupr_fastcall
+   287                          	GLOBAL _strupr
+   288                          	GLOBAL _strtok_r_callee
+   289                          	GLOBAL _strtok_r
+   290                          	GLOBAL _strtok_callee
+   291                          	GLOBAL _strtok
+   292                          	GLOBAL _strstrip_fastcall
+   293                          	GLOBAL _strstrip
+   294                          	GLOBAL _strstr_callee
+   295                          	GLOBAL _strstr
+   296                          	GLOBAL _strspn_callee
+   297                          	GLOBAL _strspn
+   298                          	GLOBAL _strsep_callee
+   299                          	GLOBAL _strsep
+   300                          	GLOBAL _strrstrip_fastcall
+   301                          	GLOBAL _strrstrip
+   302                          	GLOBAL _strrstr_callee
+   303                          	GLOBAL _strrstr
+   304                          	GLOBAL _strrspn_callee
+   305                          	GLOBAL _strrspn
+   306                          	GLOBAL _strrev_fastcall
+   307                          	GLOBAL _strrev
+   308                          	GLOBAL _strrcspn_callee
+   309                          	GLOBAL _strrcspn
+   310                          	GLOBAL _strrchr_callee
+   311                          	GLOBAL _strrchr
+   312                          	GLOBAL _strpbrk_callee
+   313                          	GLOBAL _strpbrk
+   314                          	GLOBAL _strnlen_callee
+   315                          	GLOBAL _strnlen
+   316                          	GLOBAL _strnicmp_callee
+   317                          	GLOBAL _strnicmp
+   318                          	GLOBAL _strndup_callee
+   319                          	GLOBAL _strndup
+   320                          	GLOBAL _strncpy_callee
+   321                          	GLOBAL _strncpy
+   322                          	GLOBAL _strncmp_callee
+   323                          	GLOBAL _strncmp
+   324                          	GLOBAL _strnchr_callee
+   325                          	GLOBAL _strnchr
+   326                          	GLOBAL _strncat_callee
+   327                          	GLOBAL _strncat
+   328                          	GLOBAL _strncasecmp_callee
+   329                          	GLOBAL _strncasecmp
+   330                          	GLOBAL _strlwr_fastcall
+   331                          	GLOBAL _strlwr
+   332                          	GLOBAL _strlen_fastcall
+   333                          	GLOBAL _strlen
+   334                          	GLOBAL _strlcpy_callee
+   335                          	GLOBAL _strlcpy
+   336                          	GLOBAL _strlcat_callee
+   337                          	GLOBAL _strlcat
+   338                          	GLOBAL _stricmp_callee
+   339                          	GLOBAL _stricmp
+   340                          	GLOBAL _strerror_fastcall
+   341                          	GLOBAL _strerror
+   342                          	GLOBAL _strdup_fastcall
+   343                          	GLOBAL _strdup
+   344                          	GLOBAL _strcspn_callee
+   345                          	GLOBAL _strcspn
+   346                          	GLOBAL _strcpy_callee
+   347                          	GLOBAL _strcpy
+   348                          	GLOBAL _strcoll_callee
+   349                          	GLOBAL _strcoll
+   350                          	GLOBAL _strcmp_callee
+   351                          	GLOBAL _strcmp
+   352                          	GLOBAL _strchrnul_callee
+   353                          	GLOBAL _strchrnul
+   354                          	GLOBAL _strchr_callee
+   355                          	GLOBAL _strchr
+   356                          	GLOBAL _strcat_callee
+   357                          	GLOBAL _strcat
+   358                          	GLOBAL _strcasecmp_callee
+   359                          	GLOBAL _strcasecmp
+   360                          	GLOBAL _stpncpy_callee
+   361                          	GLOBAL _stpncpy
+   362                          	GLOBAL _stpcpy_callee
+   363                          	GLOBAL _stpcpy
+   364                          	GLOBAL _memswap_callee
+   365                          	GLOBAL _memswap
+   366                          	GLOBAL _memset_wr_callee
+   367                          	GLOBAL _memset_wr
+   368                          	GLOBAL _memset_callee
+   369                          	GLOBAL _memset
+   370                          	GLOBAL _memrchr_callee
+   371                          	GLOBAL _memrchr
+   372                          	GLOBAL _memmove_callee
+   373                          	GLOBAL _memmove
+   374                          	GLOBAL _memmem_callee
+   375                          	GLOBAL _memmem
+   376                          	GLOBAL _memcpy_callee
+   377                          	GLOBAL _memcpy
+   378                          	GLOBAL _memcmp_callee
+   379                          	GLOBAL _memcmp
+   380                          	GLOBAL _memchr_callee
+   381                          	GLOBAL _memchr
+   382                          	GLOBAL _memccpy_callee
+   383                          	GLOBAL _memccpy
+   384                          	GLOBAL _ffsl_fastcall
+   385                          	GLOBAL _ffsl
+   386                          	GLOBAL _ffs_fastcall
+   387                          	GLOBAL _ffs
+   388                          	GLOBAL __strrstrip__fastcall
+   389                          	GLOBAL __strrstrip_
+   390                          	GLOBAL __memupr__callee
+   391                          	GLOBAL __memupr_
+   392                          	GLOBAL __memstrcpy__callee
+   393                          	GLOBAL __memstrcpy_
+   394                          	GLOBAL __memlwr__callee
+   395                          	GLOBAL __memlwr_
+   396                          	GLOBAL _rawmemchr_callee
+   397                          	GLOBAL _rawmemchr
+   398                          	GLOBAL _strnset_callee
+   399                          	GLOBAL _strnset
+   400                          	GLOBAL _strset_callee
+   401                          	GLOBAL _strset
+   402                          	GLOBAL _rindex_callee
+   403                          	GLOBAL _rindex
+   404                          	GLOBAL _index_callee
+   405                          	GLOBAL _index
+   406                          	GLOBAL _bzero_callee
+   407                          	GLOBAL _bzero
+   408                          	GLOBAL _bcopy_callee
+   409                          	GLOBAL _bcopy
+   410                          	GLOBAL _bcmp_callee
+   411                          	GLOBAL _bcmp
+   412                          	GLOBAL _tmpnam_ex_fastcall
+   413                          	GLOBAL _tmpnam_ex
+   414                          	GLOBAL _tmpnam_fastcall
+   415                          	GLOBAL _tmpnam
+   416                          	GLOBAL _vscanf_unlocked_callee
+   417                          	GLOBAL _vscanf_unlocked
+   418                          	GLOBAL _vprintf_unlocked_callee
+   419                          	GLOBAL _vprintf_unlocked
+   420                          	GLOBAL _vfscanf_unlocked_callee
+   421                          	GLOBAL _vfscanf_unlocked
+   422                          	GLOBAL _vfprintf_unlocked_callee
+   423                          	GLOBAL _vfprintf_unlocked
+   424                          	GLOBAL _ungetc_unlocked_callee
+   425                          	GLOBAL _ungetc_unlocked
+   426                          	GLOBAL _scanf_unlocked
+   427                          	GLOBAL _rewind_unlocked_fastcall
+   428                          	GLOBAL _rewind_unlocked
+   429                          	GLOBAL _puts_unlocked_fastcall
+   430                          	GLOBAL _puts_unlocked
+   431                          	GLOBAL _putchar_unlocked_fastcall
+   432                          	GLOBAL _putchar_unlocked
+   433                          	GLOBAL _putc_unlocked_callee
+   434                          	GLOBAL _putc_unlocked
+   435                          	GLOBAL _printf_unlocked
+   436                          	GLOBAL _gets_unlocked_fastcall
+   437                          	GLOBAL _gets_unlocked
+   438                          	GLOBAL _getline_unlocked_callee
+   439                          	GLOBAL _getline_unlocked
+   440                          	GLOBAL _getdelim_unlocked_callee
+   441                          	GLOBAL _getdelim_unlocked
+   442                          	GLOBAL _getchar_unlocked
+   443                          	GLOBAL _getc_unlocked_fastcall
+   444                          	GLOBAL _getc_unlocked
+   445                          	GLOBAL _fwrite_unlocked_callee
+   446                          	GLOBAL _fwrite_unlocked
+   447                          	GLOBAL _ftell_unlocked_fastcall
+   448                          	GLOBAL _ftell_unlocked
+   449                          	GLOBAL _fsetpos_unlocked_callee
+   450                          	GLOBAL _fsetpos_unlocked
+   451                          	GLOBAL _fseek_unlocked_callee
+   452                          	GLOBAL _fseek_unlocked
+   453                          	GLOBAL _fscanf_unlocked
+   454                          	GLOBAL _freopen_unlocked_callee
+   455                          	GLOBAL _freopen_unlocked
+   456                          	GLOBAL _fread_unlocked_callee
+   457                          	GLOBAL _fread_unlocked
+   458                          	GLOBAL _fputs_unlocked_callee
+   459                          	GLOBAL _fputs_unlocked
+   460                          	GLOBAL _fputc_unlocked_callee
+   461                          	GLOBAL _fputc_unlocked
+   462                          	GLOBAL _fprintf_unlocked
+   463                          	GLOBAL _fileno_unlocked_fastcall
+   464                          	GLOBAL _fileno_unlocked
+   465                          	GLOBAL _fgets_unlocked_callee
+   466                          	GLOBAL _fgets_unlocked
+   467                          	GLOBAL _fgetpos_unlocked_callee
+   468                          	GLOBAL _fgetpos_unlocked
+   469                          	GLOBAL _fgetc_unlocked_fastcall
+   470                          	GLOBAL _fgetc_unlocked
+   471                          	GLOBAL _fflush_unlocked_fastcall
+   472                          	GLOBAL _fflush_unlocked
+   473                          	GLOBAL _ferror_unlocked_fastcall
+   474                          	GLOBAL _ferror_unlocked
+   475                          	GLOBAL _feof_unlocked_fastcall
+   476                          	GLOBAL _feof_unlocked
+   477                          	GLOBAL _fclose_unlocked_fastcall
+   478                          	GLOBAL _fclose_unlocked
+   479                          	GLOBAL _clearerr_unlocked_fastcall
+   480                          	GLOBAL _clearerr_unlocked
+   481                          	GLOBAL _vsscanf_callee
+   482                          	GLOBAL _vsscanf
+   483                          	GLOBAL _vsprintf_callee
+   484                          	GLOBAL _vsprintf
+   485                          	GLOBAL _vsnprintf_callee
+   486                          	GLOBAL _vsnprintf
+   487                          	GLOBAL _vscanf_callee
+   488                          	GLOBAL _vscanf
+   489                          	GLOBAL _vprintf_callee
+   490                          	GLOBAL _vprintf
+   491                          	GLOBAL _vfscanf_callee
+   492                          	GLOBAL _vfscanf
+   493                          	GLOBAL _vfprintf_callee
+   494                          	GLOBAL _vfprintf
+   495                          	GLOBAL _vasprintf_callee
+   496                          	GLOBAL _vasprintf
+   497                          	GLOBAL _ungetc_callee
+   498                          	GLOBAL _ungetc
+   499                          	GLOBAL _sscanf
+   500                          	GLOBAL _sprintf
+   501                          	GLOBAL _snprintf
+   502                          	GLOBAL _scanf
+   503                          	GLOBAL _rewind_fastcall
+   504                          	GLOBAL _rewind
+   505                          	GLOBAL _puts_fastcall
+   506                          	GLOBAL _puts
+   507                          	GLOBAL _putchar_fastcall
+   508                          	GLOBAL _putchar
+   509                          	GLOBAL _putc_callee
+   510                          	GLOBAL _putc
+   511                          	GLOBAL _printf
+   512                          	GLOBAL _perror_fastcall
+   513                          	GLOBAL _perror
+   514                          	GLOBAL _open_memstream_callee
+   515                          	GLOBAL _open_memstream
+   516                          	GLOBAL _obstack_vprintf_callee
+   517                          	GLOBAL _obstack_vprintf
+   518                          	GLOBAL _obstack_printf
+   519                          	GLOBAL _gets_fastcall
+   520                          	GLOBAL _gets
+   521                          	GLOBAL _getline_callee
+   522                          	GLOBAL _getline
+   523                          	GLOBAL _getdelim_callee
+   524                          	GLOBAL _getdelim
+   525                          	GLOBAL _getchar
+   526                          	GLOBAL _getc_fastcall
+   527                          	GLOBAL _getc
+   528                          	GLOBAL _fwrite_callee
+   529                          	GLOBAL _fwrite
+   530                          	GLOBAL _funlockfile_fastcall
+   531                          	GLOBAL _funlockfile
+   532                          	GLOBAL _ftrylockfile_fastcall
+   533                          	GLOBAL _ftrylockfile
+   534                          	GLOBAL _ftell_fastcall
+   535                          	GLOBAL _ftell
+   536                          	GLOBAL _fsetpos_callee
+   537                          	GLOBAL _fsetpos
+   538                          	GLOBAL _fseek_callee
+   539                          	GLOBAL _fseek
+   540                          	GLOBAL _fscanf
+   541                          	GLOBAL _freopen_callee
+   542                          	GLOBAL _freopen
+   543                          	GLOBAL _fread_callee
+   544                          	GLOBAL _fread
+   545                          	GLOBAL _fputs_callee
+   546                          	GLOBAL _fputs
+   547                          	GLOBAL _fputc_callee
+   548                          	GLOBAL _fputc
+   549                          	GLOBAL _fprintf
+   550                          	GLOBAL _fopen_callee
+   551                          	GLOBAL _fopen
+   552                          	GLOBAL _fmemopen_callee
+   553                          	GLOBAL _fmemopen
+   554                          	GLOBAL _flockfile_fastcall
+   555                          	GLOBAL _flockfile
+   556                          	GLOBAL _fileno_fastcall
+   557                          	GLOBAL _fileno
+   558                          	GLOBAL _fgets_callee
+   559                          	GLOBAL _fgets
+   560                          	GLOBAL _fgetpos_callee
+   561                          	GLOBAL _fgetpos
+   562                          	GLOBAL _fgetc_fastcall
+   563                          	GLOBAL _fgetc
+   564                          	GLOBAL _fflush_fastcall
+   565                          	GLOBAL _fflush
+   566                          	GLOBAL _ferror_fastcall
+   567                          	GLOBAL _ferror
+   568                          	GLOBAL _feof_fastcall
+   569                          	GLOBAL _feof
+   570                          	GLOBAL _fdopen_callee
+   571                          	GLOBAL _fdopen
+   572                          	GLOBAL _fclose_fastcall
+   573                          	GLOBAL _fclose
+   574                          	GLOBAL _clearerr_fastcall
+   575                          	GLOBAL _clearerr
+   576                          	GLOBAL _asprintf
+   577                          	GLOBAL __fmemopen__callee
+   578                          	GLOBAL __fmemopen_
+   579                          	GLOBAL _stderr
+   580                          	GLOBAL _stdout
+   581                          	GLOBAL _stdin
+   582                          	GLOBAL __MAX_FOPEN
    583                          ;--------------------------------------------------------
-   584                          defc _IO_153B	=	0x153b
+   584                          ; special function registers
    585                          ;--------------------------------------------------------
-   586                          ; ram data
+   586                          defc _IO_153B	=	0x153b
    587                          ;--------------------------------------------------------
-   588                          	SECTION bss_compiler
-   589                          _esp_bps:
-   590  0000  00000000          	DEFS 4
-   591                          _esp_response_time_ms:
-   592  0004  0000              	DEFS 2
-   593                          _buffer:
-   594  0006  0000000000000000  	DEFS 256
+   588                          ; ram data
+   589                          ;--------------------------------------------------------
+   590                          	SECTION bss_compiler
+   591                          _esp_bps:
+   592  0000  00000000          	DEFS 4
+   593                          _esp_response_time_ms:
+   594  0004  0000              	DEFS 2
+   595                          _buffer:
+   596  0006  0000000000000000  	DEFS 256
               0000000000000000  
               0000000000000000  
               0000000000000000  
@@ -628,812 +630,812 @@ src/esp.c:
               0000000000000000  
               0000000000000000  
               0000000000000000  
-   595                          _esp_prescaler:
-   596  0106  00000000          	DEFS 4
-   597                          _esp_prescaler_endpoint:
-   598  010a  00000000          	DEFS 4
-   599                          _esp_bsearch_ok_10000_350:
-   600  010e  00000000          	DEFS 4
-   601                          _esp_bsearch_last_10000_350:
-   602  0112  00000000          	DEFS 4
-   603                          _esp_binary_search_bps_uart_prescaler_lo_10000_355:
-   604  0116  00000000          	DEFS 4
-   605                          _esp_binary_search_bps_uart_prescaler_hi_10000_355:
-   606  011a  00000000          	DEFS 4
-   607                          _esp_bps_query_temp_10000_357:
-   608  011e  00000000          	DEFS 4
-   609                          _esp_finetune_bps_temp_10000_361:
-   610  0122  00000000          	DEFS 4
-   611                          _esp_detect_bps_i_10000_367:
-   612  0126  00                	DEFS 1
-   613                          ;--------------------------------------------------------
-   614                          ; ram data
+   597                          _esp_prescaler:
+   598  0106  00000000          	DEFS 4
+   599                          _esp_prescaler_endpoint:
+   600  010a  00000000          	DEFS 4
+   601                          _esp_bsearch_ok_10000_352:
+   602  010e  00000000          	DEFS 4
+   603                          _esp_bsearch_last_10000_352:
+   604  0112  00000000          	DEFS 4
+   605                          _esp_binary_search_bps_uart_prescaler_lo_10000_357:
+   606  0116  00000000          	DEFS 4
+   607                          _esp_binary_search_bps_uart_prescaler_hi_10000_357:
+   608  011a  00000000          	DEFS 4
+   609                          _esp_bps_query_temp_10000_359:
+   610  011e  00000000          	DEFS 4
+   611                          _esp_finetune_bps_temp_10000_363:
+   612  0122  00000000          	DEFS 4
+   613                          _esp_detect_bps_i_10000_369:
+   614  0126  00                	DEFS 1
    615                          ;--------------------------------------------------------
-   616                          
-   617                          IF 0
+   616                          ; ram data
+   617                          ;--------------------------------------------------------
    618                          
-   619                          ; .area _INITIALIZED removed by z88dk
+   619                          IF 0
    620                          
-   621                          _STRING_ESP_TX_AT:
-   622                          	DEFS 5
-   623                          _STRING_ESP_TX_AT_GMR:
-   624                          	DEFS 9
-   625                          _STRING_ESP_TX_AT_BPS_Q1:
-   626                          	DEFS 15
-   627                          _STRING_ESP_RX_AT_BPS_R1:
-   628                          	DEFS 14
-   629                          _STRING_ESP_TX_AT_BPS_Q2:
-   630                          	DEFS 11
-   631                          _STRING_ESP_RX_AT_BPS_R2:
-   632                          	DEFS 10
-   633                          _STRING_ESP_RX_OK:
-   634                          	DEFS 5
-   635                          _common_bps:
-   636                          	DEFS 36
-   637                          _common_bps_range:
-   638                          	DEFS 32
-   639                          
-   640                          ENDIF
+   621                          ; .area _INITIALIZED removed by z88dk
+   622                          
+   623                          _STRING_ESP_TX_AT:
+   624                          	DEFS 5
+   625                          _STRING_ESP_TX_AT_GMR:
+   626                          	DEFS 9
+   627                          _STRING_ESP_TX_AT_BPS_Q1:
+   628                          	DEFS 15
+   629                          _STRING_ESP_RX_AT_BPS_R1:
+   630                          	DEFS 14
+   631                          _STRING_ESP_TX_AT_BPS_Q2:
+   632                          	DEFS 11
+   633                          _STRING_ESP_RX_AT_BPS_R2:
+   634                          	DEFS 10
+   635                          _STRING_ESP_RX_OK:
+   636                          	DEFS 5
+   637                          _common_bps:
+   638                          	DEFS 36
+   639                          _common_bps_range:
+   640                          	DEFS 32
    641                          
-   642                          ;--------------------------------------------------------
-   643                          ; absolute external ram data
+   642                          ENDIF
+   643                          
    644                          ;--------------------------------------------------------
-   645                          	SECTION IGNORE
+   645                          ; absolute external ram data
    646                          ;--------------------------------------------------------
-   647                          ; global & static initialisations
+   647                          	SECTION IGNORE
    648                          ;--------------------------------------------------------
-   649                          	SECTION code_crt_init
+   649                          ; global & static initialisations
    650                          ;--------------------------------------------------------
-   651                          ; Home
+   651                          	SECTION code_crt_init
    652                          ;--------------------------------------------------------
-   653                          	SECTION IGNORE
+   653                          ; Home
    654                          ;--------------------------------------------------------
-   655                          ; code
+   655                          	SECTION IGNORE
    656                          ;--------------------------------------------------------
-   657                          	SECTION code_compiler
-   658                          ;	---------------------------------
-   659                          ; Function esp_response_ok
-   660                          ; ---------------------------------
-   661                          _esp_response_ok:
-   662  0000  21ff00            	ld	hl,0x00ff
-   663  0003  e5                	push	hl
-   664  0004  210600            	ld	hl,_buffer
-   665  0007  e5                	push	hl
-   666  0008  cd0000            	call	_uart_rx_readline_last
-   667  000b  f1                	pop	af
-   668  000c  f1                	pop	af
-   669  000d  7d                	ld	a,l
-   670  000e  b7                	or	a, a
-   671  000f  c0                	ret	NZ
-   672  0010  014000            	ld	bc,_STRING_ESP_RX_OK
-   673  0013  c5                	push	bc
-   674  0014  210600            	ld	hl,_buffer
-   675  0017  e5                	push	hl
-   676  0018  cd0000            	call	_strcmp_callee
-   677  001b  7c                	ld	a, h
-   678  001c  b5                	or	a, l
-   679  001d  d601              	sub	a,0x01
-   680  001f  3e00              	ld	a,0x00
-   681  0021  17                	rla
-   682  0022  6f                	ld	l, a
-   683  0023  c9                	ret
-   684                          ;	---------------------------------
-   685                          ; Function esp_bsearch
-   686                          ; ---------------------------------
-   687                          _esp_bsearch:
-   688  0024  dde5              	push	ix
-   689  0026  dd210000          	ld	ix,0
-   690  002a  dd39              	add	ix,sp
-   691  002c  f5                	push	af
-   692  002d  f5                	push	af
-   693  002e  210601            	ld	hl,_esp_prescaler
-   694  0031  eb                	ex	de,hl
-   695  0032  210e01            	ld	hl,_esp_bsearch_ok_10000_350
-   696  0035  1a                	ld	a, (de)
-   697  0036  77                	ld	(hl), a
-   698  0037  23                	inc	hl
-   699  0038  13                	inc	de
-   700  0039  1a                	ld	a, (de)
-   701  003a  77                	ld	(hl), a
-   702  003b  23                	inc	hl
-   703  003c  13                	inc	de
-   704  003d  1a                	ld	a, (de)
-   705  003e  77                	ld	(hl), a
-   706  003f  23                	inc	hl
-   707  0040  13                	inc	de
-   708  0041  1a                	ld	a, (de)
-   709  0042  77                	ld	(hl), a
-   710  0043  3a0e01            	ld	a,(_esp_bsearch_ok_10000_350)
-   711  0046  210a01            	ld	hl,_esp_prescaler_endpoint
-   712  0049  86                	add	a, (hl)
-   713  004a  4f                	ld	c, a
-   714  004b  3a0f01            	ld	a,(_esp_bsearch_ok_10000_350 + 1)
-   715  004e  210b01            	ld	hl,_esp_prescaler_endpoint + 1
-   716  0051  8e                	adc	a, (hl)
-   717  0052  47                	ld	b, a
-   718  0053  3a1001            	ld	a,(_esp_bsearch_ok_10000_350 + 2)
-   719  0056  210c01            	ld	hl,_esp_prescaler_endpoint + 2
-   720  0059  8e                	adc	a, (hl)
-   721  005a  5f                	ld	e, a
-   722  005b  3a1101            	ld	a,(_esp_bsearch_ok_10000_350 + 3)
-   723  005e  210d01            	ld	hl,_esp_prescaler_endpoint + 3
-   724  0061  8e                	adc	a, (hl)
-   725  0062  57                	ld	d, a
-   726  0063  cb3a              	srl	d
-   727  0065  cb1b              	rr	e
-   728  0067  cb18              	rr	b
-   729  0069  cb19              	rr	c
-   730                          l_esp_bsearch_00104:
-   731  006b  c5                	push	bc
-   732  006c  d5                	push	de
-   733  006d  d5                	push	de
-   734  006e  c5                	push	bc
-   735  006f  cd0000            	call	_uart_set_prescaler
-   736  0072  f1                	pop	af
-   737  0073  f1                	pop	af
-   738  0074  d1                	pop	de
-   739  0075  c1                	pop	bc
-   740  0076  c5                	push	bc
-   741  0077  d5                	push	de
-   742  0078  d5                	push	de
-   743  0079  c5                	push	bc
-   744  007a  cd0000            	call	_uart_compute_prescaler
-   745  007d  f1                	pop	af
-   746  007e  f1                	pop	af
-   747  007f  dd75fc            	ld	(ix-4),l
-   748  0082  dd74fd            	ld	(ix-3),h
-   749  0085  dd73fe            	ld	(ix-2),e
-   750  0088  dd72ff            	ld	(ix-1),d
-   751  008b  d1                	pop	de
-   752  008c  c1                	pop	bc
-   753  008d  dd7efc            	ld	a,(ix-4)
-   754  0090  210000            	ld	hl,_esp_bps
-   755  0093  77                	ld	(hl), a
-   756  0094  dd7efd            	ld	a,(ix-3)
-   757  0097  23                	inc	hl
-   758  0098  77                	ld	(hl), a
-   759  0099  dd7efe            	ld	a,(ix-2)
-   760  009c  23                	inc	hl
-   761  009d  77                	ld	(hl), a
-   762  009e  dd7eff            	ld	a,(ix-1)
-   763  00a1  23                	inc	hl
-   764  00a2  77                	ld	(hl), a
-   765  00a3  c5                	push	bc
-   766  00a4  d5                	push	de
-   767  00a5  cda402            	call	_esp_test
-   768  00a8  d1                	pop	de
-   769  00a9  c1                	pop	bc
-   770  00aa  2d                	dec	l
-   771  00ab  200c              	jr	NZ,l_esp_bsearch_00102
-   772  00ad  210e01            	ld	hl,_esp_bsearch_ok_10000_350
-   773  00b0  71                	ld	(hl), c
-   774  00b1  23                	inc	hl
-   775  00b2  70                	ld	(hl), b
-   776  00b3  23                	inc	hl
-   777  00b4  73                	ld	(hl), e
-   778  00b5  23                	inc	hl
-   779  00b6  72                	ld	(hl), d
-   780  00b7  180a              	jr	l_esp_bsearch_00103
-   781                          l_esp_bsearch_00102:
-   782  00b9  210a01            	ld	hl,_esp_prescaler_endpoint
-   783  00bc  71                	ld	(hl), c
-   784  00bd  23                	inc	hl
-   785  00be  70                	ld	(hl), b
-   786  00bf  23                	inc	hl
-   787  00c0  73                	ld	(hl), e
-   788  00c1  23                	inc	hl
-   789  00c2  72                	ld	(hl), d
-   790                          l_esp_bsearch_00103:
-   791  00c3  211201            	ld	hl,_esp_bsearch_last_10000_350
-   792  00c6  71                	ld	(hl), c
-   793  00c7  23                	inc	hl
-   794  00c8  70                	ld	(hl), b
-   795  00c9  23                	inc	hl
-   796  00ca  73                	ld	(hl), e
-   797  00cb  23                	inc	hl
-   798  00cc  72                	ld	(hl), d
-   799  00cd  3a0e01            	ld	a,(_esp_bsearch_ok_10000_350)
-   800  00d0  210a01            	ld	hl,_esp_prescaler_endpoint
-   801  00d3  86                	add	a, (hl)
-   802  00d4  4f                	ld	c, a
-   803  00d5  3a0f01            	ld	a,(_esp_bsearch_ok_10000_350 + 1)
-   804  00d8  210b01            	ld	hl,_esp_prescaler_endpoint + 1
-   805  00db  8e                	adc	a, (hl)
-   806  00dc  47                	ld	b, a
-   807  00dd  3a1001            	ld	a,(_esp_bsearch_ok_10000_350 + 2)
-   808  00e0  210c01            	ld	hl,_esp_prescaler_endpoint + 2
-   809  00e3  8e                	adc	a, (hl)
-   810  00e4  5f                	ld	e, a
-   811  00e5  3a1101            	ld	a,(_esp_bsearch_ok_10000_350 + 3)
-   812  00e8  210d01            	ld	hl,_esp_prescaler_endpoint + 3
-   813  00eb  8e                	adc	a, (hl)
-   814  00ec  57                	ld	d, a
-   815  00ed  cb3a              	srl	d
-   816  00ef  cb1b              	rr	e
-   817  00f1  cb18              	rr	b
-   818  00f3  cb19              	rr	c
-   819  00f5  211201            	ld	hl,_esp_bsearch_last_10000_350
-   820  00f8  7e                	ld	a, (hl)
-   821  00f9  91                	sub	a, c
-   822  00fa  c26b00            	jp	NZ,l_esp_bsearch_00104
-   823  00fd  23                	inc	hl
-   824  00fe  7e                	ld	a, (hl)
-   825  00ff  90                	sub	a, b
-   826  0100  c26b00            	jp	NZ,l_esp_bsearch_00104
-   827  0103  2a1401            	ld	hl, (_esp_bsearch_last_10000_350 + 2)
-   828  0106  bf                	cp	a, a
-   829  0107  ed52              	sbc	hl, de
-   830  0109  c26b00            	jp	NZ,l_esp_bsearch_00104
-   831  010c  2a0e01            	ld	hl, (_esp_bsearch_ok_10000_350)
-   832  010f  ed5b1001          	ld	de, (_esp_bsearch_ok_10000_350 + 2)
-   833  0113  ddf9              	ld	sp, ix
-   834  0115  dde1              	pop	ix
-   835  0117  c9                	ret
-   836                          ;	---------------------------------
-   837                          ; Function esp_binary_search_bps
-   838                          ; ---------------------------------
-   839                          _esp_binary_search_bps:
-   840  0118  2a0200            	ld	hl, (_esp_bps + 2)
-   841  011b  e5                	push	hl
-   842  011c  2a0000            	ld	hl, (_esp_bps)
-   843  011f  e5                	push	hl
-   844  0120  cd0000            	call	_uart_compute_prescaler
-   845  0123  f1                	pop	af
-   846  0124  f1                	pop	af
-   847  0125  eb                	ex	de, hl
-   848  0126  ed530601          	ld	(_esp_prescaler), de
-   849  012a  220801            	ld	(_esp_prescaler + 2), hl
-   850  012d  210000            	ld	hl,___str_0
-   851  0130  e5                	push	hl
-   852  0131  cd0000            	call	_printf
-   853  0134  f1                	pop	af
-   854  0135  210601            	ld	hl,_esp_prescaler
-   855  0138  4e                	ld	c, (hl)
-   856  0139  23                	inc	hl
-   857  013a  7e                	ld	a, (hl)
-   858  013b  23                	inc	hl
-   859  013c  5e                	ld	e, (hl)
-   860  013d  23                	inc	hl
-   861  013e  56                	ld	d, (hl)
-   862  013f  0602              	ld	b,0x02
-   863                          l_esp_binary_search_bps_00103:
-   864  0141  cb21              	sla	c
-   865  0143  8f                	adc	a, a
-   866  0144  cb13              	rl	e
-   867  0146  cb12              	rl	d
-   868  0148  10f7              	djnz	l_esp_binary_search_bps_00103
-   869  014a  210000            	ld	hl,0x0000
-   870  014d  e5                	push	hl
-   871  014e  2e05              	ld	l,0x05
-   872  0150  e5                	push	hl
-   873  0151  d5                	push	de
-   874  0152  47                	ld	b, a
-   875  0153  c5                	push	bc
-   876  0154  cd0000            	call	__divulong_callee
-   877  0157  eb                	ex	de, hl
-   878  0158  ed530a01          	ld	(_esp_prescaler_endpoint), de
-   879  015c  220c01            	ld	(_esp_prescaler_endpoint + 2), hl
-   880  015f  cd2400            	call	_esp_bsearch
-   881  0162  eb                	ex	de, hl
-   882  0163  ed531601          	ld	(_esp_binary_search_bps_uart_prescaler_lo_10000_355), de
-   883  0167  221801            	ld	(_esp_binary_search_bps_uart_prescaler_lo_10000_355 + 2), hl
-   884  016a  211500            	ld	hl,___str_1
-   885  016d  e5                	push	hl
-   886  016e  cd0000            	call	_printf
-   887  0171  f1                	pop	af
-   888  0172  2a0801            	ld	hl, (_esp_prescaler + 2)
-   889  0175  e5                	push	hl
-   890  0176  2a0601            	ld	hl, (_esp_prescaler)
-   891  0179  e5                	push	hl
-   892  017a  210000            	ld	hl,0x0000
-   893  017d  e5                	push	hl
-   894  017e  2e05              	ld	l,0x05
-   895  0180  e5                	push	hl
-   896  0181  cd0000            	call	__mullong_callee
-   897  0184  4d                	ld	c, l
-   898  0185  44                	ld	b, h
-   899  0186  210a01            	ld	hl,_esp_prescaler_endpoint
-   900  0189  71                	ld	(hl), c
-   901  018a  23                	inc	hl
-   902  018b  70                	ld	(hl), b
-   903  018c  23                	inc	hl
-   904  018d  73                	ld	(hl), e
-   905  018e  23                	inc	hl
-   906  018f  72                	ld	(hl), d
-   907  0190  0602              	ld	b,0x02
-   908                          l_esp_binary_search_bps_00105:
-   909  0192  210d01            	ld	hl,_esp_prescaler_endpoint + 3
-   910  0195  cb3e              	srl	(hl)
-   911  0197  2b                	dec	hl
-   912  0198  cb1e              	rr	(hl)
-   913  019a  2b                	dec	hl
-   914  019b  cb1e              	rr	(hl)
-   915  019d  2b                	dec	hl
-   916  019e  cb1e              	rr	(hl)
-   917  01a0  10f0              	djnz	l_esp_binary_search_bps_00105
-   918  01a2  cd2400            	call	_esp_bsearch
-   919  01a5  eb                	ex	de, hl
-   920  01a6  ed531a01          	ld	(_esp_binary_search_bps_uart_prescaler_hi_10000_355), de
-   921  01aa  221c01            	ld	(_esp_binary_search_bps_uart_prescaler_hi_10000_355 + 2), hl
-   922  01ad  3a1601            	ld	a,(_esp_binary_search_bps_uart_prescaler_lo_10000_355)
-   923  01b0  211a01            	ld	hl,_esp_binary_search_bps_uart_prescaler_hi_10000_355
-   924  01b3  86                	add	a, (hl)
-   925  01b4  4f                	ld	c, a
-   926  01b5  3a1701            	ld	a,(_esp_binary_search_bps_uart_prescaler_lo_10000_355 + 1)
-   927  01b8  211b01            	ld	hl,_esp_binary_search_bps_uart_prescaler_hi_10000_355 + 1
-   928  01bb  8e                	adc	a, (hl)
-   929  01bc  47                	ld	b, a
-   930  01bd  3a1801            	ld	a,(_esp_binary_search_bps_uart_prescaler_lo_10000_355 + 2)
-   931  01c0  211c01            	ld	hl,_esp_binary_search_bps_uart_prescaler_hi_10000_355 + 2
-   932  01c3  8e                	adc	a, (hl)
-   933  01c4  5f                	ld	e, a
-   934  01c5  3a1901            	ld	a,(_esp_binary_search_bps_uart_prescaler_lo_10000_355 + 3)
-   935  01c8  211d01            	ld	hl,_esp_binary_search_bps_uart_prescaler_hi_10000_355 + 3
-   936  01cb  8e                	adc	a, (hl)
-   937  01cc  57                	ld	d, a
-   938  01cd  cb3a              	srl	d
-   939  01cf  cb1b              	rr	e
-   940  01d1  cb18              	rr	b
-   941  01d3  cb19              	rr	c
-   942  01d5  d5                	push	de
-   943  01d6  c5                	push	bc
-   944  01d7  cd0000            	call	_uart_compute_prescaler
-   945  01da  f1                	pop	af
-   946  01db  f1                	pop	af
-   947  01dc  eb                	ex	de, hl
-   948  01dd  ed530000          	ld	(_esp_bps), de
-   949  01e1  220200            	ld	(_esp_bps + 2), hl
-   950  01e4  c9                	ret
-   951                          	SECTION rodata_compiler
-   952                          ___str_0:
-   953  0000  2020202048696768  	DEFM "    High end        "
+   657                          ; code
+   658                          ;--------------------------------------------------------
+   659                          	SECTION code_compiler
+   660                          ;	---------------------------------
+   661                          ; Function esp_response_ok
+   662                          ; ---------------------------------
+   663                          _esp_response_ok:
+   664  0000  21ff00            	ld	hl,0x00ff
+   665  0003  e5                	push	hl
+   666  0004  210600            	ld	hl,_buffer
+   667  0007  e5                	push	hl
+   668  0008  cd0000            	call	_uart_rx_readline_last
+   669  000b  f1                	pop	af
+   670  000c  f1                	pop	af
+   671  000d  7d                	ld	a,l
+   672  000e  b7                	or	a, a
+   673  000f  c0                	ret	NZ
+   674  0010  014000            	ld	bc,_STRING_ESP_RX_OK
+   675  0013  c5                	push	bc
+   676  0014  210600            	ld	hl,_buffer
+   677  0017  e5                	push	hl
+   678  0018  cd0000            	call	_strcmp_callee
+   679  001b  7c                	ld	a, h
+   680  001c  b5                	or	a, l
+   681  001d  d601              	sub	a,0x01
+   682  001f  3e00              	ld	a,0x00
+   683  0021  17                	rla
+   684  0022  6f                	ld	l, a
+   685  0023  c9                	ret
+   686                          ;	---------------------------------
+   687                          ; Function esp_bsearch
+   688                          ; ---------------------------------
+   689                          _esp_bsearch:
+   690  0024  dde5              	push	ix
+   691  0026  dd210000          	ld	ix,0
+   692  002a  dd39              	add	ix,sp
+   693  002c  f5                	push	af
+   694  002d  f5                	push	af
+   695  002e  210601            	ld	hl,_esp_prescaler
+   696  0031  eb                	ex	de,hl
+   697  0032  210e01            	ld	hl,_esp_bsearch_ok_10000_352
+   698  0035  1a                	ld	a, (de)
+   699  0036  77                	ld	(hl), a
+   700  0037  23                	inc	hl
+   701  0038  13                	inc	de
+   702  0039  1a                	ld	a, (de)
+   703  003a  77                	ld	(hl), a
+   704  003b  23                	inc	hl
+   705  003c  13                	inc	de
+   706  003d  1a                	ld	a, (de)
+   707  003e  77                	ld	(hl), a
+   708  003f  23                	inc	hl
+   709  0040  13                	inc	de
+   710  0041  1a                	ld	a, (de)
+   711  0042  77                	ld	(hl), a
+   712  0043  3a0e01            	ld	a,(_esp_bsearch_ok_10000_352)
+   713  0046  210a01            	ld	hl,_esp_prescaler_endpoint
+   714  0049  86                	add	a, (hl)
+   715  004a  4f                	ld	c, a
+   716  004b  3a0f01            	ld	a,(_esp_bsearch_ok_10000_352 + 1)
+   717  004e  210b01            	ld	hl,_esp_prescaler_endpoint + 1
+   718  0051  8e                	adc	a, (hl)
+   719  0052  47                	ld	b, a
+   720  0053  3a1001            	ld	a,(_esp_bsearch_ok_10000_352 + 2)
+   721  0056  210c01            	ld	hl,_esp_prescaler_endpoint + 2
+   722  0059  8e                	adc	a, (hl)
+   723  005a  5f                	ld	e, a
+   724  005b  3a1101            	ld	a,(_esp_bsearch_ok_10000_352 + 3)
+   725  005e  210d01            	ld	hl,_esp_prescaler_endpoint + 3
+   726  0061  8e                	adc	a, (hl)
+   727  0062  57                	ld	d, a
+   728  0063  cb3a              	srl	d
+   729  0065  cb1b              	rr	e
+   730  0067  cb18              	rr	b
+   731  0069  cb19              	rr	c
+   732                          l_esp_bsearch_00104:
+   733  006b  c5                	push	bc
+   734  006c  d5                	push	de
+   735  006d  d5                	push	de
+   736  006e  c5                	push	bc
+   737  006f  cd0000            	call	_uart_set_prescaler
+   738  0072  f1                	pop	af
+   739  0073  f1                	pop	af
+   740  0074  d1                	pop	de
+   741  0075  c1                	pop	bc
+   742  0076  c5                	push	bc
+   743  0077  d5                	push	de
+   744  0078  d5                	push	de
+   745  0079  c5                	push	bc
+   746  007a  cd0000            	call	_uart_compute_prescaler
+   747  007d  f1                	pop	af
+   748  007e  f1                	pop	af
+   749  007f  dd75fc            	ld	(ix-4),l
+   750  0082  dd74fd            	ld	(ix-3),h
+   751  0085  dd73fe            	ld	(ix-2),e
+   752  0088  dd72ff            	ld	(ix-1),d
+   753  008b  d1                	pop	de
+   754  008c  c1                	pop	bc
+   755  008d  dd7efc            	ld	a,(ix-4)
+   756  0090  210000            	ld	hl,_esp_bps
+   757  0093  77                	ld	(hl), a
+   758  0094  dd7efd            	ld	a,(ix-3)
+   759  0097  23                	inc	hl
+   760  0098  77                	ld	(hl), a
+   761  0099  dd7efe            	ld	a,(ix-2)
+   762  009c  23                	inc	hl
+   763  009d  77                	ld	(hl), a
+   764  009e  dd7eff            	ld	a,(ix-1)
+   765  00a1  23                	inc	hl
+   766  00a2  77                	ld	(hl), a
+   767  00a3  c5                	push	bc
+   768  00a4  d5                	push	de
+   769  00a5  cda402            	call	_esp_test
+   770  00a8  d1                	pop	de
+   771  00a9  c1                	pop	bc
+   772  00aa  2d                	dec	l
+   773  00ab  200c              	jr	NZ,l_esp_bsearch_00102
+   774  00ad  210e01            	ld	hl,_esp_bsearch_ok_10000_352
+   775  00b0  71                	ld	(hl), c
+   776  00b1  23                	inc	hl
+   777  00b2  70                	ld	(hl), b
+   778  00b3  23                	inc	hl
+   779  00b4  73                	ld	(hl), e
+   780  00b5  23                	inc	hl
+   781  00b6  72                	ld	(hl), d
+   782  00b7  180a              	jr	l_esp_bsearch_00103
+   783                          l_esp_bsearch_00102:
+   784  00b9  210a01            	ld	hl,_esp_prescaler_endpoint
+   785  00bc  71                	ld	(hl), c
+   786  00bd  23                	inc	hl
+   787  00be  70                	ld	(hl), b
+   788  00bf  23                	inc	hl
+   789  00c0  73                	ld	(hl), e
+   790  00c1  23                	inc	hl
+   791  00c2  72                	ld	(hl), d
+   792                          l_esp_bsearch_00103:
+   793  00c3  211201            	ld	hl,_esp_bsearch_last_10000_352
+   794  00c6  71                	ld	(hl), c
+   795  00c7  23                	inc	hl
+   796  00c8  70                	ld	(hl), b
+   797  00c9  23                	inc	hl
+   798  00ca  73                	ld	(hl), e
+   799  00cb  23                	inc	hl
+   800  00cc  72                	ld	(hl), d
+   801  00cd  3a0e01            	ld	a,(_esp_bsearch_ok_10000_352)
+   802  00d0  210a01            	ld	hl,_esp_prescaler_endpoint
+   803  00d3  86                	add	a, (hl)
+   804  00d4  4f                	ld	c, a
+   805  00d5  3a0f01            	ld	a,(_esp_bsearch_ok_10000_352 + 1)
+   806  00d8  210b01            	ld	hl,_esp_prescaler_endpoint + 1
+   807  00db  8e                	adc	a, (hl)
+   808  00dc  47                	ld	b, a
+   809  00dd  3a1001            	ld	a,(_esp_bsearch_ok_10000_352 + 2)
+   810  00e0  210c01            	ld	hl,_esp_prescaler_endpoint + 2
+   811  00e3  8e                	adc	a, (hl)
+   812  00e4  5f                	ld	e, a
+   813  00e5  3a1101            	ld	a,(_esp_bsearch_ok_10000_352 + 3)
+   814  00e8  210d01            	ld	hl,_esp_prescaler_endpoint + 3
+   815  00eb  8e                	adc	a, (hl)
+   816  00ec  57                	ld	d, a
+   817  00ed  cb3a              	srl	d
+   818  00ef  cb1b              	rr	e
+   819  00f1  cb18              	rr	b
+   820  00f3  cb19              	rr	c
+   821  00f5  211201            	ld	hl,_esp_bsearch_last_10000_352
+   822  00f8  7e                	ld	a, (hl)
+   823  00f9  91                	sub	a, c
+   824  00fa  c26b00            	jp	NZ,l_esp_bsearch_00104
+   825  00fd  23                	inc	hl
+   826  00fe  7e                	ld	a, (hl)
+   827  00ff  90                	sub	a, b
+   828  0100  c26b00            	jp	NZ,l_esp_bsearch_00104
+   829  0103  2a1401            	ld	hl, (_esp_bsearch_last_10000_352 + 2)
+   830  0106  bf                	cp	a, a
+   831  0107  ed52              	sbc	hl, de
+   832  0109  c26b00            	jp	NZ,l_esp_bsearch_00104
+   833  010c  2a0e01            	ld	hl, (_esp_bsearch_ok_10000_352)
+   834  010f  ed5b1001          	ld	de, (_esp_bsearch_ok_10000_352 + 2)
+   835  0113  ddf9              	ld	sp, ix
+   836  0115  dde1              	pop	ix
+   837  0117  c9                	ret
+   838                          ;	---------------------------------
+   839                          ; Function esp_binary_search_bps
+   840                          ; ---------------------------------
+   841                          _esp_binary_search_bps:
+   842  0118  2a0200            	ld	hl, (_esp_bps + 2)
+   843  011b  e5                	push	hl
+   844  011c  2a0000            	ld	hl, (_esp_bps)
+   845  011f  e5                	push	hl
+   846  0120  cd0000            	call	_uart_compute_prescaler
+   847  0123  f1                	pop	af
+   848  0124  f1                	pop	af
+   849  0125  eb                	ex	de, hl
+   850  0126  ed530601          	ld	(_esp_prescaler), de
+   851  012a  220801            	ld	(_esp_prescaler + 2), hl
+   852  012d  210000            	ld	hl,___str_0
+   853  0130  e5                	push	hl
+   854  0131  cd0000            	call	_printf
+   855  0134  f1                	pop	af
+   856  0135  210601            	ld	hl,_esp_prescaler
+   857  0138  4e                	ld	c, (hl)
+   858  0139  23                	inc	hl
+   859  013a  7e                	ld	a, (hl)
+   860  013b  23                	inc	hl
+   861  013c  5e                	ld	e, (hl)
+   862  013d  23                	inc	hl
+   863  013e  56                	ld	d, (hl)
+   864  013f  0602              	ld	b,0x02
+   865                          l_esp_binary_search_bps_00103:
+   866  0141  cb21              	sla	c
+   867  0143  8f                	adc	a, a
+   868  0144  cb13              	rl	e
+   869  0146  cb12              	rl	d
+   870  0148  10f7              	djnz	l_esp_binary_search_bps_00103
+   871  014a  210000            	ld	hl,0x0000
+   872  014d  e5                	push	hl
+   873  014e  2e05              	ld	l,0x05
+   874  0150  e5                	push	hl
+   875  0151  d5                	push	de
+   876  0152  47                	ld	b, a
+   877  0153  c5                	push	bc
+   878  0154  cd0000            	call	__divulong_callee
+   879  0157  eb                	ex	de, hl
+   880  0158  ed530a01          	ld	(_esp_prescaler_endpoint), de
+   881  015c  220c01            	ld	(_esp_prescaler_endpoint + 2), hl
+   882  015f  cd2400            	call	_esp_bsearch
+   883  0162  eb                	ex	de, hl
+   884  0163  ed531601          	ld	(_esp_binary_search_bps_uart_prescaler_lo_10000_357), de
+   885  0167  221801            	ld	(_esp_binary_search_bps_uart_prescaler_lo_10000_357 + 2), hl
+   886  016a  211500            	ld	hl,___str_1
+   887  016d  e5                	push	hl
+   888  016e  cd0000            	call	_printf
+   889  0171  f1                	pop	af
+   890  0172  2a0801            	ld	hl, (_esp_prescaler + 2)
+   891  0175  e5                	push	hl
+   892  0176  2a0601            	ld	hl, (_esp_prescaler)
+   893  0179  e5                	push	hl
+   894  017a  210000            	ld	hl,0x0000
+   895  017d  e5                	push	hl
+   896  017e  2e05              	ld	l,0x05
+   897  0180  e5                	push	hl
+   898  0181  cd0000            	call	__mullong_callee
+   899  0184  4d                	ld	c, l
+   900  0185  44                	ld	b, h
+   901  0186  210a01            	ld	hl,_esp_prescaler_endpoint
+   902  0189  71                	ld	(hl), c
+   903  018a  23                	inc	hl
+   904  018b  70                	ld	(hl), b
+   905  018c  23                	inc	hl
+   906  018d  73                	ld	(hl), e
+   907  018e  23                	inc	hl
+   908  018f  72                	ld	(hl), d
+   909  0190  0602              	ld	b,0x02
+   910                          l_esp_binary_search_bps_00105:
+   911  0192  210d01            	ld	hl,_esp_prescaler_endpoint + 3
+   912  0195  cb3e              	srl	(hl)
+   913  0197  2b                	dec	hl
+   914  0198  cb1e              	rr	(hl)
+   915  019a  2b                	dec	hl
+   916  019b  cb1e              	rr	(hl)
+   917  019d  2b                	dec	hl
+   918  019e  cb1e              	rr	(hl)
+   919  01a0  10f0              	djnz	l_esp_binary_search_bps_00105
+   920  01a2  cd2400            	call	_esp_bsearch
+   921  01a5  eb                	ex	de, hl
+   922  01a6  ed531a01          	ld	(_esp_binary_search_bps_uart_prescaler_hi_10000_357), de
+   923  01aa  221c01            	ld	(_esp_binary_search_bps_uart_prescaler_hi_10000_357 + 2), hl
+   924  01ad  3a1601            	ld	a,(_esp_binary_search_bps_uart_prescaler_lo_10000_357)
+   925  01b0  211a01            	ld	hl,_esp_binary_search_bps_uart_prescaler_hi_10000_357
+   926  01b3  86                	add	a, (hl)
+   927  01b4  4f                	ld	c, a
+   928  01b5  3a1701            	ld	a,(_esp_binary_search_bps_uart_prescaler_lo_10000_357 + 1)
+   929  01b8  211b01            	ld	hl,_esp_binary_search_bps_uart_prescaler_hi_10000_357 + 1
+   930  01bb  8e                	adc	a, (hl)
+   931  01bc  47                	ld	b, a
+   932  01bd  3a1801            	ld	a,(_esp_binary_search_bps_uart_prescaler_lo_10000_357 + 2)
+   933  01c0  211c01            	ld	hl,_esp_binary_search_bps_uart_prescaler_hi_10000_357 + 2
+   934  01c3  8e                	adc	a, (hl)
+   935  01c4  5f                	ld	e, a
+   936  01c5  3a1901            	ld	a,(_esp_binary_search_bps_uart_prescaler_lo_10000_357 + 3)
+   937  01c8  211d01            	ld	hl,_esp_binary_search_bps_uart_prescaler_hi_10000_357 + 3
+   938  01cb  8e                	adc	a, (hl)
+   939  01cc  57                	ld	d, a
+   940  01cd  cb3a              	srl	d
+   941  01cf  cb1b              	rr	e
+   942  01d1  cb18              	rr	b
+   943  01d3  cb19              	rr	c
+   944  01d5  d5                	push	de
+   945  01d6  c5                	push	bc
+   946  01d7  cd0000            	call	_uart_compute_prescaler
+   947  01da  f1                	pop	af
+   948  01db  f1                	pop	af
+   949  01dc  eb                	ex	de, hl
+   950  01dd  ed530000          	ld	(_esp_bps), de
+   951  01e1  220200            	ld	(_esp_bps + 2), hl
+   952  01e4  c9                	ret
+   953                          	SECTION rodata_compiler
+   954                          ___str_0:
+   955  0000  2020202048696768  	DEFM "    High end        "
               20656e6420202020  
               20202020          
-   954  0014  00                	DEFB 0x00
-   955                          	SECTION rodata_compiler
-   956                          ___str_1:
-   957  0015  0a                	DEFB 0x0a
-   958  0016  202020204c6f7720  	DEFM "    Low end         "
+   956  0014  00                	DEFB 0x00
+   957                          	SECTION rodata_compiler
+   958                          ___str_1:
+   959  0015  0a                	DEFB 0x0a
+   960  0016  202020204c6f7720  	DEFM "    Low end         "
               656e642020202020  
               20202020          
-   959  002a  00                	DEFB 0x00
-   960                          	SECTION code_compiler
-   961                          ;	---------------------------------
-   962                          ; Function esp_bps_query
-   963                          ; ---------------------------------
-   964                          _esp_bps_query:
-   965  01e5  dde5              	push	ix
-   966  01e7  dd210000          	ld	ix,0
-   967  01eb  dd39              	add	ix,sp
-   968  01ed  21ff00            	ld	hl,0x00ff
-   969  01f0  e5                	push	hl
-   970  01f1  210600            	ld	hl,_buffer
-   971  01f4  e5                	push	hl
-   972  01f5  cd0000            	call	_uart_rx_readline_last
-   973  01f8  f1                	pop	af
-   974  01f9  f1                	pop	af
-   975  01fa  dd6e04            	ld	l,(ix+4)
-   976  01fd  dd6605            	ld	h,(ix+5)
-   977  0200  cd0000            	call	_uart_tx
-   978                          l_esp_bps_query_00103:
-   979  0203  210600            	ld	hl,_buffer
-   980  0206  3600              	ld	(hl),0x00
-   981  0208  21ff00            	ld	hl,0x00ff
-   982  020b  e5                	push	hl
-   983  020c  210600            	ld	hl,_buffer
-   984  020f  e5                	push	hl
-   985  0210  cd0000            	call	_uart_rx_readline
-   986  0213  f1                	pop	af
-   987  0214  211e01            	ld	hl,_esp_bps_query_temp_10000_357
-   988  0217  e3                	ex	(sp),hl
-   989  0218  dd6e06            	ld	l,(ix+6)
-   990  021b  dd6607            	ld	h,(ix+7)
-   991  021e  e5                	push	hl
-   992  021f  210600            	ld	hl,_buffer
-   993  0222  e5                	push	hl
-   994  0223  cd0000            	call	_sscanf
-   995  0226  f1                	pop	af
-   996  0227  f1                	pop	af
-   997  0228  f1                	pop	af
-   998  0229  7d                	ld	a, l
-   999  022a  3d                	dec	a
-  1000  022b  b4                	or	a, h
-  1001  022c  2019              	jr	NZ,l_esp_bps_query_00104
-  1002  022e  211e01            	ld	hl,_esp_bps_query_temp_10000_357
-  1003  0231  eb                	ex	de,hl
-  1004  0232  210000            	ld	hl,_esp_bps
-  1005  0235  1a                	ld	a, (de)
-  1006  0236  77                	ld	(hl), a
-  1007  0237  23                	inc	hl
-  1008  0238  13                	inc	de
-  1009  0239  1a                	ld	a, (de)
-  1010  023a  77                	ld	(hl), a
-  1011  023b  23                	inc	hl
-  1012  023c  13                	inc	de
-  1013  023d  1a                	ld	a, (de)
-  1014  023e  77                	ld	(hl), a
-  1015  023f  23                	inc	hl
-  1016  0240  13                	inc	de
-  1017  0241  1a                	ld	a, (de)
-  1018  0242  77                	ld	(hl), a
-  1019  0243  2e01              	ld	l,0x01
-  1020  0245  1807              	jr	l_esp_bps_query_00106
-  1021                          l_esp_bps_query_00104:
-  1022  0247  3a0600            	ld	a, (_buffer + 0)
-  1023  024a  b7                	or	a,a
-  1024  024b  20b6              	jr	NZ,l_esp_bps_query_00103
-  1025  024d  6f                	ld	l,a
-  1026                          l_esp_bps_query_00106:
-  1027  024e  dde1              	pop	ix
-  1028  0250  c9                	ret
-  1029                          ;	---------------------------------
-  1030                          ; Function esp_finetune_bps
-  1031                          ; ---------------------------------
-  1032                          _esp_finetune_bps:
-  1033  0251  212b00            	ld	hl,___str_3
-  1034  0254  e5                	push	hl
-  1035  0255  cd0000            	call	_puts
-  1036  0258  211d00            	ld	hl,_STRING_ESP_RX_AT_BPS_R1
-  1037  025b  e3                	ex	(sp),hl
-  1038  025c  210e00            	ld	hl,_STRING_ESP_TX_AT_BPS_Q1
-  1039  025f  e5                	push	hl
-  1040  0260  cde501            	call	_esp_bps_query
-  1041  0263  f1                	pop	af
-  1042  0264  f1                	pop	af
-  1043  0265  7d                	ld	a, l
-  1044  0266  b7                	or	a, a
-  1045  0267  2011              	jr	NZ,l_esp_finetune_bps_00101
-  1046  0269  213600            	ld	hl,_STRING_ESP_RX_AT_BPS_R2
-  1047  026c  e5                	push	hl
-  1048  026d  212b00            	ld	hl,_STRING_ESP_TX_AT_BPS_Q2
-  1049  0270  e5                	push	hl
-  1050  0271  cde501            	call	_esp_bps_query
-  1051  0274  f1                	pop	af
-  1052  0275  f1                	pop	af
-  1053  0276  7d                	ld	a, l
-  1054  0277  b7                	or	a, a
-  1055  0278  2814              	jr	Z,l_esp_finetune_bps_00102
-  1056                          l_esp_finetune_bps_00101:
-  1057  027a  2a0200            	ld	hl, (_esp_bps + 2)
-  1058  027d  e5                	push	hl
-  1059  027e  2a0000            	ld	hl, (_esp_bps)
-  1060  0281  e5                	push	hl
-  1061  0282  214a00            	ld	hl,___str_4
-  1062  0285  e5                	push	hl
-  1063  0286  cd0000            	call	_printf
-  1064  0289  f1                	pop	af
-  1065  028a  f1                	pop	af
-  1066  028b  f1                	pop	af
-  1067  028c  1815              	jr	l_esp_finetune_bps_00105
-  1068                          l_esp_finetune_bps_00102:
-  1069  028e  cd1801            	call	_esp_binary_search_bps
-  1070  0291  2a0200            	ld	hl, (_esp_bps + 2)
-  1071  0294  e5                	push	hl
-  1072  0295  2a0000            	ld	hl, (_esp_bps)
-  1073  0298  e5                	push	hl
-  1074  0299  215c00            	ld	hl,___str_5
-  1075  029c  e5                	push	hl
-  1076  029d  cd0000            	call	_printf
-  1077  02a0  f1                	pop	af
-  1078  02a1  f1                	pop	af
-  1079  02a2  f1                	pop	af
-  1080                          l_esp_finetune_bps_00105:
-  1081  02a3  c9                	ret
-  1082                          	SECTION rodata_compiler
-  1083                          ___str_3:
-  1084  002b  0a                	DEFB 0x0a
-  1085  002c  202046696e652074  	DEFM "  Fine tune working baud rate"
+   961  002a  00                	DEFB 0x00
+   962                          	SECTION code_compiler
+   963                          ;	---------------------------------
+   964                          ; Function esp_bps_query
+   965                          ; ---------------------------------
+   966                          _esp_bps_query:
+   967  01e5  dde5              	push	ix
+   968  01e7  dd210000          	ld	ix,0
+   969  01eb  dd39              	add	ix,sp
+   970  01ed  21ff00            	ld	hl,0x00ff
+   971  01f0  e5                	push	hl
+   972  01f1  210600            	ld	hl,_buffer
+   973  01f4  e5                	push	hl
+   974  01f5  cd0000            	call	_uart_rx_readline_last
+   975  01f8  f1                	pop	af
+   976  01f9  f1                	pop	af
+   977  01fa  dd6e04            	ld	l,(ix+4)
+   978  01fd  dd6605            	ld	h,(ix+5)
+   979  0200  cd0000            	call	_uart_tx
+   980                          l_esp_bps_query_00103:
+   981  0203  210600            	ld	hl,_buffer
+   982  0206  3600              	ld	(hl),0x00
+   983  0208  21ff00            	ld	hl,0x00ff
+   984  020b  e5                	push	hl
+   985  020c  210600            	ld	hl,_buffer
+   986  020f  e5                	push	hl
+   987  0210  cd0000            	call	_uart_rx_readline
+   988  0213  f1                	pop	af
+   989  0214  211e01            	ld	hl,_esp_bps_query_temp_10000_359
+   990  0217  e3                	ex	(sp),hl
+   991  0218  dd6e06            	ld	l,(ix+6)
+   992  021b  dd6607            	ld	h,(ix+7)
+   993  021e  e5                	push	hl
+   994  021f  210600            	ld	hl,_buffer
+   995  0222  e5                	push	hl
+   996  0223  cd0000            	call	_sscanf
+   997  0226  f1                	pop	af
+   998  0227  f1                	pop	af
+   999  0228  f1                	pop	af
+  1000  0229  7d                	ld	a, l
+  1001  022a  3d                	dec	a
+  1002  022b  b4                	or	a, h
+  1003  022c  2019              	jr	NZ,l_esp_bps_query_00104
+  1004  022e  211e01            	ld	hl,_esp_bps_query_temp_10000_359
+  1005  0231  eb                	ex	de,hl
+  1006  0232  210000            	ld	hl,_esp_bps
+  1007  0235  1a                	ld	a, (de)
+  1008  0236  77                	ld	(hl), a
+  1009  0237  23                	inc	hl
+  1010  0238  13                	inc	de
+  1011  0239  1a                	ld	a, (de)
+  1012  023a  77                	ld	(hl), a
+  1013  023b  23                	inc	hl
+  1014  023c  13                	inc	de
+  1015  023d  1a                	ld	a, (de)
+  1016  023e  77                	ld	(hl), a
+  1017  023f  23                	inc	hl
+  1018  0240  13                	inc	de
+  1019  0241  1a                	ld	a, (de)
+  1020  0242  77                	ld	(hl), a
+  1021  0243  2e01              	ld	l,0x01
+  1022  0245  1807              	jr	l_esp_bps_query_00106
+  1023                          l_esp_bps_query_00104:
+  1024  0247  3a0600            	ld	a, (_buffer + 0)
+  1025  024a  b7                	or	a,a
+  1026  024b  20b6              	jr	NZ,l_esp_bps_query_00103
+  1027  024d  6f                	ld	l,a
+  1028                          l_esp_bps_query_00106:
+  1029  024e  dde1              	pop	ix
+  1030  0250  c9                	ret
+  1031                          ;	---------------------------------
+  1032                          ; Function esp_finetune_bps
+  1033                          ; ---------------------------------
+  1034                          _esp_finetune_bps:
+  1035  0251  212b00            	ld	hl,___str_3
+  1036  0254  e5                	push	hl
+  1037  0255  cd0000            	call	_puts
+  1038  0258  211d00            	ld	hl,_STRING_ESP_RX_AT_BPS_R1
+  1039  025b  e3                	ex	(sp),hl
+  1040  025c  210e00            	ld	hl,_STRING_ESP_TX_AT_BPS_Q1
+  1041  025f  e5                	push	hl
+  1042  0260  cde501            	call	_esp_bps_query
+  1043  0263  f1                	pop	af
+  1044  0264  f1                	pop	af
+  1045  0265  7d                	ld	a, l
+  1046  0266  b7                	or	a, a
+  1047  0267  2011              	jr	NZ,l_esp_finetune_bps_00101
+  1048  0269  213600            	ld	hl,_STRING_ESP_RX_AT_BPS_R2
+  1049  026c  e5                	push	hl
+  1050  026d  212b00            	ld	hl,_STRING_ESP_TX_AT_BPS_Q2
+  1051  0270  e5                	push	hl
+  1052  0271  cde501            	call	_esp_bps_query
+  1053  0274  f1                	pop	af
+  1054  0275  f1                	pop	af
+  1055  0276  7d                	ld	a, l
+  1056  0277  b7                	or	a, a
+  1057  0278  2814              	jr	Z,l_esp_finetune_bps_00102
+  1058                          l_esp_finetune_bps_00101:
+  1059  027a  2a0200            	ld	hl, (_esp_bps + 2)
+  1060  027d  e5                	push	hl
+  1061  027e  2a0000            	ld	hl, (_esp_bps)
+  1062  0281  e5                	push	hl
+  1063  0282  214a00            	ld	hl,___str_4
+  1064  0285  e5                	push	hl
+  1065  0286  cd0000            	call	_printf
+  1066  0289  f1                	pop	af
+  1067  028a  f1                	pop	af
+  1068  028b  f1                	pop	af
+  1069  028c  1815              	jr	l_esp_finetune_bps_00105
+  1070                          l_esp_finetune_bps_00102:
+  1071  028e  cd1801            	call	_esp_binary_search_bps
+  1072  0291  2a0200            	ld	hl, (_esp_bps + 2)
+  1073  0294  e5                	push	hl
+  1074  0295  2a0000            	ld	hl, (_esp_bps)
+  1075  0298  e5                	push	hl
+  1076  0299  215c00            	ld	hl,___str_5
+  1077  029c  e5                	push	hl
+  1078  029d  cd0000            	call	_printf
+  1079  02a0  f1                	pop	af
+  1080  02a1  f1                	pop	af
+  1081  02a2  f1                	pop	af
+  1082                          l_esp_finetune_bps_00105:
+  1083  02a3  c9                	ret
+  1084                          	SECTION rodata_compiler
+  1085                          ___str_3:
+  1086  002b  0a                	DEFB 0x0a
+  1087  002c  202046696e652074  	DEFM "  Fine tune working baud rate"
               756e6520776f726b  
               696e672062617564  
               2072617465        
-  1086  0049  00                	DEFB 0x00
-  1087                          	SECTION rodata_compiler
-  1088                          ___str_4:
-  1089  004a  2020455350207265  	DEFM "  ESP reports %lu"
+  1088  0049  00                	DEFB 0x00
+  1089                          	SECTION rodata_compiler
+  1090                          ___str_4:
+  1091  004a  2020455350207265  	DEFM "  ESP reports %lu"
               706f72747320256c  
               75                
-  1090  005b  00                	DEFB 0x00
-  1091                          	SECTION rodata_compiler
-  1092                          ___str_5:
-  1093  005c  0a                	DEFB 0x0a
-  1094  005d  202042696e617279  	DEFM "  Binary search found %lu"
+  1092  005b  00                	DEFB 0x00
+  1093                          	SECTION rodata_compiler
+  1094                          ___str_5:
+  1095  005c  0a                	DEFB 0x0a
+  1096  005d  202042696e617279  	DEFM "  Binary search found %lu"
               2073656172636820  
               666f756e6420256c  
               75                
-  1095  0076  00                	DEFB 0x00
-  1096                          	SECTION code_compiler
-  1097                          ;	---------------------------------
-  1098                          ; Function esp_test
-  1099                          ; ---------------------------------
-  1100                          _esp_test:
-  1101  02a4  2a0200            	ld	hl, (_esp_bps + 2)
-  1102  02a7  e5                	push	hl
-  1103  02a8  2a0000            	ld	hl, (_esp_bps)
-  1104  02ab  e5                	push	hl
-  1105  02ac  217700            	ld	hl,___str_6
-  1106  02af  e5                	push	hl
-  1107  02b0  cd0000            	call	_printf
-  1108  02b3  f1                	pop	af
-  1109  02b4  f1                	pop	af
-  1110  02b5  f1                	pop	af
-  1111  02b6  218300            	ld	hl,___str_7
-  1112  02b9  cd0000            	call	_uart_tx
-  1113  02bc  210000            	ld	hl,_STRING_ESP_TX_AT
-  1114  02bf  cd0000            	call	_uart_tx
-  1115  02c2  2a0200            	ld	hl, (_esp_bps + 2)
-  1116  02c5  e5                	push	hl
-  1117  02c6  2a0000            	ld	hl, (_esp_bps)
-  1118  02c9  e5                	push	hl
-  1119  02ca  210000            	ld	hl,0x0000
-  1120  02cd  e5                	push	hl
-  1121  02ce  21204e            	ld	hl,0x4e20
-  1122  02d1  e5                	push	hl
-  1123  02d2  cd0000            	call	__divulong_callee
-  1124  02d5  eb                	ex	de, hl
-  1125  02d6  210500            	ld	hl,0x0005
-  1126  02d9  19                	add	hl, de
-  1127  02da  220400            	ld	(_esp_response_time_ms), hl
-  1128  02dd  c30000            	jp	_esp_response_ok
-  1129                          	SECTION rodata_compiler
-  1130                          ___str_6:
-  1131  0077  08                	DEFB 0x08
-  1132  0078  08                	DEFB 0x08
-  1133  0079  08                	DEFB 0x08
-  1134  007a  08                	DEFB 0x08
-  1135  007b  08                	DEFB 0x08
-  1136  007c  08                	DEFB 0x08
-  1137  007d  08                	DEFB 0x08
-  1138  007e  25376c75          	DEFM "%7lu"
-  1139  0082  00                	DEFB 0x00
-  1140                          	SECTION rodata_compiler
-  1141                          ___str_7:
-  1142  0083  0d                	DEFB 0x0d
-  1143  0084  0a                	DEFB 0x0a
-  1144  0085  00                	DEFB 0x00
-  1145                          	SECTION code_compiler
-  1146                          ;	---------------------------------
-  1147                          ; Function esp_detect_bps
-  1148                          ; ---------------------------------
-  1149                          _esp_detect_bps:
-  1150  02e0  218600            	ld	hl,___str_8
-  1151  02e3  e5                	push	hl
-  1152  02e4  cd0000            	call	_printf
-  1153  02e7  f1                	pop	af
-  1154  02e8  210300            	ld	hl,_esp_bps + 3
-  1155  02eb  7e                	ld	a, (hl)
-  1156  02ec  2b                	dec	hl
-  1157  02ed  b6                	or	a, (hl)
-  1158  02ee  2b                	dec	hl
-  1159  02ef  b6                	or	a, (hl)
-  1160  02f0  2b                	dec	hl
-  1161  02f1  b6                	or	a, (hl)
-  1162  02f2  2822              	jr	Z,l_esp_detect_bps_00104
-  1163  02f4  2a0200            	ld	hl, (_esp_bps + 2)
-  1164  02f7  e5                	push	hl
-  1165  02f8  2a0000            	ld	hl, (_esp_bps)
-  1166  02fb  e5                	push	hl
-  1167  02fc  cd0000            	call	_uart_compute_prescaler
-  1168  02ff  f1                	pop	af
-  1169  0300  f1                	pop	af
-  1170  0301  d5                	push	de
-  1171  0302  e5                	push	hl
-  1172  0303  cd0000            	call	_uart_set_prescaler
-  1173  0306  f1                	pop	af
-  1174  0307  f1                	pop	af
-  1175  0308  cda402            	call	_esp_test
-  1176  030b  2d                	dec	l
-  1177  030c  2008              	jr	NZ,l_esp_detect_bps_00104
-  1178  030e  cd5102            	call	_esp_finetune_bps
-  1179  0311  2e01              	ld	l,0x01
-  1180  0313  c3ff03            	jp	l_esp_detect_bps_00118
-  1181                          l_esp_detect_bps_00104:
-  1182  0316  212601            	ld	hl,_esp_detect_bps_i_10000_367
-  1183  0319  3600              	ld	(hl),0x00
-  1184                          l_esp_detect_bps_00114:
-  1185  031b  212601            	ld	hl,_esp_detect_bps_i_10000_367
-  1186  031e  6e                	ld	l, (hl)
-  1187  031f  2600              	ld	h,0x00
-  1188  0321  29                	add	hl, hl
-  1189  0322  29                	add	hl, hl
-  1190  0323  014500            	ld	bc,_common_bps
-  1191  0326  09                	add	hl,bc
-  1192  0327  eb                	ex	de, hl
-  1193  0328  1a                	ld	a, (de)
-  1194  0329  210000            	ld	hl,_esp_bps
-  1195  032c  77                	ld	(hl), a
-  1196  032d  13                	inc	de
-  1197  032e  1a                	ld	a, (de)
-  1198  032f  23                	inc	hl
-  1199  0330  77                	ld	(hl), a
-  1200  0331  13                	inc	de
-  1201  0332  1a                	ld	a, (de)
-  1202  0333  23                	inc	hl
-  1203  0334  77                	ld	(hl), a
-  1204  0335  13                	inc	de
-  1205  0336  1a                	ld	a, (de)
-  1206  0337  23                	inc	hl
-  1207  0338  77                	ld	(hl), a
-  1208  0339  2a0200            	ld	hl, (_esp_bps + 2)
-  1209  033c  e5                	push	hl
-  1210  033d  2a0000            	ld	hl, (_esp_bps)
-  1211  0340  e5                	push	hl
-  1212  0341  cd0000            	call	_uart_compute_prescaler
-  1213  0344  f1                	pop	af
-  1214  0345  f1                	pop	af
-  1215  0346  d5                	push	de
-  1216  0347  e5                	push	hl
-  1217  0348  cd0000            	call	_uart_set_prescaler
-  1218  034b  f1                	pop	af
-  1219  034c  f1                	pop	af
-  1220  034d  cda402            	call	_esp_test
-  1221  0350  2d                	dec	l
-  1222  0351  2008              	jr	NZ,l_esp_detect_bps_00115
-  1223  0353  cd5102            	call	_esp_finetune_bps
-  1224  0356  2e01              	ld	l,0x01
-  1225  0358  c3ff03            	jp	l_esp_detect_bps_00118
-  1226                          l_esp_detect_bps_00115:
-  1227  035b  212601            	ld	hl,_esp_detect_bps_i_10000_367
-  1228  035e  34                	inc	(hl)
-  1229  035f  7e                	ld	a, (hl)
-  1230  0360  d609              	sub	a,0x09
-  1231  0362  20b7              	jr	NZ,l_esp_detect_bps_00114
-  1232  0364  212601            	ld	hl,_esp_detect_bps_i_10000_367
-  1233  0367  3600              	ld	(hl),0x00
-  1234                          l_esp_detect_bps_00116:
-  1235  0369  212601            	ld	hl,_esp_detect_bps_i_10000_367
-  1236  036c  6e                	ld	l, (hl)
-  1237  036d  2600              	ld	h,0x00
-  1238  036f  29                	add	hl, hl
-  1239  0370  29                	add	hl, hl
-  1240  0371  29                	add	hl, hl
-  1241  0372  016900            	ld	bc,_common_bps_range
-  1242  0375  09                	add	hl,bc
-  1243  0376  eb                	ex	de, hl
-  1244  0377  13                	inc	de
-  1245  0378  13                	inc	de
-  1246  0379  13                	inc	de
-  1247  037a  13                	inc	de
-  1248  037b  1a                	ld	a, (de)
-  1249  037c  210000            	ld	hl,_esp_bps
-  1250  037f  77                	ld	(hl), a
-  1251  0380  13                	inc	de
-  1252  0381  1a                	ld	a, (de)
-  1253  0382  23                	inc	hl
-  1254  0383  77                	ld	(hl), a
-  1255  0384  13                	inc	de
-  1256  0385  1a                	ld	a, (de)
-  1257  0386  23                	inc	hl
-  1258  0387  77                	ld	(hl), a
-  1259  0388  13                	inc	de
-  1260  0389  1a                	ld	a, (de)
-  1261  038a  23                	inc	hl
-  1262  038b  77                	ld	(hl), a
-  1263                          l_esp_detect_bps_00110:
-  1264  038c  2a0200            	ld	hl, (_esp_bps + 2)
-  1265  038f  e5                	push	hl
-  1266  0390  2a0000            	ld	hl, (_esp_bps)
-  1267  0393  e5                	push	hl
-  1268  0394  cd0000            	call	_uart_compute_prescaler
-  1269  0397  f1                	pop	af
-  1270  0398  f1                	pop	af
-  1271  0399  d5                	push	de
-  1272  039a  e5                	push	hl
-  1273  039b  cd0000            	call	_uart_set_prescaler
-  1274  039e  f1                	pop	af
-  1275  039f  f1                	pop	af
-  1276  03a0  cda402            	call	_esp_test
-  1277  03a3  2d                	dec	l
-  1278  03a4  2007              	jr	NZ,l_esp_detect_bps_00109
-  1279  03a6  cd5102            	call	_esp_finetune_bps
-  1280  03a9  2e01              	ld	l,0x01
-  1281  03ab  1852              	jr	l_esp_detect_bps_00118
-  1282                          l_esp_detect_bps_00109:
-  1283  03ad  2a0200            	ld	hl, (_esp_bps + 2)
-  1284  03b0  e5                	push	hl
-  1285  03b1  2a0000            	ld	hl, (_esp_bps)
-  1286  03b4  e5                	push	hl
-  1287  03b5  210000            	ld	hl,0x0000
-  1288  03b8  e5                	push	hl
-  1289  03b9  2e50              	ld	l,0x50
-  1290  03bb  e5                	push	hl
-  1291  03bc  cd0000            	call	__mullong_callee
-  1292  03bf  010000            	ld	bc,0x0000
-  1293  03c2  c5                	push	bc
-  1294  03c3  0e51              	ld	c,0x51
-  1295  03c5  c5                	push	bc
-  1296  03c6  d5                	push	de
-  1297  03c7  e5                	push	hl
-  1298  03c8  cd0000            	call	__divulong_callee
-  1299  03cb  eb                	ex	de, hl
-  1300  03cc  ed530000          	ld	(_esp_bps), de
-  1301  03d0  220200            	ld	(_esp_bps + 2), hl
-  1302  03d3  212601            	ld	hl,_esp_detect_bps_i_10000_367
-  1303  03d6  6e                	ld	l, (hl)
-  1304  03d7  2600              	ld	h,0x00
-  1305  03d9  29                	add	hl, hl
-  1306  03da  29                	add	hl, hl
-  1307  03db  29                	add	hl, hl
-  1308  03dc  116900            	ld	de,_common_bps_range
-  1309  03df  19                	add	hl, de
-  1310  03e0  4e                	ld	c, (hl)
-  1311  03e1  23                	inc	hl
-  1312  03e2  46                	ld	b, (hl)
-  1313  03e3  23                	inc	hl
-  1314  03e4  5e                	ld	e, (hl)
-  1315  03e5  23                	inc	hl
-  1316  03e6  56                	ld	d, (hl)
-  1317  03e7  2a0000            	ld	hl, (_esp_bps)
-  1318  03ea  bf                	cp	a, a
-  1319  03eb  ed42              	sbc	hl, bc
-  1320  03ed  2a0200            	ld	hl, (_esp_bps + 2)
-  1321  03f0  ed52              	sbc	hl, de
-  1322  03f2  3098              	jr	NC,l_esp_detect_bps_00110
-  1323  03f4  212601            	ld	hl,_esp_detect_bps_i_10000_367
-  1324  03f7  34                	inc	(hl)
-  1325  03f8  7e                	ld	a, (hl)
-  1326  03f9  d604              	sub	a,0x04
-  1327  03fb  c26903            	jp	NZ,l_esp_detect_bps_00116
-  1328  03fe  6f                	ld	l,a
-  1329                          l_esp_detect_bps_00118:
-  1330  03ff  c9                	ret
-  1331                          	SECTION rodata_compiler
-  1332                          ___str_8:
-  1333  0086  2020547279696e67  	DEFM "  Trying        "
+  1097  0076  00                	DEFB 0x00
+  1098                          	SECTION code_compiler
+  1099                          ;	---------------------------------
+  1100                          ; Function esp_test
+  1101                          ; ---------------------------------
+  1102                          _esp_test:
+  1103  02a4  2a0200            	ld	hl, (_esp_bps + 2)
+  1104  02a7  e5                	push	hl
+  1105  02a8  2a0000            	ld	hl, (_esp_bps)
+  1106  02ab  e5                	push	hl
+  1107  02ac  217700            	ld	hl,___str_6
+  1108  02af  e5                	push	hl
+  1109  02b0  cd0000            	call	_printf
+  1110  02b3  f1                	pop	af
+  1111  02b4  f1                	pop	af
+  1112  02b5  f1                	pop	af
+  1113  02b6  218300            	ld	hl,___str_7
+  1114  02b9  cd0000            	call	_uart_tx
+  1115  02bc  210000            	ld	hl,_STRING_ESP_TX_AT
+  1116  02bf  cd0000            	call	_uart_tx
+  1117  02c2  2a0200            	ld	hl, (_esp_bps + 2)
+  1118  02c5  e5                	push	hl
+  1119  02c6  2a0000            	ld	hl, (_esp_bps)
+  1120  02c9  e5                	push	hl
+  1121  02ca  210000            	ld	hl,0x0000
+  1122  02cd  e5                	push	hl
+  1123  02ce  21204e            	ld	hl,0x4e20
+  1124  02d1  e5                	push	hl
+  1125  02d2  cd0000            	call	__divulong_callee
+  1126  02d5  eb                	ex	de, hl
+  1127  02d6  210500            	ld	hl,0x0005
+  1128  02d9  19                	add	hl, de
+  1129  02da  220400            	ld	(_esp_response_time_ms), hl
+  1130  02dd  c30000            	jp	_esp_response_ok
+  1131                          	SECTION rodata_compiler
+  1132                          ___str_6:
+  1133  0077  08                	DEFB 0x08
+  1134  0078  08                	DEFB 0x08
+  1135  0079  08                	DEFB 0x08
+  1136  007a  08                	DEFB 0x08
+  1137  007b  08                	DEFB 0x08
+  1138  007c  08                	DEFB 0x08
+  1139  007d  08                	DEFB 0x08
+  1140  007e  25376c75          	DEFM "%7lu"
+  1141  0082  00                	DEFB 0x00
+  1142                          	SECTION rodata_compiler
+  1143                          ___str_7:
+  1144  0083  0d                	DEFB 0x0d
+  1145  0084  0a                	DEFB 0x0a
+  1146  0085  00                	DEFB 0x00
+  1147                          	SECTION code_compiler
+  1148                          ;	---------------------------------
+  1149                          ; Function esp_detect_bps
+  1150                          ; ---------------------------------
+  1151                          _esp_detect_bps:
+  1152  02e0  218600            	ld	hl,___str_8
+  1153  02e3  e5                	push	hl
+  1154  02e4  cd0000            	call	_printf
+  1155  02e7  f1                	pop	af
+  1156  02e8  210300            	ld	hl,_esp_bps + 3
+  1157  02eb  7e                	ld	a, (hl)
+  1158  02ec  2b                	dec	hl
+  1159  02ed  b6                	or	a, (hl)
+  1160  02ee  2b                	dec	hl
+  1161  02ef  b6                	or	a, (hl)
+  1162  02f0  2b                	dec	hl
+  1163  02f1  b6                	or	a, (hl)
+  1164  02f2  2822              	jr	Z,l_esp_detect_bps_00104
+  1165  02f4  2a0200            	ld	hl, (_esp_bps + 2)
+  1166  02f7  e5                	push	hl
+  1167  02f8  2a0000            	ld	hl, (_esp_bps)
+  1168  02fb  e5                	push	hl
+  1169  02fc  cd0000            	call	_uart_compute_prescaler
+  1170  02ff  f1                	pop	af
+  1171  0300  f1                	pop	af
+  1172  0301  d5                	push	de
+  1173  0302  e5                	push	hl
+  1174  0303  cd0000            	call	_uart_set_prescaler
+  1175  0306  f1                	pop	af
+  1176  0307  f1                	pop	af
+  1177  0308  cda402            	call	_esp_test
+  1178  030b  2d                	dec	l
+  1179  030c  2008              	jr	NZ,l_esp_detect_bps_00104
+  1180  030e  cd5102            	call	_esp_finetune_bps
+  1181  0311  2e01              	ld	l,0x01
+  1182  0313  c3ff03            	jp	l_esp_detect_bps_00118
+  1183                          l_esp_detect_bps_00104:
+  1184  0316  212601            	ld	hl,_esp_detect_bps_i_10000_369
+  1185  0319  3600              	ld	(hl),0x00
+  1186                          l_esp_detect_bps_00114:
+  1187  031b  212601            	ld	hl,_esp_detect_bps_i_10000_369
+  1188  031e  6e                	ld	l, (hl)
+  1189  031f  2600              	ld	h,0x00
+  1190  0321  29                	add	hl, hl
+  1191  0322  29                	add	hl, hl
+  1192  0323  014500            	ld	bc,_common_bps
+  1193  0326  09                	add	hl,bc
+  1194  0327  eb                	ex	de, hl
+  1195  0328  1a                	ld	a, (de)
+  1196  0329  210000            	ld	hl,_esp_bps
+  1197  032c  77                	ld	(hl), a
+  1198  032d  13                	inc	de
+  1199  032e  1a                	ld	a, (de)
+  1200  032f  23                	inc	hl
+  1201  0330  77                	ld	(hl), a
+  1202  0331  13                	inc	de
+  1203  0332  1a                	ld	a, (de)
+  1204  0333  23                	inc	hl
+  1205  0334  77                	ld	(hl), a
+  1206  0335  13                	inc	de
+  1207  0336  1a                	ld	a, (de)
+  1208  0337  23                	inc	hl
+  1209  0338  77                	ld	(hl), a
+  1210  0339  2a0200            	ld	hl, (_esp_bps + 2)
+  1211  033c  e5                	push	hl
+  1212  033d  2a0000            	ld	hl, (_esp_bps)
+  1213  0340  e5                	push	hl
+  1214  0341  cd0000            	call	_uart_compute_prescaler
+  1215  0344  f1                	pop	af
+  1216  0345  f1                	pop	af
+  1217  0346  d5                	push	de
+  1218  0347  e5                	push	hl
+  1219  0348  cd0000            	call	_uart_set_prescaler
+  1220  034b  f1                	pop	af
+  1221  034c  f1                	pop	af
+  1222  034d  cda402            	call	_esp_test
+  1223  0350  2d                	dec	l
+  1224  0351  2008              	jr	NZ,l_esp_detect_bps_00115
+  1225  0353  cd5102            	call	_esp_finetune_bps
+  1226  0356  2e01              	ld	l,0x01
+  1227  0358  c3ff03            	jp	l_esp_detect_bps_00118
+  1228                          l_esp_detect_bps_00115:
+  1229  035b  212601            	ld	hl,_esp_detect_bps_i_10000_369
+  1230  035e  34                	inc	(hl)
+  1231  035f  7e                	ld	a, (hl)
+  1232  0360  d609              	sub	a,0x09
+  1233  0362  20b7              	jr	NZ,l_esp_detect_bps_00114
+  1234  0364  212601            	ld	hl,_esp_detect_bps_i_10000_369
+  1235  0367  3600              	ld	(hl),0x00
+  1236                          l_esp_detect_bps_00116:
+  1237  0369  212601            	ld	hl,_esp_detect_bps_i_10000_369
+  1238  036c  6e                	ld	l, (hl)
+  1239  036d  2600              	ld	h,0x00
+  1240  036f  29                	add	hl, hl
+  1241  0370  29                	add	hl, hl
+  1242  0371  29                	add	hl, hl
+  1243  0372  016900            	ld	bc,_common_bps_range
+  1244  0375  09                	add	hl,bc
+  1245  0376  eb                	ex	de, hl
+  1246  0377  13                	inc	de
+  1247  0378  13                	inc	de
+  1248  0379  13                	inc	de
+  1249  037a  13                	inc	de
+  1250  037b  1a                	ld	a, (de)
+  1251  037c  210000            	ld	hl,_esp_bps
+  1252  037f  77                	ld	(hl), a
+  1253  0380  13                	inc	de
+  1254  0381  1a                	ld	a, (de)
+  1255  0382  23                	inc	hl
+  1256  0383  77                	ld	(hl), a
+  1257  0384  13                	inc	de
+  1258  0385  1a                	ld	a, (de)
+  1259  0386  23                	inc	hl
+  1260  0387  77                	ld	(hl), a
+  1261  0388  13                	inc	de
+  1262  0389  1a                	ld	a, (de)
+  1263  038a  23                	inc	hl
+  1264  038b  77                	ld	(hl), a
+  1265                          l_esp_detect_bps_00110:
+  1266  038c  2a0200            	ld	hl, (_esp_bps + 2)
+  1267  038f  e5                	push	hl
+  1268  0390  2a0000            	ld	hl, (_esp_bps)
+  1269  0393  e5                	push	hl
+  1270  0394  cd0000            	call	_uart_compute_prescaler
+  1271  0397  f1                	pop	af
+  1272  0398  f1                	pop	af
+  1273  0399  d5                	push	de
+  1274  039a  e5                	push	hl
+  1275  039b  cd0000            	call	_uart_set_prescaler
+  1276  039e  f1                	pop	af
+  1277  039f  f1                	pop	af
+  1278  03a0  cda402            	call	_esp_test
+  1279  03a3  2d                	dec	l
+  1280  03a4  2007              	jr	NZ,l_esp_detect_bps_00109
+  1281  03a6  cd5102            	call	_esp_finetune_bps
+  1282  03a9  2e01              	ld	l,0x01
+  1283  03ab  1852              	jr	l_esp_detect_bps_00118
+  1284                          l_esp_detect_bps_00109:
+  1285  03ad  2a0200            	ld	hl, (_esp_bps + 2)
+  1286  03b0  e5                	push	hl
+  1287  03b1  2a0000            	ld	hl, (_esp_bps)
+  1288  03b4  e5                	push	hl
+  1289  03b5  210000            	ld	hl,0x0000
+  1290  03b8  e5                	push	hl
+  1291  03b9  2e50              	ld	l,0x50
+  1292  03bb  e5                	push	hl
+  1293  03bc  cd0000            	call	__mullong_callee
+  1294  03bf  010000            	ld	bc,0x0000
+  1295  03c2  c5                	push	bc
+  1296  03c3  0e51              	ld	c,0x51
+  1297  03c5  c5                	push	bc
+  1298  03c6  d5                	push	de
+  1299  03c7  e5                	push	hl
+  1300  03c8  cd0000            	call	__divulong_callee
+  1301  03cb  eb                	ex	de, hl
+  1302  03cc  ed530000          	ld	(_esp_bps), de
+  1303  03d0  220200            	ld	(_esp_bps + 2), hl
+  1304  03d3  212601            	ld	hl,_esp_detect_bps_i_10000_369
+  1305  03d6  6e                	ld	l, (hl)
+  1306  03d7  2600              	ld	h,0x00
+  1307  03d9  29                	add	hl, hl
+  1308  03da  29                	add	hl, hl
+  1309  03db  29                	add	hl, hl
+  1310  03dc  116900            	ld	de,_common_bps_range
+  1311  03df  19                	add	hl, de
+  1312  03e0  4e                	ld	c, (hl)
+  1313  03e1  23                	inc	hl
+  1314  03e2  46                	ld	b, (hl)
+  1315  03e3  23                	inc	hl
+  1316  03e4  5e                	ld	e, (hl)
+  1317  03e5  23                	inc	hl
+  1318  03e6  56                	ld	d, (hl)
+  1319  03e7  2a0000            	ld	hl, (_esp_bps)
+  1320  03ea  bf                	cp	a, a
+  1321  03eb  ed42              	sbc	hl, bc
+  1322  03ed  2a0200            	ld	hl, (_esp_bps + 2)
+  1323  03f0  ed52              	sbc	hl, de
+  1324  03f2  3098              	jr	NC,l_esp_detect_bps_00110
+  1325  03f4  212601            	ld	hl,_esp_detect_bps_i_10000_369
+  1326  03f7  34                	inc	(hl)
+  1327  03f8  7e                	ld	a, (hl)
+  1328  03f9  d604              	sub	a,0x04
+  1329  03fb  c26903            	jp	NZ,l_esp_detect_bps_00116
+  1330  03fe  6f                	ld	l,a
+  1331                          l_esp_detect_bps_00118:
+  1332  03ff  c9                	ret
+  1333                          	SECTION rodata_compiler
+  1334                          ___str_8:
+  1335  0086  2020547279696e67  	DEFM "  Trying        "
               2020202020202020  
-  1334  0096  00                	DEFB 0x00
-  1335                          	SECTION data_compiler
-  1336                          _STRING_ESP_TX_AT:
-  1337  0000  4154              	DEFM "AT"
-  1338  0002  0d                	DEFB 0x0d
-  1339  0003  0a                	DEFB 0x0a
-  1340  0004  00                	DEFB 0x00
-  1341                          _STRING_ESP_TX_AT_GMR:
-  1342  0005  41542b474d52      	DEFM "AT+GMR"
-  1343  000b  0d                	DEFB 0x0d
-  1344  000c  0a                	DEFB 0x0a
-  1345  000d  00                	DEFB 0x00
-  1346                          _STRING_ESP_TX_AT_BPS_Q1:
-  1347  000e  41542b554152545f  	DEFM "AT+UART_CUR?"
+  1336  0096  00                	DEFB 0x00
+  1337                          	SECTION data_compiler
+  1338                          _STRING_ESP_TX_AT:
+  1339  0000  4154              	DEFM "AT"
+  1340  0002  0d                	DEFB 0x0d
+  1341  0003  0a                	DEFB 0x0a
+  1342  0004  00                	DEFB 0x00
+  1343                          _STRING_ESP_TX_AT_GMR:
+  1344  0005  41542b474d52      	DEFM "AT+GMR"
+  1345  000b  0d                	DEFB 0x0d
+  1346  000c  0a                	DEFB 0x0a
+  1347  000d  00                	DEFB 0x00
+  1348                          _STRING_ESP_TX_AT_BPS_Q1:
+  1349  000e  41542b554152545f  	DEFM "AT+UART_CUR?"
               4355523f          
-  1348  001a  0d                	DEFB 0x0d
-  1349  001b  0a                	DEFB 0x0a
-  1350  001c  00                	DEFB 0x00
-  1351                          _STRING_ESP_RX_AT_BPS_R1:
-  1352  001d  2b554152545f4355  	DEFM "+UART_CUR:%lu"
+  1350  001a  0d                	DEFB 0x0d
+  1351  001b  0a                	DEFB 0x0a
+  1352  001c  00                	DEFB 0x00
+  1353                          _STRING_ESP_RX_AT_BPS_R1:
+  1354  001d  2b554152545f4355  	DEFM "+UART_CUR:%lu"
               523a256c75        
-  1353  002a  00                	DEFB 0x00
-  1354                          _STRING_ESP_TX_AT_BPS_Q2:
-  1355  002b  41542b554152543f  	DEFM "AT+UART?"
-  1356  0033  0d                	DEFB 0x0d
-  1357  0034  0a                	DEFB 0x0a
-  1358  0035  00                	DEFB 0x00
-  1359                          _STRING_ESP_RX_AT_BPS_R2:
-  1360  0036  2b554152543a256c  	DEFM "+UART:%lu"
+  1355  002a  00                	DEFB 0x00
+  1356                          _STRING_ESP_TX_AT_BPS_Q2:
+  1357  002b  41542b554152543f  	DEFM "AT+UART?"
+  1358  0033  0d                	DEFB 0x0d
+  1359  0034  0a                	DEFB 0x0a
+  1360  0035  00                	DEFB 0x00
+  1361                          _STRING_ESP_RX_AT_BPS_R2:
+  1362  0036  2b554152543a256c  	DEFM "+UART:%lu"
               75                
-  1361  003f  00                	DEFB 0x00
-  1362                          _STRING_ESP_RX_OK:
-  1363  0040  4f4b              	DEFM "OK"
-  1364  0042  0d                	DEFB 0x0d
-  1365  0043  0a                	DEFB 0x0a
-  1366  0044  00                	DEFB 0x00
-  1367                          _common_bps:
-  1368  0045  00c20100          	DEFB +0x00,0xc2, +0x01, +0x00
-  1369  0049  80250000          	DEFB +0x80,0x25, +0x00, +0x00
-  1370  004d  80841e00          	DEFB +0x80,0x84, +0x1e, +0x00
-  1371  0051  40420f00          	DEFB +0x40,0x42, +0x0f, +0x00
-  1372  0055  00941100          	DEFB +0x00,0x94, +0x11, +0x00
-  1373  0059  00e10000          	DEFB +0x00,0xe1, +0x00, +0x00
-  1374  005d  004b0000          	DEFB +0x00,0x4b, +0x00, +0x00
-  1375  0061  127a0000          	DEFB +0x12,0x7a, +0x00, +0x00
-  1376  0065  80240100          	DEFB +0x80,0x24, +0x01, +0x00
-  1377                          _common_bps_range:
-  1378  0069  40420f00          	DEFB +0x40,0x42, +0x0f, +0x00
-  1379  006d  80841e00          	DEFB +0x80,0x84, +0x1e, +0x00
-  1380  0071  00c20100          	DEFB +0x00,0xc2, +0x01, +0x00
-  1381  0075  40420f00          	DEFB +0x40,0x42, +0x0f, +0x00
-  1382  0079  2c010000          	DEFB +0x2c,0x01, +0x00, +0x00
-  1383  007d  004b0000          	DEFB +0x00,0x4b, +0x00, +0x00
-  1384  0081  004b0000          	DEFB +0x00,0x4b, +0x00, +0x00
-  1385  0085  00c20100          	DEFB +0x00,0xc2, +0x01, +0x00
-  1386                          	SECTION IGNORE
-  1387                          
+  1363  003f  00                	DEFB 0x00
+  1364                          _STRING_ESP_RX_OK:
+  1365  0040  4f4b              	DEFM "OK"
+  1366  0042  0d                	DEFB 0x0d
+  1367  0043  0a                	DEFB 0x0a
+  1368  0044  00                	DEFB 0x00
+  1369                          _common_bps:
+  1370  0045  00c20100          	DEFB +0x00,0xc2, +0x01, +0x00
+  1371  0049  80250000          	DEFB +0x80,0x25, +0x00, +0x00
+  1372  004d  80841e00          	DEFB +0x80,0x84, +0x1e, +0x00
+  1373  0051  40420f00          	DEFB +0x40,0x42, +0x0f, +0x00
+  1374  0055  00941100          	DEFB +0x00,0x94, +0x11, +0x00
+  1375  0059  00e10000          	DEFB +0x00,0xe1, +0x00, +0x00
+  1376  005d  004b0000          	DEFB +0x00,0x4b, +0x00, +0x00
+  1377  0061  127a0000          	DEFB +0x12,0x7a, +0x00, +0x00
+  1378  0065  80240100          	DEFB +0x80,0x24, +0x01, +0x00
+  1379                          _common_bps_range:
+  1380  0069  40420f00          	DEFB +0x40,0x42, +0x0f, +0x00
+  1381  006d  80841e00          	DEFB +0x80,0x84, +0x1e, +0x00
+  1382  0071  00c20100          	DEFB +0x00,0xc2, +0x01, +0x00
+  1383  0075  40420f00          	DEFB +0x40,0x42, +0x0f, +0x00
+  1384  0079  2c010000          	DEFB +0x2c,0x01, +0x00, +0x00
+  1385  007d  004b0000          	DEFB +0x00,0x4b, +0x00, +0x00
+  1386  0081  004b0000          	DEFB +0x00,0x4b, +0x00, +0x00
+  1387  0085  00c20100          	DEFB +0x00,0xc2, +0x01, +0x00
+  1388                          	SECTION IGNORE
+  1389                          

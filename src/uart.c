@@ -9,6 +9,8 @@
 #include "uart.h"
 //#include "user.h"
 
+
+
 void itoa_not_zero(uint8_t num, char* str) 
 {
     int i = 0;
@@ -26,6 +28,14 @@ void itoa_not_zero(uint8_t num, char* str)
     }
    
     //return str;
+}
+
+void itoa(uint8_t num, char* str) 
+{
+   if(num==0)
+      strcpy(str, "0");
+   else 
+      itoa_not_zero(num, str);   
 }
 
 uint8_t atoi(char* str) 

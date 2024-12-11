@@ -132,7 +132,19 @@ static GameObject incomingPacketGobs[INCOMING_PACKET_GOB_COUNT];
 #define OUTGOING_PACKET_GOB_COUNT 10
 static GameObject outgoingPacketGobs[OUTGOING_PACKET_GOB_COUNT];
 
+enum state
+{
+    STATE_NONE = 0,
+    STATE_CALL_NOP = 1,
+    STATE_WAIT_FOR_NOP = 2
+};
+
+uint8_t gameState = STATE_NONE;
+uint8_t frameCount = 0;
+
 void StartNewPacket(void);
+void PageFlip(void);
+
 
 /*******************************************************************************
  * Functions
@@ -272,18 +284,14 @@ static void DrawCloudEdge(layer2_screen_t *screen)
 static void DrawGameBackground(void)
 {
     // Draw top part with white (cloud)
-    layer2_fill_rect(0, 0,  256, CLOUD_SPRITE_Y, 0xff, &shadow_screen);
+    //layer2_fill_rect(0, 0,  256, CLOUD_SPRITE_Y, 0xff, &shadow_screen);
 
     // Fill the lower screen area with black.
-    layer2_fill_rect(0, CLOUD_SPRITE_Y, 256, (int)(194-CLOUD_SPRITE_Y), 123/*l.blue*/, &shadow_screen);
+    //layer2_fill_rect(0, CLOUD_SPRITE_Y, 256, (int)(194-CLOUD_SPRITE_Y), 123/*l.blue*/, &shadow_screen);
 
-    //DrawPacket(&shadow_screen);
+    //DrawCloudEdge(&shadow_screen);
 
-    DrawCloudEdge(&shadow_screen);
-
-    //test_draw_text(&shadow_screen);
-
-    // Swap the double buffered screen.
+     // Swap the double buffered screen.
     layer2_flip_main_shadow_screen();
 }
 
@@ -303,51 +311,9 @@ static void create_start_screen(void)
     //printf("Press any key to start\n");
     //in_wait_key();
 
-    DrawStatusText("Ping server");
+    DrawStatusTextAndPageFlip("Ping server");
 
-   // Send NOP to the server.
-    uint8_t serverCommandsNop = 0;
-    uint8_t packetLen = 1;
-    uint8_t err = uart_send_data_packet(&serverCommandsNop, packetLen);
-    if(err)
-        printf("uart_send_data_packet(). err=%u, buffer=%s\n", 
-            err, buffer);
-    //UpdateAndDrawAll();
-
-    if(!err) 
-        DrawStatusText("Ping server (sent to UART)");
-    // Read NOP send response.
-    // The response should be: "Recv 1 bytes\n\rSEND OK\n\r"
-    err = uart_read_response("SEND OK");
-    if(err)
-        printf("uart_read_response(). err=%u, buffer=%s\n", 
-            err, buffer);
-    if(!err) 
-        DrawStatusText("Ping server (sent to Server)");
-   
-    // Read received data for NOP.
-    // The response should be: "Recv 1 bytes\n\rSEND OK\n\r"
-    //err = uart_read_response("+IPD,");
-    //UpdateAndDrawAll();
-    NopResponse resp;
-    err = uart_get_received_data((char*)&resp, sizeof(NopResponse));
-    if(err)
-        printf("uart_get_received_data(). err=%u, buffer=%s\n",
-            err, buffer);
-   
-    // printf("Resp from server: cmd=%d, flags=%d\n", resp.cmd, resp.flags);
-    if(!err)
-    {
-        DrawStatusText("Server responded!");
-        StartNewPacket();
-
-        // GameObject* gobp = &incomingPacketGobs[0];
-        // gobp->isActive = true;
-        // gobp->x = 216;
-        // gobp->y = 154;
-        // gobp->sx = 0;
-        // gobp->sy = -3;
-    }
+    gameState = STATE_CALL_NOP;
 
     //printf("Press any key to start\n");
     //in_wait_key();
@@ -366,8 +332,8 @@ void StartNewPacket(void)
     {
         GameObject* gobp = &incomingPacketGobs[i];
         gobp->isActive = true;
-        gobp->x = 101;
-        gobp->y = 216;
+        gobp->x = 216;
+        gobp->y = 154;
         gobp->sx = 0;
         gobp->sy = -3;
     }
@@ -376,10 +342,19 @@ void StartNewPacket(void)
 void DrawStatusText(char* text)
 {
     uint8_t len = strlen(text);
-    uint8_t startPosX = 128 - (len/2);
-    layer2_fill_rect(1, 3*8, 256, 8, 0xff, &shadow_screen); // Clear field.
+    //uint8_t startPosX = 128 - (len/2);
+    layer2_fill_rect(1, 3*8, 255, 8, 0xff, &shadow_screen); // Clear field.
     layer2_draw_text(3, 0/*startPosX*/, text, 0xc, &shadow_screen);
-    UpdateAndDrawAll();
+}
+
+void DrawStatusTextAndPageFlip(char* text)
+{
+    DrawStatusText(text);
+
+    UpdateGameObjects();
+    PageFlip();  
+
+    DrawStatusText(text);
 }
 
 static void UpdateGameObjects(void)
@@ -433,34 +408,74 @@ static void UpdateGameObjects(void)
 
 void UpdateAndDrawAll(void)
 {
-    //DrawGame();
-
-    // Wait for vertical blanking interval.
-    intrinsic_halt();
-
-    //!!HV
     UpdateGameObjects();
-    // GameObject* gob = &incomingPacketGobs[0];
-    // gob->x += 1;
-    // // Update sprite position.
-    // set_sprite_slot(gob->spriteIndex);
-    // set_sprite_attributes_ext(gob->spritePatternIndex, gob->x, gob->y, 0, 0, true);
 
-    // char text[128];
-    // sprintf(text, "y=%u", testSprite.y);
-    // layer2_fill_rect(12*8, 3*8, 8*7, 8, 0xaa, &shadow_screen);
-    // layer2_draw_text(3,  12, text, 0xEF, &shadow_screen);
+    switch(gameState)
+    {
 
-    //printAt(23, 19); printf("yy = %d", testSprite.y); 
+        case STATE_CALL_NOP:
+        {
+           // Send NOP to the server.
+            uint8_t serverCommandsNop = 0;
+            uint8_t packetLen = 1;
+            uint8_t err = uart_send_data_packet(&serverCommandsNop, packetLen);
+            if(err)
+                printf("uart_send_data_packet(). err=%u, buffer=%s\n", 
+                    err, buffer);
 
-    // if (in_inkey())
-    // {
-    //     in_wait_nokey();
-    //     select_test();
-    // }
+            if(!err) 
+                DrawStatusTextAndPageFlip("Ping server (sent to UART)");
+            // Read NOP send response.
+            // The response should be: "Recv 1 bytes\n\rSEND OK\n\r"
+            err = uart_read_response("SEND OK");
+            if(err)
+                printf("uart_read_response(). err=%u, buffer=%s\n", 
+                    err, buffer);
+            if(!err) 
+            {
+                DrawStatusTextAndPageFlip("Ping server (sent to Server)");
+                gameState = STATE_WAIT_FOR_NOP;
+            }
+        }
+        break;   
 
-    // Swap the double buffered screen.
-    layer2_flip_main_shadow_screen();
+        case STATE_WAIT_FOR_NOP:
+        {
+            // Read received data for NOP.
+            NopResponse resp;
+            //printf("STATE_WAIT_FOR_NOP,");
+            if(uart_available_rx())
+            {
+                //printf("call uart_get_received_data().\n");
+                uint8_t err = uart_get_received_data((char*)&resp, sizeof(NopResponse));
+                if(err)
+                {
+                    printf("uart_get_received_data(). err=%u, buffer=%s\n",err, buffer);
+                }
+                if(!err)
+                {
+                    DrawStatusTextAndPageFlip("Server responded!");
+                    //printf("uart_get_received_data(). OK\n");
+                    StartNewPacket();
+                }
+
+                gameState = STATE_CALL_NOP;
+            }
+        }
+        break;
+
+        default:
+        break;
+    }
+}
+
+void PageFlip(void)
+{
+        // Wait for vertical blanking interval.
+        intrinsic_halt();
+
+        // Swap the double buffered screen.
+        layer2_flip_main_shadow_screen();
 }
 
 int main(void)
@@ -487,6 +502,23 @@ int main(void)
     while (true)
     {   
         UpdateAndDrawAll();
+
+        // Draw Frame count
+        if( frameCount++ >= 60)
+            frameCount = 0;
+        char text[16];
+        layer2_fill_rect( 0, 192 - 8, 255, 8, 0x00, &shadow_screen); // Clear field.
+
+        // frame count
+        itoa(frameCount, text);
+        //layer2_draw_text(23, 0, text, 0xc, &shadow_screen); 
+
+        // game state
+        strcat(text, " state:");
+        itoa(gameState, &text[6]);
+        layer2_draw_text(23, 0, text, 0xc, &shadow_screen); 
+
+        PageFlip();   
     }
 
     // Trig a soft reset. The Next hardware registers and I/O ports will be reset by NextZXOS after a soft reset.
