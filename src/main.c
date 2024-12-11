@@ -124,7 +124,7 @@ static uint8_t test_number = 0;
 
 static layer2_screen_t shadow_screen = {SHADOW_SCREEN};
 
-layer2_screen_t off_screen = {OFF_SCREEN, 0, 1, 3};
+//layer2_screen_t off_screen = {OFF_SCREEN, 0, 1, 3};
 
 #define INCOMING_PACKET_GOB_COUNT 10
 static GameObject incomingPacketGobs[INCOMING_PACKET_GOB_COUNT];
@@ -272,26 +272,19 @@ static void DrawCloudEdge(layer2_screen_t *screen)
 static void DrawGameBackground(void)
 {
     // Draw top part with white (cloud)
-    layer2_fill_rect(0, 0,  256, CLOUD_SPRITE_Y, 0xff, &off_screen);
+    layer2_fill_rect(0, 0,  256, CLOUD_SPRITE_Y, 0xff, &shadow_screen);
 
     // Fill the lower screen area with black.
-    layer2_fill_rect(0, CLOUD_SPRITE_Y, 256, (int)(194-CLOUD_SPRITE_Y), 123/*l.blue*/, &off_screen);
+    layer2_fill_rect(0, CLOUD_SPRITE_Y, 256, (int)(194-CLOUD_SPRITE_Y), 123/*l.blue*/, &shadow_screen);
 
-    //DrawPacket(&off_screen);
+    //DrawPacket(&shadow_screen);
 
-    DrawCloudEdge(&off_screen);
+    DrawCloudEdge(&shadow_screen);
 
-    //test_draw_text(&off_screen);
+    //test_draw_text(&shadow_screen);
 
     // Swap the double buffered screen.
-    if (IS_SHADOW_SCREEN(&off_screen))
-    {
-        layer2_flip_main_shadow_screen();
-    }
-    else if (IS_OFF_SCREEN(&off_screen))
-    {
-        layer2_copy_off_screen(&off_screen);
-    }
+    layer2_flip_main_shadow_screen();
 }
 
 static void create_start_screen(void)
@@ -300,7 +293,7 @@ static void create_start_screen(void)
     zx_cls(BRIGHT | INK_BLACK | PAPER_WHITE);
 
     ZXN_NEXTREG(0x07, 0x03);  // 28MHz
-   
+
     IO_153B = 0x00;  // Select ESP for UART(?)
 
     printAt(10, 0);
@@ -346,14 +339,14 @@ static void create_start_screen(void)
     if(!err)
     {
         DrawStatusText("Server responded!");
-        //StartNewPacket();
+        StartNewPacket();
 
-        GameObject* gobp = &incomingPacketGobs[0];
-        gobp->isActive = true;
-        gobp->x = 216;
-        gobp->y = 154;
-        gobp->sx = 0;
-        gobp->sy = -3;
+        // GameObject* gobp = &incomingPacketGobs[0];
+        // gobp->isActive = true;
+        // gobp->x = 216;
+        // gobp->y = 154;
+        // gobp->sx = 0;
+        // gobp->sy = -3;
     }
 
     //printf("Press any key to start\n");
@@ -384,8 +377,8 @@ void DrawStatusText(char* text)
 {
     uint8_t len = strlen(text);
     uint8_t startPosX = 128 - (len/2);
-    layer2_fill_rect(1, 3*8, 256, 8, 0xff, &off_screen); // Clear field.
-    layer2_draw_text(3, 0/*startPosX*/, text, 0xc, &off_screen);
+    layer2_fill_rect(1, 3*8, 256, 8, 0xff, &shadow_screen); // Clear field.
+    layer2_draw_text(3, 0/*startPosX*/, text, 0xc, &shadow_screen);
     UpdateAndDrawAll();
 }
 
@@ -394,8 +387,6 @@ static void UpdateGameObjects(void)
     for(int i=0; i<INCOMING_PACKET_GOB_COUNT; i++)
     {
         // Calculate next position of sprite.
-        //testSprite.x += testSprite.dx;
-        //testSprite.y += testSprite.dy;
         GameObject* gob = &incomingPacketGobs[i];
         if(gob->isActive)
             GobUpdate(gob);
@@ -446,12 +437,19 @@ void UpdateAndDrawAll(void)
 
     // Wait for vertical blanking interval.
     intrinsic_halt();
+
+    //!!HV
     UpdateGameObjects();
+    // GameObject* gob = &incomingPacketGobs[0];
+    // gob->x += 1;
+    // // Update sprite position.
+    // set_sprite_slot(gob->spriteIndex);
+    // set_sprite_attributes_ext(gob->spritePatternIndex, gob->x, gob->y, 0, 0, true);
 
     // char text[128];
     // sprintf(text, "y=%u", testSprite.y);
-    // layer2_fill_rect(12*8, 3*8, 8*7, 8, 0xaa, &off_screen);
-    // layer2_draw_text(3,  12, text, 0xEF, &off_screen);
+    // layer2_fill_rect(12*8, 3*8, 8*7, 8, 0xaa, &shadow_screen);
+    // layer2_draw_text(3,  12, text, 0xEF, &shadow_screen);
 
     //printAt(23, 19); printf("yy = %d", testSprite.y); 
 
@@ -462,14 +460,7 @@ void UpdateAndDrawAll(void)
     // }
 
     // Swap the double buffered screen.
-    if (IS_SHADOW_SCREEN(&off_screen))
-    {
-        layer2_flip_main_shadow_screen();
-    }
-    else if (IS_OFF_SCREEN(&off_screen))
-    {
-        layer2_copy_off_screen(&off_screen);
-    }
+    layer2_flip_main_shadow_screen();
 }
 
 int main(void)
@@ -477,26 +468,12 @@ int main(void)
     init_hardware();
     init_isr();
     
-    layer2_fill_rect(0, 0,  256, 192, 0xE3, &off_screen);
+    layer2_fill_rect(0, 0,  256, 192, 0xE3, &shadow_screen);
     // Swap the double buffered screen.
-    if (IS_SHADOW_SCREEN(&off_screen))
-    {
-        layer2_flip_main_shadow_screen();
-    }
-    else if (IS_OFF_SCREEN(&off_screen))
-    {
-        layer2_copy_off_screen(&off_screen);
-    }
-    layer2_fill_rect(0, 0,  256, 192, 0xE3, &off_screen);
+    layer2_flip_main_shadow_screen();
+    layer2_fill_rect(0, 0,  256, 192, 0xE3, &shadow_screen);
     // Swap the double buffered screen.
-    if (IS_SHADOW_SCREEN(&off_screen))
-    {
-        layer2_flip_main_shadow_screen();
-    }
-    else if (IS_OFF_SCREEN(&off_screen))
-    {
-        layer2_copy_off_screen(&off_screen);
-    }
+    layer2_flip_main_shadow_screen();
 
     create_sprites();
     set_sprite_layers_system(true, false, LAYER_PRIORITIES_S_L_U, false);
