@@ -115,8 +115,10 @@ static void test_blit_transparent(layer2_screen_t *screen);
 
 // Global
 
-char g_wifiSsid[64] = "5GCPE_5DFEC5";
-char g_wifiPassword[128] = "7EME26865L";
+// NOTE: YOU NEED DEFINE THESE IN A SEPARATE HEADER 
+//char g_wifiSsid[64] = "myssid"; 
+//char g_wifiPassword[128] = "mypassword";
+#include "..\..\mycredentials.h"
 
 // Local
 
