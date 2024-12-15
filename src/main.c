@@ -74,6 +74,7 @@ typedef struct sprite_info {
     int8_t dy; // Vertical displacement in pixels
 } sprite_info_t;
 
+extern int TEST_main(void);
 
 /*******************************************************************************
  * Function Prototypes
@@ -508,9 +509,15 @@ void PageFlip(void)
 
 int main(void)
 {
+
     init_hardware();
     init_isr();
-    
+
+    printf("Started!");
+    TEST_main();
+    printf("Finished!");
+    for(;;); // forever
+
     layer2_fill_rect(0, 0,  256, 192, 0xE3, &shadow_screen);
     // Swap the double buffered screen.
     layer2_flip_main_shadow_screen();

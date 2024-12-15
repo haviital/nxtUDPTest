@@ -2,25 +2,61 @@
 6165.11 FD E5        push iy
 6167.11 D9           exx
 6168.11 E5           push hl
-6169.11 ED 73 A3 B2  ld (0B2A3h),sp
+6169.11 ED 73 42 B4  ld (0B442h),sp
 616D.11 31 00 C0     ld sp,0C000h
-6170.11 21 05 AE     ld hl,0AE05h
+6170.11 21 1A AF     ld hl,0AF1Ah
 6173.11 34           inc (hl)
 6174.11 34           inc (hl)
 
-; Note: The address 8895h is in a different bank.
-6175.11 CD 95 88     call 8895h
+; Note: The address 87B6h is in a different bank.
+6175.11 CD B6 87     call 87B6h
 
-6178.11 E5           push hl
-6179.11 C1           pop bc
-617A.11 ED 7B A3 B2  ld sp,(0B2A3h)
-617E.11 D9           exx
-617F.11 E1           pop hl
-6180.11 D9           exx
-6181.11 FD E1        pop iy
-6183.11 ED 56        im 1
-6185.11 FB           ei
-6186.11 C9           ret
+6178.11 C3 9C 7E     jp SUB_7E9C
 
-B2A3.5 00 00 FF...  DEFB 00 00 FF FF FF FF FF FF ; ASCII: ????????
+617B.11 LBL_617B:
+617B.11 E5           push hl
+617C.11 C1           pop bc
+617D.11 ED 7B 42 B4  ld sp,(0B442h)
+6181.11 D9           exx
+6182.11 E1           pop hl
+6183.11 D9           exx
+6184.11 FD E1        pop iy
+6186.11 ED 56        im 1
+6188.11 FB           ei
+6189.11 C9           ret
+
+7143.11 SUB_7143:
+7143.11 E9           jp (hl)
+
+7E9C.11 SUB_7E9C:
+7E9C.11 11 65 B1     ld de,0B165h
+7E9F.11 1A           ld a,(de)
+7EA0.11 B7           or a
+7EA1.11 CA 7B 61     jp z,LBL_617B
+
+7EA4.11 E5           push hl
+7EA5.11 6F           ld l,a
+7EA6.11 26 00        ld h,00h
+7EA8.11 29           add hl,hl
+7EA9.11 19           add hl,de
+7EAA.11 47           ld b,a
+
+7EAB.11 .LOOP:
+7EAB.11 56           ld d,(hl)
+7EAC.11 2B           dec hl
+7EAD.11 5E           ld e,(hl)
+7EAE.11 2B           dec hl
+7EAF.11 C5           push bc
+7EB0.11 E5           push hl
+7EB1.11 EB           ex de,hl
+7EB2.11 CD 43 71     call SUB_7143
+
+7EB5.11 E1           pop hl
+7EB6.11 C1           pop bc
+7EB7.11 10 F2        djnz .LOOP
+
+7EB9.11 E1           pop hl
+7EBA.11 C3 7B 61     jp LBL_617B
+
+B442.5 00 00 FF...  DEFB 00 00 FF FF FF FF FF FF ; ASCII: ????????
 C000.0 00 00 00...  DEFB 00 00 00 00 00 00 00 00 ; ASCII: ????????
