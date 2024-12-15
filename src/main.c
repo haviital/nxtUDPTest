@@ -20,6 +20,7 @@
 #include "lib/zxn/zxnext_layer2.h"
 #include "lib/zxn/zxnext_sprite.h"
 
+// #define NO_GFX 
 
 #pragma output CRT_ORG_CODE = 0x6164
 #pragma output REGISTER_SP = 0xC000
@@ -115,7 +116,8 @@ static void test_blit_transparent(layer2_screen_t *screen);
 
 // Global
 
-// NOTE: YOU NEED DEFINE THESE IN A SEPARATE HEADER 
+// NOTE: YOU NEED DEFINE THESE IN A SEPARATE HEADER: "mycredentials.h" !!!
+//       THAT SHOULD BE NOT STORED TO GITHUB.
 //char g_wifiSsid[64] = "myssid"; 
 //char g_wifiPassword[128] = "mypassword";
 #include "..\..\mycredentials.h"
@@ -160,6 +162,11 @@ static void init_hardware(void)
     // Disable RAM memory contention.
     ZXN_NEXTREGA(REG_PERIPHERAL_3, ZXN_READ_REG(REG_PERIPHERAL_3) | RP3_DISABLE_CONTENTION);
 
+    //IO_153B = 0x00;  // Select ESP for UART(?)
+
+    // Set UART to 115 kbaud
+    //uart_set_prescaler(uart_compute_prescaler(115200UL));
+    
     layer2_set_main_screen_ram_bank(8);
     layer2_set_shadow_screen_ram_bank(11);
 }
@@ -186,6 +193,7 @@ static void create_sprites(void)
 {
     // *** Static sprites
 
+    #ifndef NO_GFX
     // Cloud sprite 0
     set_sprite_slot(100);
     set_sprite_pattern(cloudSpr);
@@ -234,11 +242,13 @@ static void create_sprites(void)
     set_sprite_slot(107);
     set_sprite_attributes_ext(107, 28+16, (int)(154+10), 0, 0, true);
 
-    // *** Moving sprites
+    #endif  // NO_GFX
+
+   // *** Moving sprites
 
     // Incoming data packet gobs
     GameObject defaultGob = {.x = 30, .y= 88, .sx=0, .sy=3, .spriteIndex=0, 
-        .spritePatternIndex = CLOUD_PATTERN_SLOT, .isHidden=false, .isActive=false};
+        .spritePatternIndex = CLOUD_PATTERN_SLOT, .isHidden=true, .isActive=false};
     for(int i=0; i<INCOMING_PACKET_GOB_COUNT; i++)
     {
         int sprIndex = i;
@@ -254,7 +264,7 @@ static void create_sprites(void)
 
     // Outgoing data packet gobs
     GameObject defaultGob2 = {.x = 30, .y= 88, .sx=0, .sy=3, .spriteIndex=0, 
-        .spritePatternIndex = CLOUD_PATTERN_SLOT, .isHidden=false, .isActive=false};
+        .spritePatternIndex = CLOUD_PATTERN_SLOT, .isHidden=true, .isActive=false};
     for(int i=0; i<OUTGOING_PACKET_GOB_COUNT; i++)
     {
         int sprIndex = i + INCOMING_PACKET_GOB_COUNT;
@@ -273,6 +283,10 @@ static void create_sprites(void)
 
 static void DrawCloudEdge(layer2_screen_t *screen)
 {
+    #ifdef NO_GFX
+    return;
+    #endif
+
     // Draw tiled cloud
     int i=0;
     int x=0;
@@ -285,13 +299,17 @@ static void DrawCloudEdge(layer2_screen_t *screen)
 
 static void DrawGameBackground(void)
 {
+    #ifdef NO_GFX
+    return;
+    #endif
+
     // Draw top part with white (cloud)
-    //layer2_fill_rect(0, 0,  256, CLOUD_SPRITE_Y, 0xff, &shadow_screen);
+    layer2_fill_rect(0, 0,  256, CLOUD_SPRITE_Y, 0xff, &shadow_screen);
 
-    // Fill the lower screen area with black.
-    //layer2_fill_rect(0, CLOUD_SPRITE_Y, 256, (int)(194-CLOUD_SPRITE_Y), 123/*l.blue*/, &shadow_screen);
+    //Fill the lower screen area with black.
+    layer2_fill_rect(0, CLOUD_SPRITE_Y, 256, (int)(194-CLOUD_SPRITE_Y), 123/*l.blue*/, &shadow_screen);
 
-    //DrawCloudEdge(&shadow_screen);
+    DrawCloudEdge(&shadow_screen);
 
      // Swap the double buffered screen.
     layer2_flip_main_shadow_screen();
@@ -299,12 +317,8 @@ static void DrawGameBackground(void)
 
 static void create_start_screen(void)
 {
-    zx_border(INK_YELLOW);
+    zx_border(INK_BLACK);
     zx_cls(BRIGHT | INK_BLACK | PAPER_WHITE);
-
-    ZXN_NEXTREG(0x07, 0x03);  // 28MHz
-
-    IO_153B = 0x00;  // Select ESP for UART(?)
 
     printAt(10, 0);
 
@@ -343,6 +357,10 @@ void StartNewPacket(void)
 
 void DrawStatusText(char* text)
 {
+    #ifdef NO_GFX
+    return;
+    #endif
+
     uint8_t len = strlen(text);
     //uint8_t startPosX = 128 - (len/2);
     layer2_fill_rect(1, 3*8, 255, 8, 0xff, &shadow_screen); // Clear field.
@@ -351,6 +369,10 @@ void DrawStatusText(char* text)
 
 void DrawStatusTextAndPageFlip(char* text)
 {
+    #ifdef NO_GFX
+    return;
+    #endif
+
     DrawStatusText(text);
 
     UpdateGameObjects();
@@ -361,6 +383,10 @@ void DrawStatusTextAndPageFlip(char* text)
 
 static void UpdateGameObjects(void)
 {
+    #ifdef NO_GFX
+    return;
+    #endif
+
     for(int i=0; i<INCOMING_PACKET_GOB_COUNT; i++)
     {
         // Calculate next position of sprite.
@@ -429,7 +455,7 @@ void UpdateAndDrawAll(void)
                 DrawStatusTextAndPageFlip("Ping server (sent to UART)");
             // Read NOP send response.
             // The response should be: "Recv 1 bytes\n\rSEND OK\n\r"
-            err = uart_read_response("SEND OK");
+            err = uart_read_response("SEND OK", NULL);
             if(err)
                 printf("uart_read_response(). err=%u, buffer=%s\n", 
                     err, buffer);
@@ -493,6 +519,7 @@ int main(void)
     layer2_flip_main_shadow_screen();
 
     create_sprites();
+
     set_sprite_layers_system(true, false, LAYER_PRIORITIES_S_L_U, false);
 
     DrawGameBackground();

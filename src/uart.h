@@ -4,9 +4,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define UART_DEBUG_PRINT_ENABLED 0
+
 __sfr __banked __at 0x153b IO_153B;   // until it is added to headers
 
-extern void uart_send_at_cmd_and_print(unsigned char *cmd);
+extern void uart_send_at_cmd(unsigned char *cmd);
+extern void uart_send_at_cmd_custom_response(unsigned char *cmd, char* expectedResponse, char* orExpectedResponse_CanBeNull);
 
 // UART BAUD RATE
 
@@ -29,7 +32,7 @@ extern void uart_raw_data_tx(unsigned char *s, uint8_t len);
 extern void uart_send_raw_data_and_print(unsigned char *cmd, uint8_t len);
 extern bool uart_available_rx(void);
 extern uint8_t uart_send_data_packet(unsigned char *data, uint8_t len);
-extern uint8_t uart_read_response(char* expected);
+extern uint8_t uart_read_response(char* expected, char* orExpected_CanBeNull);
 extern uint8_t uart_get_received_data(char* data, uint8_t size);
 extern void itoa(uint8_t num, char* str); 
 extern uint8_t atoi(char* str); 
