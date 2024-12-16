@@ -104,7 +104,7 @@ void uart_flush_rx(void)
 
 // FRAMES
 
-uint32_t before, after, beforeTest, afterTest;
+uint32_t before, after;
 
 // MAIN
 
@@ -174,14 +174,12 @@ int TEST_main(void)
 
    uart_flush_rx();
 
-   // Do a connection open and close 10 times
-   printf("Start testing! round: ");
-   memcpy(&beforeTest, SYSVAR_FRAMES, 3);  // inlines as ldir
    while (1)
    {
+
       // *** ping
       {
-         //printf("\nPinging %s at port %s\n", par1, par2);
+         printf("\nPinging %s at port %s\n", par1, par2);
          uart_tx2(ipstart_cmd);
          uart_tx2("\r\n");
          
@@ -205,15 +203,14 @@ int TEST_main(void)
          {
             // *** SUCCEEDED!
 
-            //printf("Port %s open. Connected... testCounter=%lu\n", par2, testCounter);
+            printf("Port %s open. Connected... testCounter=%lu\n", par2, testCounter);
            
             intrinsic_di();
             memcpy(&after, SYSVAR_FRAMES, 3);  // inlines as ldir
             intrinsic_ei();
             
-            // printf("Response time %lu frames\n"
-            //       "Closing connection\n", after - before);
-            printf("%u (%lu frm) ", counter, after - before);
+            printf("Response time %lu frames\n"
+                  "Closing connection\n", after - before);
 
             uart_tx2(close);
             uart_tx2("\r\n");
@@ -285,8 +282,5 @@ int TEST_main(void)
 
    }  // repeated connect loop
 
-   memcpy(&afterTest, SYSVAR_FRAMES, 3);  // inlines as ldir
-   printf("\nTEST done! Testing 10 times took %lu frames.",afterTest - beforeTest);
-   
    return 0;
 }
