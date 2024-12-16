@@ -7,12 +7,13 @@
 #include <arch/zxn/sysvar.h>
 #include <input.h>
 #include <intrinsic.h>
+#include <z80.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#pragma printf = "%lu %s"
+#pragma printf = "%lu %s %u %c"
 #pragma output CLIB_EXIT_STACK_SIZE = 1
 
 // USER BREAK
@@ -57,9 +58,53 @@ void uart_tx2(unsigned char *s)
    }
 }
 
+// Wait until there is one byte from uart.
+unsigned char uart_rx2_char(void)
+{
+   // Wait until there is a byte in rx.
+   while (!(IO_133B & 0x01))
+   {
+      user_break(); 
+   }
+   unsigned char byte2 = IO_143B;
+   // if(byte2>31)
+   //    printf("%c", byte2);
+   // else
+   //    printf("<%u>)", byte2);
+   return( byte2 );
+}
+
+void uart_flush_rx(void)
+{
+   // flush read buffer
+   printf("Flushing: \n");
+   unsigned char c;
+   while(1)
+   {
+      while (IO_133B & 0x01)
+      {
+         c = IO_143B;
+         if(c>31)
+            printf("%c", c);
+         else
+            printf("<%u>)", c);
+         user_break();
+      }
+
+      //
+      // wait for 5+ frames
+      //for (uint16_t len = 0; len < 10000; len++);
+      z80_delay_ms(1*8);   // 8x for 28MHz
+      
+      // If still not any data to read, exit the loop.
+      if(!(IO_133B & 0x01))
+         break;
+   }
+}
+
 // FRAMES
 
-uint32_t before, after;
+uint32_t before, after, beforeTest, afterTest;
 
 // MAIN
 
@@ -74,7 +119,7 @@ void cleanup(void)
 
 unsigned char rst[20] = "AT+RST";
 unsigned char close[20] = "AT+CIPCLOSE";
-unsigned char array[60] = "AT+CIPSTART=\"TCP\",\"";
+unsigned char ipstart_cmd[60] = "AT+CIPSTART=\"TCP\",\"";
 
 int TEST_main(void)
 {
@@ -87,13 +132,13 @@ int TEST_main(void)
    
    // restore on exit
    
-   old_cpu_speed = ZXN_READ_REG(0x07) & 0x03;
-   old_uart = IO_153B & 0x40;
+   //old_cpu_speed = ZXN_READ_REG(0x07) & 0x03;
+   //old_uart = IO_153B & 0x40;
 
-   atexit(cleanup);
+   //atexit(cleanup);
    
-   ZXN_NEXTREG(0x07, 0x03);   // 28MHz
-   IO_153B = 0x00;   // select esp uart
+   //ZXN_NEXTREG(0x07, 0x03);   // 28MHz
+   //IO_153B = 0x00;   // select esp uart
    
    // command line
 /*   
@@ -115,97 +160,133 @@ int TEST_main(void)
       exit(0);
    }
 */   
-   // flush read buffer
    
-   while (IO_133B & 0x01)
-   {
-      c = IO_143B;
-      user_break();
-   }
    
-   // ping
    const char* par1 = "192.168.100.133";
    const char* par2 = "8000";
-   printf("\nPinging %s at port %s\n", par1, par2);
-   
-   strcat(array, par1);
-   strcat(array, "\",");
-   strcat(array, par2);
-   
-   uart_tx2(array);
-   uart_tx2("\r\n");
-   
-   intrinsic_di();
-   memcpy(&before, SYSVAR_FRAMES, 3);  // inlines as ldir
-   intrinsic_ei();
-   
+   strcat(ipstart_cmd, par1);
+   strcat(ipstart_cmd, "\",");
+   strcat(ipstart_cmd, par2);
+
    lastchar = 0;
    
+   uint8_t counter = 10;
+
+   uart_flush_rx();
+
+   // Do a connection open and close 10 times
+   printf("Start testing! round: ");
+   memcpy(&beforeTest, SYSVAR_FRAMES, 3);  // inlines as ldir
    while (1)
    {
-      // read byte from uart
-      
-      while (!(IO_133B & 0x01))
-         user_break();
-      
-      byte = IO_143B;
-      
-      //
-      
-      if ((lastchar == 65) && (byte == 76))  // already connected
+      // *** ping
       {
-         printf("Already connected to %s\n"
-                "Closing connection...\n", par1);
-
-         uart_tx2(close);
+         //printf("\nPinging %s at port %s\n", par1, par2);
+         uart_tx2(ipstart_cmd);
          uart_tx2("\r\n");
-         
-         printf("Try again\n");
-         
-         for(;;);  // Loop forever
-      }
-      
-      if ((lastchar == 67) && (byte == 79))  // connected
-      {
-         printf("Port %s open. Connected...\n", par2);
          
          intrinsic_di();
-         memcpy(&after, SYSVAR_FRAMES, 3);  // inlines as ldir
+         memcpy(&before, SYSVAR_FRAMES, 3);  // inlines as ldir
          intrinsic_ei();
-         
-         printf("Response time %lu frames\n"
-                "Closing connection\n", after - before);
-         
-         uart_tx2(close);
-         uart_tx2("\r\n");
-         
-         for(;;);  // Loop forever
       }
+
+      // Read consecutive bytes in a loop 
+      uint32_t testCounter=0;
+      uint32_t testCounter2=0;
+      while(1)
+      {
+         testCounter++;
+
+         // read byte from uart
+         byte = uart_rx2_char();
+
+         // has been connected
+         if ((lastchar == 67) && (byte == 79))  // "CO" ==> connected
+         {
+            // *** SUCCEEDED!
+
+            //printf("Port %s open. Connected... testCounter=%lu\n", par2, testCounter);
+           
+            intrinsic_di();
+            memcpy(&after, SYSVAR_FRAMES, 3);  // inlines as ldir
+            intrinsic_ei();
+            
+            // printf("Response time %lu frames\n"
+            //       "Closing connection\n", after - before);
+            printf("%u (%lu frm) ", counter, after - before);
+
+            uart_tx2(close);
+            uart_tx2("\r\n");
+
+            break;
+         }
+            
+         if ((lastchar == 65) && (byte == 76))  // "AL" ==> already connected
+         {
+            printf("Already connected to %s\n"
+                  "Closing connection...\n", par1);
+
+            uart_tx2(close);
+            uart_tx2("\r\n");
+            
+            printf("Try again\n");
+            
+            for(;;);  // Loop forever
+         }
+         
+         if ((lastchar == 68) && (byte == 78))  // "DN" ==> dns fail
+         {
+            printf("DNS lookup failed...\n");
+            
+            uart_tx2(close);
+            uart_tx2("\r\n");
+            
+            printf("Try again\n");
+            
+            for(;;);  // Loop forever
+         }
+         
+         if ((lastchar == 69) && (byte == 82))  // "ER" ==> dns fail (other)
+         {
+            printf("An error occurred...\n");
+            
+            z80_delay_ms(65000);   // 8x for 28MHz
+
+            uart_flush_rx();
+            uart_flush_rx();
+            uart_flush_rx();
+            uart_flush_rx();
+            uart_flush_rx();
+            uart_flush_rx();
+            uart_flush_rx();
+            uart_flush_rx();
+            uart_flush_rx();
+            uart_flush_rx();
+            uart_flush_rx();
+
+            uart_tx2(close);
+            uart_tx2("\r\n");
+            
+            printf("Try again\n");
+            
+            for(;;);  // Loop forever
+         }
+         
+         lastchar = byte;
+
+      }  // response bytes comparison loop
+
+      //
+      lastchar = 0;
+
+      // Connected ok. Do it again.
+      if(--counter==0)
+         break;
+
+   }  // repeated connect loop
+
+   memcpy(&afterTest, SYSVAR_FRAMES, 3);  // inlines as ldir
+   printf("\nTEST done! Testing 10 times took %lu frames.",afterTest - beforeTest);
    
-      if ((lastchar == 68) && (byte == 78))  // dns fail
-      {
-         printf("DNS lookup failed...\n");
-         
-         uart_tx2(close);
-         uart_tx2("\r\n");
-         
-         printf("Try again\n");
-         
-         for(;;);  // Loop forever
-      }
-      
-      if ((lastchar == 69) && (byte == 82))  // dns fail (other)
-      {
-         printf("An error occurred...\n");
-         
-         uart_tx2(close);
-         uart_tx2("\r\n");
-         
-         printf("Try again\n");
-         
-         exit(0);
-      }
-      
-      lastchar = byte;
-   }
+   return 0;
 }

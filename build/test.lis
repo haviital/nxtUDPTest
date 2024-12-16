@@ -1,4 +1,4 @@
-C:/Users/Hannu/AppData/Local/Temp/zcc00000BA80FFC10.asm:
+C:/Users/Hannu/AppData/Local/Temp/zcc000052EC09DC10.asm:
      1                          MODULE zxn_crt_asm_m4
      2                          LINE 0, "c:\z88dk\lib\config\..\..\\libsrc\_DEVELOPMENT\target\zxn\zxn_crt.asm.m4"
 c:\z88dk\lib\config\..\..\\libsrc\_DEVELOPMENT\target\zxn\zxn_crt.asm.m4:
@@ -67,7 +67,7 @@ c:\z88dk\lib\config\..\..\\libsrc\_DEVELOPMENT\target\zxn\zxn_crt.asm.m4:
     62                          
     63                          IF !DEFINED_CLIB_OPT_PRINTF
     64                          	defc	DEFINED_CLIB_OPT_PRINTF = 1
-    65                          	defc CLIB_OPT_PRINTF = 0x2200
+    65                          	defc CLIB_OPT_PRINTF = 0x2602
     66                          	IFNDEF CLIB_OPT_PRINTF
     67                          	ENDIF
     68                          ENDIF
@@ -16533,7 +16533,7 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
    120                          
    121                          ELSE
    122                          
-   123  0021  da5c01               jp c, error_stream_printf          ; if stream error
+   123  0021  da6d01               jp c, error_stream_printf          ; if stream error
    124                          
    125                          ENDIF
    126                          
@@ -16714,10 +16714,10 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
    301                             ; stack = WORKSPACE_44, stack_param
    302                          
    303  007e  cd0000               call l_atou                 ; hl = width
-   304  0081  da5901               jp c, error_format_width_printf    ; width out of range
+   304  0081  da6a01               jp c, error_format_width_printf    ; width out of range
    305                          
    306  0084  cb7c                 bit 7,h
-   307  0086  c25901               jp nz, error_format_width_printf   ; width out of range
+   307  0086  c26a01               jp nz, error_format_width_printf   ; width out of range
    308                          
    309  0089  e3                   ex (sp),hl
    310  008a  e5                   push hl
@@ -16791,10 +16791,10 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
    378                             ; stack = WORKSPACE_44, width, stack_param
    379                          
    380  00b4  cd0000               call l_atou                   ; hl = precision
-   381  00b7  da5801               jp c, error_format_precision_printf  ; precision out of range
+   381  00b7  da6901               jp c, error_format_precision_printf  ; precision out of range
    382                          
    383  00ba  cb7c                 bit 7,h
-   384  00bc  c25801               jp nz, error_format_precision_printf ; precision out of range
+   384  00bc  c26901               jp nz, error_format_precision_printf ; precision out of range
    385                          
    386                          end_precision_printf:
    387                          
@@ -16847,15 +16847,15 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
    434                          
    435                             ; carry must be reset here
    436                          
-   437  00cc  3011                 jr nc, long_spec_printf            ; if long or longlong modifier selected
+   437  00cc  3019                 jr nc, long_spec_printf            ; if long or longlong modifier selected
    438                          
    439                             ;;; without long spec
    440                          
    441                          IF CLIB_OPT_PRINTF & $1ff
    442                          
-   443                             ld hl,rcon_tbl_printf              ; converters without long spec
-   444                             call match_con_printf
-   445                             jr c, printf_return_is_2
+   443  00ce  214b01               ld hl,rcon_tbl_printf              ; converters without long spec
+   444  00d1  cd2e01               call match_con_printf
+   445  00d4  3820                 jr c, printf_return_is_2
    446                          
    447                          ENDIF
    448                          
@@ -16863,9 +16863,9 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
    450                          
    451                          IF CLIB_OPT_PRINTF & $600
    452                          
-   453  00ce  213a01               ld hl,acon_tbl_printf              ; converters independent of long spec
-   454  00d1  cd2601               call match_con_printf
-   455  00d4  3818                 jr c, printf_return_is_2
+   453  00d6  214201               ld hl,acon_tbl_printf              ; converters independent of long spec
+   454  00d9  cd2e01               call match_con_printf
+   455  00dc  3818                 jr c, printf_return_is_2
    456                          
    457                          ENDIF
    458                          
@@ -16893,10 +16893,10 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
    480                             ; de = address of next format char to examine
    481                             ; stack = WORKSPACE_44, width, precision, stack_param
    482                          
-   483  00d6  cd0000               call error_einval_zc        ; set errno
+   483  00de  cd0000               call error_einval_zc        ; set errno
    484                          
-   485  00d9  213200               ld hl,50
-   486  00dc  c35f01               jp __error_stream_printf
+   485  00e1  213200               ld hl,50
+   486  00e4  c37001               jp __error_stream_printf
    487                          
    488                          IF CLIB_OPT_PRINTF_2 && __SDCC
    489                          
@@ -16922,18 +16922,18 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
    509                          
    510                          ELSE
    511                          
-   512  00df  20ed                 jr nz, common_spec_printf
+   512  00e7  20ed                 jr nz, common_spec_printf
    513                          
    514                          ENDIF
    515                          
    516                          IF CLIB_OPT_PRINTF & $1ff000
    517                          
-   518  00e1  213f01               ld hl,lcon_tbl_printf              ; converters with long spec
-   519  00e4  cd2601               call match_con_printf
+   518  00e9  215001               ld hl,lcon_tbl_printf              ; converters with long spec
+   519  00ec  cd2e01               call match_con_printf
    520                          
    521                          ENDIF
    522                          
-   523  00e7  30e5                 jr nc, common_spec_printf
+   523  00ef  30e5                 jr nc, common_spec_printf
    524                          
    525                             ;;; conversion matched
    526                          
@@ -16941,8 +16941,8 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
    528                          
    529                          printf_return_is_4:
    530                          
-   531  00e9  014401               ld bc,printf_return_4
-   532  00ec  1803                 jr printf_invoke_flags
+   531  00f1  015501               ld bc,printf_return_4
+   532  00f4  1803                 jr printf_invoke_flags
    533                          
    534                          ENDIF
    535                          
@@ -16981,7 +16981,7 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
    568                          
    569                          printf_return_is_2:
    570                          
-   571  00ee  014901               ld bc,printf_return_2
+   571  00f6  015a01               ld bc,printf_return_2
    572                          
    573                          ENDIF
    574                          
@@ -16993,20 +16993,20 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
    580                             ; de = address of next format char to examine
    581                             ; stack = WORKSPACE_44, width, precision, stack_param
    582                          
-   583  00f1  cb6f                 bit 5,a
-   584  00f3  2804                 jr z, skip_00_printf
-   585  00f5  fdcb05ce             set 1,(iy+5)                ; indicates octal conversion
+   583  00f9  cb6f                 bit 5,a
+   584  00fb  2804                 jr z, skip_00_printf
+   585  00fd  fdcb05ce             set 1,(iy+5)                ; indicates octal conversion
    586                          
    587                          skip_00_printf:
    588                          
-   589  00f9  cb67                 bit 4,a
-   590  00fb  2804                 jr z, skip_11_printf
-   591  00fd  fdcb05a6             res 4,(iy+5)                ; suppress base indicator
+   589  0101  cb67                 bit 4,a
+   590  0103  2804                 jr z, skip_11_printf
+   591  0105  fdcb05a6             res 4,(iy+5)                ; suppress base indicator
    592                          
    593                          skip_11_printf:
    594                          
-   595  0101  e6c0                 and $c0
-   596  0103  fd7704               ld (iy+4),a                 ; capitalize & signed conversion indicators
+   595  0109  e6c0                 and $c0
+   596  010b  fd7704               ld (iy+4),a                 ; capitalize & signed conversion indicators
    597                          
    598                          printf_invoke:
    599                          
@@ -17015,46 +17015,46 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
    602                             ; bc = return address after printf conversion
    603                             ; stack = WORKSPACE_44, width, precision, stack_param
    604                          
-   605  0106  e3                   ex (sp),hl                  ; push & printf_converter
-   606  0107  e5                   push hl
+   605  010e  e3                   ex (sp),hl                  ; push & printf_converter
+   606  010f  e5                   push hl
    607                          
    608                             ; de = char *format
    609                             ; bc = return address
    610                             ; stack = WORKSPACE_44, width, precision, & converter, stack_param
    611                          
-   612  0108  210f00               ld hl,15
-   613  010b  39                   add hl,sp
+   612  0110  210f00               ld hl,15
+   613  0113  39                   add hl,sp
    614                          
-   615  010c  72                   ld (hl),d
-   616  010d  2b                   dec hl
-   617  010e  73                   ld (hl),e                   ; store address of next format char
-   618  010f  2b                   dec hl
+   615  0114  72                   ld (hl),d
+   616  0115  2b                   dec hl
+   617  0116  73                   ld (hl),e                   ; store address of next format char
+   618  0117  2b                   dec hl
    619                          
-   620  0110  d1                   pop de                      ; de = stack_param
+   620  0118  d1                   pop de                      ; de = stack_param
    621                          
-   622  0111  72                   ld (hl),d
-   623  0112  2b                   dec hl
-   624  0113  73                   ld (hl),e                   ; store stack_param
-   625  0114  2b                   dec hl
+   622  0119  72                   ld (hl),d
+   623  011a  2b                   dec hl
+   624  011b  73                   ld (hl),e                   ; store stack_param
+   625  011c  2b                   dec hl
    626                          
-   627  0115  70                   ld (hl),b
-   628  0116  2b                   dec hl
-   629  0117  71                   ld (hl),c                   ; store return address after printf
-   630  0118  2b                   dec hl
+   627  011d  70                   ld (hl),b
+   628  011e  2b                   dec hl
+   629  011f  71                   ld (hl),c                   ; store return address after printf
+   630  0120  2b                   dec hl
    631                          
-   632  0119  4d                   ld c,l
-   633  011a  44                   ld b,h
+   632  0121  4d                   ld c,l
+   633  0122  44                   ld b,h
    634                          
-   635  011b  210a00               ld hl,10
-   636  011e  09                   add hl,bc                   ; hl = buffer_digits
+   635  0123  210a00               ld hl,10
+   636  0126  09                   add hl,bc                   ; hl = buffer_digits
    637                          
-   638  011f  7c                   ld a,h
-   639  0120  02                   ld (bc),a
-   640  0121  0b                   dec bc
-   641  0122  7d                   ld a,l
-   642  0123  02                   ld (bc),a                   ; store buffer_digits
+   638  0127  7c                   ld a,h
+   639  0128  02                   ld (bc),a
+   640  0129  0b                   dec bc
+   641  012a  7d                   ld a,l
+   642  012b  02                   ld (bc),a                   ; store buffer_digits
    643                          
-   644  0124  eb                   ex de,hl
+   644  012c  eb                   ex de,hl
    645                          
    646                             ; iy = FILE *
    647                             ; hl = void *stack_param
@@ -17072,7 +17072,7 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
    659                             ;   8       3   prefix buffer space for printf conversion
    660                             ;  11      33   buffer_digits[] (space for printf conversion)
    661                          
-   662  0125  c9                   ret
+   662  012d  c9                   ret
    663                          
    664                          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
    665                          
@@ -17093,33 +17093,33 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
    680                             ;
    681                             ;             carry reset
    682                          
-   683  0126  7e                   ld a,(hl)
-   684  0127  23                   inc hl
+   683  012e  7e                   ld a,(hl)
+   684  012f  23                   inc hl
    685                          
-   686  0128  b7                   or a
-   687  0129  c8                   ret z
+   686  0130  b7                   or a
+   687  0131  c8                   ret z
    688                          
-   689  012a  b8                   cp b
-   690  012b  2805                 jr z, match_ret_printf
+   689  0132  b8                   cp b
+   690  0133  2805                 jr z, match_ret_printf
    691                          
-   692  012d  23                   inc hl
-   693  012e  23                   inc hl
-   694  012f  23                   inc hl
+   692  0135  23                   inc hl
+   693  0136  23                   inc hl
+   694  0137  23                   inc hl
    695                          
-   696  0130  18f4                 jr match_con_printf
+   696  0138  18f4                 jr match_con_printf
    697                          
    698                          match_ret_printf:
    699                          
-   700  0132  7e                   ld a,(hl)                   ; a = flags
-   701  0133  23                   inc hl
+   700  013a  7e                   ld a,(hl)                   ; a = flags
+   701  013b  23                   inc hl
    702                          
-   703  0134  46                   ld b,(hl)
-   704  0135  23                   inc hl
-   705  0136  66                   ld h,(hl)
-   706  0137  68                   ld l,b                      ; hl = & printf converter
+   703  013c  46                   ld b,(hl)
+   704  013d  23                   inc hl
+   705  013e  66                   ld h,(hl)
+   706  013f  68                   ld l,b                      ; hl = & printf converter
    707                          
-   708  0138  37                   scf
-   709  0139  c9                   ret
+   708  0140  37                   scf
+   709  0141  c9                   ret
    710                          
    711                          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
    712                          
@@ -17129,21 +17129,21 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
    716                          
    717                          IF CLIB_OPT_PRINTF & $200
    718                          
-   719  013a  7380              defb 's', $80
+   719  0142  7380              defb 's', $80
    720                          EXTERN __stdio_printf_s
-   721  013c  0000              defw __stdio_printf_s
+   721  0144  0000              defw __stdio_printf_s
    722                          
    723                          ENDIF
    724                          
    725                          IF CLIB_OPT_PRINTF & $400
    726                          
-   727                          defb 'c', $80
+   727  0146  6380              defb 'c', $80
    728                          EXTERN __stdio_printf_c
-   729                          defw __stdio_printf_c
+   729  0148  0000              defw __stdio_printf_c
    730                          
    731                          ENDIF
    732                          
-   733  013e  00                defb 0
+   733  014a  00                defb 0
    734                          
    735                          ENDIF
    736                          
@@ -17163,9 +17163,9 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
    750                          
    751                          IF CLIB_OPT_PRINTF & $02
    752                          
-   753                          defb 'u', $90
+   753  014b  7590              defb 'u', $90
    754                          EXTERN __stdio_printf_u
-   755                          defw __stdio_printf_u
+   755  014d  0000              defw __stdio_printf_u
    756                          
    757                          ENDIF
    758                          
@@ -17225,7 +17225,7 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
    812                          
    813                          ENDIF
    814                          
-   815                          defb 0
+   815  014f  00                defb 0
    816                          
    817                          ENDIF
    818                          
@@ -17319,9 +17319,9 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
    906                          
    907                          IF CLIB_OPT_PRINTF & $2000
    908                          
-   909  013f  7590              defb 'u', $90
+   909  0150  7590              defb 'u', $90
    910                          EXTERN __stdio_printf_lu
-   911  0141  0000              defw __stdio_printf_lu
+   911  0152  0000              defw __stdio_printf_lu
    912                          
    913                          ENDIF
    914                          
@@ -17381,7 +17381,7 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
    968                          
    969                          ENDIF
    970                          
-   971  0143  00                defb 0
+   971  0154  00                defb 0
    972                          
    973                          ENDIF
    974                          
@@ -17522,7 +17522,7 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
   1109                             ; carry set if error
   1110                             ; stack = WORKSPACE_36, char *format, void *stack_param
   1111                          
-  1112  0144  c1                   pop bc
+  1112  0155  c1                   pop bc
   1113                          
   1114                          _return_join_4_printf:
   1115                          
@@ -17530,8 +17530,8 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
   1117                          IF __SDCC | __SDCC_IX | __SDCC_IY
   1118                          ;******************************
   1119                          
-  1120  0145  03                   inc bc
-  1121  0146  03                   inc bc                      ; bc = stack_param += 2
+  1120  0156  03                   inc bc
+  1121  0157  03                   inc bc                      ; bc = stack_param += 2
   1122                          
   1123                          ;******************************
   1124                          ELSE
@@ -17544,7 +17544,7 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
   1131                          ENDIF
   1132                          ;******************************
   1133                          
-  1134  0147  1801                 jr _return_join_2_printf
+  1134  0158  1801                 jr _return_join_2_printf
   1135                          
   1136                          printf_return_2:
   1137                          
@@ -17553,7 +17553,7 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
   1140                             ; carry set if error
   1141                             ; stack = WORKSPACE_36, char *format, void *stack_param
   1142                          
-  1143  0149  c1                   pop bc
+  1143  015a  c1                   pop bc
   1144                          
   1145                          _return_join_2_printf:
   1146                          
@@ -17561,8 +17561,8 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
   1148                          IF __SDCC | __SDCC_IX | __SDCC_IY
   1149                          ;******************************
   1150                          
-  1151  014a  03                   inc bc
-  1152  014b  03                   inc bc                      ; bc = stack_param += 2
+  1151  015b  03                   inc bc
+  1152  015c  03                   inc bc                      ; bc = stack_param += 2
   1153                          
   1154                          ;******************************
   1155                          ELSE
@@ -17575,22 +17575,22 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
   1162                          ENDIF
   1163                          ;******************************
   1164                          
-  1165  014c  d1                   pop de                      ; de = char *format
+  1165  015d  d1                   pop de                      ; de = char *format
   1166                          
-  1167  014d  381e                 jr c, error_printf_converter_printf
+  1167  015e  381e                 jr c, error_printf_converter_printf
   1168                          
-  1169  014f  21f8ff               ld hl,-8
-  1170  0152  39                   add hl,sp
-  1171  0153  f9                   ld sp,hl
+  1169  0160  21f8ff               ld hl,-8
+  1170  0163  39                   add hl,sp
+  1171  0164  f9                   ld sp,hl
   1172                          
-  1173  0154  c5                   push bc
+  1173  0165  c5                   push bc
   1174                          
   1175                             ; format_loop_printf expects this:
   1176                             ;
   1177                             ; de = char *format
   1178                             ; stack = WORKSPACE_44, stack_param
   1179                          
-  1180  0155  c30f00               jp format_loop_printf
+  1180  0166  c30f00               jp format_loop_printf
   1181                          
   1182                          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   1183                          
@@ -17599,7 +17599,7 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
   1186                             ; de = address of next format char to examine
   1187                             ; stack = WORKSPACE_44, width, stack_param
   1188                          
-  1189  0158  c1                   pop bc                      ; junk one item
+  1189  0169  c1                   pop bc                      ; junk one item
   1190                          
   1191                             ; fall through
   1192                          
@@ -17608,7 +17608,7 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
   1195                             ; de = address of next format char to examine
   1196                             ; stack = WORKSPACE_44, stack_param
   1197                          
-  1198  0159  cd0000               call error_erange_zc        ; set errno
+  1198  016a  cd0000               call error_erange_zc        ; set errno
   1199                          
   1200                             ; fall through
   1201                          
@@ -17624,25 +17624,25 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
   1211                             ; de = address of format char stopped on ('%' or '\0')
   1212                             ; stack = WORKSPACE_44, stack_param
   1213                          
-  1214  015c  212e00               ld hl,46
+  1214  016d  212e00               ld hl,46
   1215                          
   1216                          __error_stream_printf:
   1217                          
-  1218  015f  39                   add hl,sp
-  1219  0160  f9                   ld sp,hl                    ; repair stack
+  1218  0170  39                   add hl,sp
+  1219  0171  f9                   ld sp,hl                    ; repair stack
   1220                          
   1221                          ENDIF
   1222                          
-  1223  0161  d9                   exx
-  1224  0162  e5                   push hl
-  1225  0163  d9                   exx
-  1226  0164  e1                   pop hl                      ; hl = number of chars transmitted
+  1223  0172  d9                   exx
+  1224  0173  e5                   push hl
+  1225  0174  d9                   exx
+  1226  0175  e1                   pop hl                      ; hl = number of chars transmitted
   1227                          
-  1228  0165  cd0000               call l_utod_hl              ; hl = max $7fff
-  1229  0168  23                   inc hl
+  1228  0176  cd0000               call l_utod_hl              ; hl = max $7fff
+  1229  0179  23                   inc hl
   1230                          
-  1231  0169  37                   scf                         ; indicate error
-  1232  016a  c30000               jp l_neg_hl                 ; hl = - (chars out + 1) < 0
+  1231  017a  37                   scf                         ; indicate error
+  1232  017b  c30000               jp l_neg_hl                 ; hl = - (chars out + 1) < 0
   1233                          
   1234                          IF (CLIB_OPT_PRINTF != 0) || ((CLIB_OPT_PRINTF_2 != 0) && __SDCC)
   1235                          
@@ -17651,8 +17651,8 @@ c:/z88dk/lib/config/../../libsrc/_DEVELOPMENT/target/zxn/../../stdio/z80/asm_vfp
   1238                             ; de = address of next format char to examine
   1239                             ; stack = WORKSPACE_36
   1240                          
-  1241  016d  212400               ld hl,36
-  1242  0170  18ed                 jr __error_stream_printf
+  1241  017e  212400               ld hl,36
+  1242  0181  18ed                 jr __error_stream_printf
   1243                          
   1244                          ENDIF
   1245                          
