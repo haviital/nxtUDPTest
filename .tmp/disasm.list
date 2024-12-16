@@ -2,9 +2,9 @@
 6165.11 FD E5        push iy
 6167.11 D9           exx
 6168.11 E5           push hl
-6169.11 ED 73 69 B5  ld (0B569h),sp
+6169.11 ED 73 7B C6  ld (0C67Bh),sp
 616D.11 31 00 C0     ld sp,0C000h
-6170.11 21 41 B0     ld hl,0B041h
+6170.11 21 4B B1     ld hl,0B14Bh
 6173.11 34           inc (hl)
 6174.11 34           inc (hl)
 
@@ -16,7 +16,7 @@
 617B.11 LBL_617B:
 617B.11 E5           push hl
 617C.11 C1           pop bc
-617D.11 ED 7B 69 B5  ld sp,(0B569h)
+617D.11 ED 7B 7B C6  ld sp,(0C67Bh)
 6181.11 D9           exx
 6182.11 E1           pop hl
 6183.11 D9           exx
@@ -29,7 +29,7 @@
 7143.11 E9           jp (hl)
 
 7EE6.11 SUB_7EE6:
-7EE6.11 11 8C B2     ld de,0B28Ch
+7EE6.11 11 96 B3     ld de,0B396h
 7EE9.11 1A           ld a,(de)
 7EEA.11 B7           or a
 7EEB.11 CA 7B 61     jp z,LBL_617B
@@ -58,5 +58,5 @@
 7F03.11 E1           pop hl
 7F04.11 C3 7B 61     jp LBL_617B
 
-B569.5 00 00 FF...  DEFB 00 00 FF FF FF FF FF FF ; ASCII: ????????
 C000.0 00 00 00...  DEFB 00 00 00 00 00 00 00 00 ; ASCII: ????????
+C67B.0 00 00 FF...  DEFB 00 00 FF FF FF FF FF FF ; ASCII: ????????

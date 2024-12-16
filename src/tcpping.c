@@ -16,6 +16,14 @@
 #pragma printf = "%lu %s %u %c"
 #pragma output CLIB_EXIT_STACK_SIZE = 1
 
+#define PRINT_TO_BUFFER
+#ifdef PRINT_TO_BUFFER
+static char testBuffer[2048];
+#endif
+
+#define BUFFER_MAX_SIZE 2048
+static char buffer[BUFFER_MAX_SIZE];
+
 // USER BREAK
 
 unsigned char err_break[] = "D BREAK - no repea" "\xf4";
@@ -70,7 +78,20 @@ unsigned char uart_rx2_char(void)
    // if(byte2>31)
    //    printf("%c", byte2);
    // else
-   //    printf("<%u>)", byte2);
+   //    printf("<%u>", byte2);
+   #ifdef PRINT_TO_BUFFER
+   char* text_[16];
+   if(byte2>31)
+   {
+      sprintf(text_, "%c", byte2);
+      strcat(testBuffer, text_);
+   }
+   else
+   {
+      sprintf(text_, "<%u>", byte2);
+      strcat(testBuffer, text_);
+   }
+   #endif
    return( byte2 );
 }
 
@@ -84,10 +105,23 @@ void uart_flush_rx(void)
       while (IO_133B & 0x01)
       {
          c = IO_143B;
+         //if(c>31)
+         //   printf("%c", c);
+         //else
+         //   printf("<%u>", c);
+         #ifdef PRINT_TO_BUFFER
+         char* text_[16];
          if(c>31)
-            printf("%c", c);
+         {
+            sprintf(text_, "%c", c);
+            strcat(testBuffer, text_);
+         }
          else
-            printf("<%u>)", c);
+         {
+            sprintf(text_, "<%u>", c);
+            strcat(testBuffer, text_);
+         }
+         #endif
          user_break();
       }
 
@@ -101,10 +135,43 @@ void uart_flush_rx(void)
          break;
    }
 }
+uint8_t uart_read_expected(char* expected)
+{
+   //printf("uart_read_expected: %s", expected);
+   buffer[0] = 0; // clear// BUFFER_MAX_SIZE];
+   char* bufferReadToPtr = buffer;
+   char* stringStartPtr = buffer;
+   uint16_t readLen = 0;
+
+   while(readLen<BUFFER_MAX_SIZE)
+   {
+ 
+      // read byte from uart
+      *bufferReadToPtr = uart_rx2_char();
+      readLen++;
+
+      // if(*bufferReadToPtr>31)
+      //    printf("%c", *bufferReadToPtr);
+      // else
+      //    printf("<%u>", *bufferReadToPtr);
+
+      if(readLen>=strlen(expected))
+      {
+         if(strncmp(stringStartPtr, expected, strlen(expected))==0)
+            return 0;  // Found!
+         stringStartPtr++;
+      }
+
+      bufferReadToPtr++;
+
+   }  // response bytes comparison loop
+
+   return 1; // Not found.
+}
 
 // FRAMES
 
-uint32_t before, after;
+uint32_t before, after, beforeTest, afterTest;
 
 // MAIN
 
@@ -172,14 +239,22 @@ int TEST_main(void)
    
    uint8_t counter = 10;
 
+   #ifdef PRINT_TO_BUFFER
+   testBuffer[0] = 0;
+   #endif
+
    uart_flush_rx();
 
+   // Do a connection open and close 10 times
+   printf("Start testing! round: ");
+   memcpy(&beforeTest, SYSVAR_FRAMES, 3);  // inlines as ldir
    while (1)
    {
 
       // *** ping
       {
-         printf("\nPinging %s at port %s\n", par1, par2);
+         //printf("\nPinging %s at port %s\n", par1, par2);
+         //printf("open ");
          uart_tx2(ipstart_cmd);
          uart_tx2("\r\n");
          
@@ -203,19 +278,33 @@ int TEST_main(void)
          {
             // *** SUCCEEDED!
 
-            printf("Port %s open. Connected... testCounter=%lu\n", par2, testCounter);
+            //printf("Port %s open. Connected... testCounter=%lu\n", par2, testCounter);
+
+            //printf("close ");
            
             intrinsic_di();
             memcpy(&after, SYSVAR_FRAMES, 3);  // inlines as ldir
             intrinsic_ei();
             
-            printf("Response time %lu frames\n"
-                  "Closing connection\n", after - before);
+            // printf("Response time %lu frames\n"
+            //       "Closing connection\n", after - before);
+            printf("%u ", counter);
 
             uart_tx2(close);
             uart_tx2("\r\n");
 
-            break;
+            // Note: you MUST read this before calling open again. Otherwise the connection 
+            //       might still be not yet closed and the open fails.
+            if(uart_read_expected("CLOSED") == 0)
+            {
+               break; // Found!
+            }
+            // Not found
+            #ifdef PRINT_TO_BUFFER
+            printf("\ntestBuffer=%s",testBuffer);
+            #endif
+            printf("Did not found 'CLOSED'. Try again\n");
+            for(;;);  // Loop forever
          }
             
          if ((lastchar == 65) && (byte == 76))  // "AL" ==> already connected
@@ -250,20 +339,14 @@ int TEST_main(void)
             z80_delay_ms(65000);   // 8x for 28MHz
 
             uart_flush_rx();
-            uart_flush_rx();
-            uart_flush_rx();
-            uart_flush_rx();
-            uart_flush_rx();
-            uart_flush_rx();
-            uart_flush_rx();
-            uart_flush_rx();
-            uart_flush_rx();
-            uart_flush_rx();
-            uart_flush_rx();
 
             uart_tx2(close);
             uart_tx2("\r\n");
-            
+
+            #ifdef PRINT_TO_BUFFER
+            printf("\ntestBuffer=%s",testBuffer);
+            #endif
+
             printf("Try again\n");
             
             for(;;);  // Loop forever
@@ -282,5 +365,8 @@ int TEST_main(void)
 
    }  // repeated connect loop
 
+   memcpy(&afterTest, SYSVAR_FRAMES, 3);  // inlines as ldir
+   printf("\nTEST done! Testing 10 times took %lu frames.",afterTest - beforeTest);
+   
    return 0;
 }
