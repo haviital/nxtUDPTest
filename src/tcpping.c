@@ -151,7 +151,7 @@ uint8_t uart_read_expected(char* expected)
       readLen++;
 
       // if(*bufferReadToPtr>31)
-      //    printf("%c", *bufferReadToPtr);
+      //     printf("%c", *bufferReadToPtr);
       // else
       //    printf("<%u>", *bufferReadToPtr);
 
@@ -250,114 +250,36 @@ int TEST_main(void)
    memcpy(&beforeTest, SYSVAR_FRAMES, 3);  // inlines as ldir
    while (1)
    {
-
-      // *** ping
+      // Open connection
+      uart_tx2(ipstart_cmd);
+      uart_tx2("\r\n");
+      
+      if(uart_read_expected("CONNECT") == 0)
       {
-         //printf("\nPinging %s at port %s\n", par1, par2);
-         //printf("open ");
-         uart_tx2(ipstart_cmd);
+         // *** Connected ok
+         printf("%u ", counter);
+
+         // Close connetion
+         uart_tx2(close);
          uart_tx2("\r\n");
-         
-         intrinsic_di();
-         memcpy(&before, SYSVAR_FRAMES, 3);  // inlines as ldir
-         intrinsic_ei();
+
+         // Note: you MUST read this before calling open again. Otherwise the connection 
+         //       might still be not yet closed and the open fails.
+         if(uart_read_expected("CLOSED") == 0)
+         {
+            // *** Connection closed.
+         }
+         else
+         {
+            printf("Did not found 'CLOSED'\n");
+            for(;;);  // Loop forever
+         }
       }
-
-      // Read consecutive bytes in a loop 
-      uint32_t testCounter=0;
-      uint32_t testCounter2=0;
-      while(1)
+      else
       {
-         testCounter++;
-
-         // read byte from uart
-         byte = uart_rx2_char();
-
-         // has been connected
-         if ((lastchar == 67) && (byte == 79))  // "CO" ==> connected
-         {
-            // *** SUCCEEDED!
-
-            //printf("Port %s open. Connected... testCounter=%lu\n", par2, testCounter);
-
-            //printf("close ");
-           
-            intrinsic_di();
-            memcpy(&after, SYSVAR_FRAMES, 3);  // inlines as ldir
-            intrinsic_ei();
-            
-            // printf("Response time %lu frames\n"
-            //       "Closing connection\n", after - before);
-            printf("%u ", counter);
-
-            uart_tx2(close);
-            uart_tx2("\r\n");
-
-            // Note: you MUST read this before calling open again. Otherwise the connection 
-            //       might still be not yet closed and the open fails.
-            if(uart_read_expected("CLOSED") == 0)
-            {
-               break; // Found!
-            }
-            // Not found
-            #ifdef PRINT_TO_BUFFER
-            printf("\ntestBuffer=%s",testBuffer);
-            #endif
-            printf("Did not found 'CLOSED'. Try again\n");
-            for(;;);  // Loop forever
-         }
-            
-         if ((lastchar == 65) && (byte == 76))  // "AL" ==> already connected
-         {
-            printf("Already connected to %s\n"
-                  "Closing connection...\n", par1);
-
-            uart_tx2(close);
-            uart_tx2("\r\n");
-            
-            printf("Try again\n");
-            
-            for(;;);  // Loop forever
-         }
-         
-         if ((lastchar == 68) && (byte == 78))  // "DN" ==> dns fail
-         {
-            printf("DNS lookup failed...\n");
-            
-            uart_tx2(close);
-            uart_tx2("\r\n");
-            
-            printf("Try again\n");
-            
-            for(;;);  // Loop forever
-         }
-         
-         if ((lastchar == 69) && (byte == 82))  // "ER" ==> dns fail (other)
-         {
-            printf("An error occurred...\n");
-            
-            z80_delay_ms(65000);   // 8x for 28MHz
-
-            uart_flush_rx();
-
-            uart_tx2(close);
-            uart_tx2("\r\n");
-
-            #ifdef PRINT_TO_BUFFER
-            printf("\ntestBuffer=%s",testBuffer);
-            #endif
-
-            printf("Try again\n");
-            
-            for(;;);  // Loop forever
-         }
-         
-         lastchar = byte;
-
-      }  // response bytes comparison loop
-
-      //
-      lastchar = 0;
+         printf("Did not found 'CONNECTED'.\n");
+         for(;;);  // Loop forever
+      }
 
       // Connected ok. Do it again.
       if(--counter==0)
