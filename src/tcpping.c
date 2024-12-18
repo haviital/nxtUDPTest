@@ -8,31 +8,16 @@
 #include <input.h>
 #include <intrinsic.h>
 #include <z80.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "uart2.h"
+
+#define SERVER_IP_ADDRESS_2 "192.168.100.134"
+#define SERVER_PORT_2 "8000"
+
 
 #pragma printf = "%lu %s %u %c"
 #pragma output CLIB_EXIT_STACK_SIZE = 1
 
-#define PRINT_TO_BUFFER
-#ifdef PRINT_TO_BUFFER
-static char testBuffer[2048];
-#endif
 
-#define BUFFER_MAX_SIZE 2048
-static char buffer[BUFFER_MAX_SIZE];
-
-// USER BREAK
-
-unsigned char err_break[] = "D BREAK - no repea" "\xf4";
-
-void user_break(void)
-{
-   if (in_key_pressed(IN_KEY_SCANCODE_SPACE | 0x8000))  // CAPS+SPACE
-      exit((int)err_break);
-}
 
 // UART
 
@@ -55,119 +40,6 @@ void uart_set_bps(uint32_t bps)
    IO_143B = (uint8_t)(prescalar) & 0x7f;
 }
 */
-void uart_tx2(unsigned char *s)
-{
-   while (*s)
-   {
-      while (IO_133B & 0x02)
-         user_break();
-      
-      IO_133B = *s++;
-   }
-}
-
-// Wait until there is one byte from uart.
-unsigned char uart_rx2_char(void)
-{
-   // Wait until there is a byte in rx.
-   while (!(IO_133B & 0x01))
-   {
-      user_break(); 
-   }
-   unsigned char byte2 = IO_143B;
-   // if(byte2>31)
-   //    printf("%c", byte2);
-   // else
-   //    printf("<%u>", byte2);
-   #ifdef PRINT_TO_BUFFER
-   char* text_[16];
-   if(byte2>31)
-   {
-      sprintf(text_, "%c", byte2);
-      strcat(testBuffer, text_);
-   }
-   else
-   {
-      sprintf(text_, "<%u>", byte2);
-      strcat(testBuffer, text_);
-   }
-   #endif
-   return( byte2 );
-}
-
-void uart_flush_rx(void)
-{
-   // flush read buffer
-   printf("Flushing: \n");
-   unsigned char c;
-   while(1)
-   {
-      while (IO_133B & 0x01)
-      {
-         c = IO_143B;
-         //if(c>31)
-         //   printf("%c", c);
-         //else
-         //   printf("<%u>", c);
-         #ifdef PRINT_TO_BUFFER
-         char* text_[16];
-         if(c>31)
-         {
-            sprintf(text_, "%c", c);
-            strcat(testBuffer, text_);
-         }
-         else
-         {
-            sprintf(text_, "<%u>", c);
-            strcat(testBuffer, text_);
-         }
-         #endif
-         user_break();
-      }
-
-      //
-      // wait for 5+ frames
-      //for (uint16_t len = 0; len < 10000; len++);
-      z80_delay_ms(1*8);   // 8x for 28MHz
-      
-      // If still not any data to read, exit the loop.
-      if(!(IO_133B & 0x01))
-         break;
-   }
-}
-uint8_t uart_read_expected(char* expected)
-{
-   //printf("uart_read_expected: %s", expected);
-   buffer[0] = 0; // clear// BUFFER_MAX_SIZE];
-   char* bufferReadToPtr = buffer;
-   char* stringStartPtr = buffer;
-   uint16_t readLen = 0;
-
-   while(readLen<BUFFER_MAX_SIZE)
-   {
- 
-      // read byte from uart
-      *bufferReadToPtr = uart_rx2_char();
-      readLen++;
-
-      // if(*bufferReadToPtr>31)
-      //     printf("%c", *bufferReadToPtr);
-      // else
-      //    printf("<%u>", *bufferReadToPtr);
-
-      if(readLen>=strlen(expected))
-      {
-         if(strncmp(stringStartPtr, expected, strlen(expected))==0)
-            return 0;  // Found!
-         stringStartPtr++;
-      }
-
-      bufferReadToPtr++;
-
-   }  // response bytes comparison loop
-
-   return 1; // Not found.
-}
 
 // FRAMES
 
@@ -194,56 +66,20 @@ int TEST_main(void)
    static unsigned char lastchar;
    
    static uint32_t temp;
-   
-   unsigned char c;
-   
-   // restore on exit
-   
-   //old_cpu_speed = ZXN_READ_REG(0x07) & 0x03;
-   //old_uart = IO_153B & 0x40;
-
-   //atexit(cleanup);
-   
-   //ZXN_NEXTREG(0x07, 0x03);   // 28MHz
-   //IO_153B = 0x00;   // select esp uart
-   
-   // command line
-/*   
-   if (argc == 2)
-   {
-      temp = atol(argv[1]);
-      
-      printf("\nSetting uart to %lu bps\n\n", temp);
-      //uart_set_bps(temp);
-      
-      exit(0);
-   }
-   
-   if (argc != 3)
-   {
-      printf("\nUsage:\n"
-             "  .TCPPING [IP|FQDN] [Port]\n"
-             "  .TCPPING bps\n\n");
-      exit(0);
-   }
-*/   
-   
-   
-   const char* par1 = "192.168.100.133";
-   const char* par2 = "8000";
-   strcat(ipstart_cmd, par1);
+     
+   strcat(ipstart_cmd, SERVER_IP_ADDRESS_2);
    strcat(ipstart_cmd, "\",");
-   strcat(ipstart_cmd, par2);
+   strcat(ipstart_cmd, SERVER_PORT_2);
 
    lastchar = 0;
    
    uint8_t counter = 10;
 
-   #ifdef PRINT_TO_BUFFER
-   testBuffer[0] = 0;
+   #ifdef PRINT_TO_BUFFER2
+   testBuffer2[0] = 0;
    #endif
 
-   uart_flush_rx();
+   uart_flush_rx2();
 
    // Do a connection open and close 10 times
    printf("Start testing! round: ");
@@ -254,7 +90,7 @@ int TEST_main(void)
       uart_tx2(ipstart_cmd);
       uart_tx2("\r\n");
       
-      if(uart_read_expected("CONNECT") == 0)
+      if(uart_read_expected2("CONNECT") == 0)
       {
          // *** Connected ok
          printf("%u ", counter);
@@ -265,7 +101,7 @@ int TEST_main(void)
 
          // Note: you MUST read this before calling open again. Otherwise the connection 
          //       might still be not yet closed and the open fails.
-         if(uart_read_expected("CLOSED") == 0)
+         if(uart_read_expected2("CLOSED") == 0)
          {
             // *** Connection closed.
          }

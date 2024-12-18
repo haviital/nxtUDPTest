@@ -43,7 +43,8 @@
         "files.associations": {
             "stdio.h": "c",
             "uart.h": "c",
-            "esp.h": "c"
+            "esp.h": "c",
+            "uart2.h": "c"
         }
     }
 }
