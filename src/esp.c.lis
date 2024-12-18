@@ -1,4 +1,4 @@
-C:/Users/Hannu/AppData/Local/Temp/zcc00004134E96B3.asm:
+C:/Users/Hannu/AppData/Local/Temp/zcc00003AD0F2753.asm:
      1                          MODULE esp_c
      2                          LINE 0, "src/esp.c"
 src/esp.c:
@@ -236,8 +236,8 @@ src/esp.c:
    231                          ;--------------------------------------------------------
    232                          ; Externals used
    233                          ;--------------------------------------------------------
-   234                          	GLOBAL _atoi
-   235                          	GLOBAL _itoa
+   234                          	GLOBAL _myatoi
+   235                          	GLOBAL _myitoa
    236                          	GLOBAL _uart_get_received_data
    237                          	GLOBAL _uart_read_response
    238                          	GLOBAL _uart_send_data_packet

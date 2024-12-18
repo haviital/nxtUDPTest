@@ -325,12 +325,13 @@ static void create_start_screen(void)
 
     // Init ESP.
     NetComInit();
+
     //printf("Press any key to start\n");
     //in_wait_key();
 
-    DrawStatusTextAndPageFlip("Ping server");
+    //DrawStatusTextAndPageFlip("Ping server");
 
-    gameState = STATE_CALL_NOP;
+    gameState = STATE_NONE; // STATE_CALL_NOP;
 
     //printf("Press any key to start\n");
     //in_wait_key();
@@ -513,10 +514,10 @@ int main(void)
     init_hardware();
     init_isr();
 
-    printf("Started!");
-    TEST_main();
-    printf("Finished!");
-    for(;;); // forever
+    // printf("Started!");
+    // TEST_main();
+    // printf("Finished!");
+    // for(;;); // forever
 
     layer2_fill_rect(0, 0,  256, 192, 0xE3, &shadow_screen);
     // Swap the double buffered screen.
@@ -546,12 +547,12 @@ int main(void)
         layer2_fill_rect( 0, 192 - 8, 255, 8, 0x00, &shadow_screen); // Clear field.
 
         // frame count
-        itoa(frameCount, text);
+        myitoa(frameCount, text);
         //layer2_draw_text(23, 0, text, 0xc, &shadow_screen); 
 
         // game state
         strcat(text, " state:");
-        itoa(gameState, &text[6]);
+        myitoa(gameState, &text[6]);
         layer2_draw_text(23, 0, text, 0xc, &shadow_screen); 
 
         PageFlip();   

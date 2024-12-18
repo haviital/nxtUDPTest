@@ -11,7 +11,7 @@
 
 
 
-void itoa_not_zero(uint8_t num, char* str) 
+void myitoa_not_zero(uint8_t num, char* str) 
 {
     int i = 0;
     if(num>9)
@@ -30,15 +30,15 @@ void itoa_not_zero(uint8_t num, char* str)
     //return str;
 }
 
-void itoa(uint8_t num, char* str) 
+void myitoa(uint8_t num, char* str) 
 {
    if(num==0)
       strcpy(str, "0");
    else 
-      itoa_not_zero(num, str);   
+      myitoa_not_zero(num, str);   
 }
 
-uint8_t atoi(char* str) 
+uint8_t myatoi(char* str) 
 {
    uint8_t num = 0;
    uint8_t pos = strlen(str);
@@ -102,7 +102,7 @@ uint8_t uart_send_data_packet(unsigned char *data, uint8_t len)
    // Send AT command to UART to start sending the UDP packet.
    char atcmd[32];
    strcpy(atcmd, "AT+CIPSEND=");
-   (void)itoa_not_zero(len, &(atcmd[11]));
+   (void)myitoa_not_zero(len, &(atcmd[11]));
    strcat(atcmd, "\r\n");
    if(UART_DEBUG_PRINT_ENABLED) printf("call: %s\n", atcmd);
    uart_tx(atcmd);
@@ -220,7 +220,7 @@ uint8_t uart_get_received_data(char* data, uint8_t size)
    }
    if(i==10)
       return 1;
-   uint8_t dataLen = atoi(&(buffer[5]));
+   uint8_t dataLen = myatoi(&(buffer[5]));
    //printf("dataLen=%u, size=%u\n", dataLen, size);
    if(dataLen!=size)
    {

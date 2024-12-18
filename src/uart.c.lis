@@ -1,4 +1,4 @@
-C:/Users/Hannu/AppData/Local/Temp/zcc00004134E96B4.asm:
+C:/Users/Hannu/AppData/Local/Temp/zcc00003AD0F2754.asm:
      1                          MODULE uart_c
      2                          LINE 0, "src/uart.c"
 src/uart.c:
@@ -214,10 +214,10 @@ src/uart.c:
    209                          ;--------------------------------------------------------
    210                          	GLOBAL _mystrncmp
    211                          	GLOBAL _replaceCrAndLn
-   212                          	GLOBAL _itoa_not_zero
+   212                          	GLOBAL _myitoa_not_zero
    213                          	GLOBAL _video_timing
-   214                          	GLOBAL _itoa
-   215                          	GLOBAL _atoi
+   214                          	GLOBAL _myitoa
+   215                          	GLOBAL _myatoi
    216                          	GLOBAL _uart_send_at_cmd
    217                          	GLOBAL _uart_send_at_cmd_custom_response
    218                          	GLOBAL _uart_send_raw_data_and_print
@@ -1023,9 +1023,9 @@ src/uart.c:
   1018                          ;--------------------------------------------------------
   1019                          	SECTION code_compiler
   1020                          ;	---------------------------------
-  1021                          ; Function itoa_not_zero
+  1021                          ; Function myitoa_not_zero
   1022                          ; ---------------------------------
-  1023                          _itoa_not_zero:
+  1023                          _myitoa_not_zero:
   1024  0000  dde5              	push	ix
   1025  0002  dd210000          	ld	ix,0
   1026  0006  dd39              	add	ix,sp
@@ -1034,15 +1034,15 @@ src/uart.c:
   1029  000a  010000            	ld	bc,0x0000
   1030  000d  3e09              	ld	a,0x09
   1031  000f  dd9604            	sub	a,(ix+4)
-  1032  0012  3005              	jr	NC,l_itoa_not_zero_00104
+  1032  0012  3005              	jr	NC,l_myitoa_not_zero_00104
   1033  0014  010100            	ld	bc,0x0001
-  1034  0017  180a              	jr	l_itoa_not_zero_00105
-  1035                          l_itoa_not_zero_00104:
+  1034  0017  180a              	jr	l_myitoa_not_zero_00105
+  1035                          l_myitoa_not_zero_00104:
   1036  0019  3e63              	ld	a,0x63
   1037  001b  dd9604            	sub	a,(ix+4)
-  1038  001e  3003              	jr	NC,l_itoa_not_zero_00105
+  1038  001e  3003              	jr	NC,l_myitoa_not_zero_00105
   1039  0020  010200            	ld	bc,0x0002
-  1040                          l_itoa_not_zero_00105:
+  1040                          l_myitoa_not_zero_00105:
   1041  0023  59                	ld	e, c
   1042  0024  50                	ld	d, b
   1043  0025  13                	inc	de
@@ -1054,10 +1054,10 @@ src/uart.c:
   1049  002f  57                	ld	d, a
   1050  0030  af                	xor	a, a
   1051  0031  12                	ld	(de), a
-  1052                          l_itoa_not_zero_00106:
+  1052                          l_myitoa_not_zero_00106:
   1053  0032  dd7e04            	ld	a,(ix+4)
   1054  0035  b7                	or	a, a
-  1055  0036  283e              	jr	Z,l_itoa_not_zero_00109
+  1055  0036  283e              	jr	Z,l_myitoa_not_zero_00109
   1056  0038  dd5e04            	ld	e,(ix+4)
   1057  003b  1600              	ld	d,0x00
   1058  003d  c5                	push	bc
@@ -1088,41 +1088,41 @@ src/uart.c:
   1083  006d  cd0000            	call	__divsint_callee
   1084  0070  c1                	pop	bc
   1085  0071  dd7504            	ld	(ix+4),l
-  1086  0074  18bc              	jr	l_itoa_not_zero_00106
-  1087                          l_itoa_not_zero_00109:
+  1086  0074  18bc              	jr	l_myitoa_not_zero_00106
+  1087                          l_myitoa_not_zero_00109:
   1088  0076  ddf9              	ld	sp, ix
   1089  0078  dde1              	pop	ix
   1090  007a  c9                	ret
   1091                          ;	---------------------------------
-  1092                          ; Function itoa
+  1092                          ; Function myitoa
   1093                          ; ---------------------------------
-  1094                          _itoa:
+  1094                          _myitoa:
   1095  007b  dde5              	push	ix
   1096  007d  dd210000          	ld	ix,0
   1097  0081  dd39              	add	ix,sp
   1098  0083  dd7e04            	ld	a,(ix+4)
   1099  0086  b7                	or	a, a
-  1100  0087  2011              	jr	NZ,l_itoa_00102
+  1100  0087  2011              	jr	NZ,l_myitoa_00102
   1101  0089  dd5e05            	ld	e,(ix+5)
   1102  008c  dd5606            	ld	d,(ix+6)
   1103  008f  210000            	ld	hl,___str_0
   1104  0092  af                	xor	a, a
-  1105                          l_itoa_00113:
+  1105                          l_myitoa_00113:
   1106  0093  be                	cp	a, (hl)
   1107  0094  eda0              	ldi
-  1108  0096  20fb              	jr	NZ, l_itoa_00113
-  1109  0098  1811              	jr	l_itoa_00104
-  1110                          l_itoa_00102:
+  1108  0096  20fb              	jr	NZ, l_myitoa_00113
+  1109  0098  1811              	jr	l_myitoa_00104
+  1110                          l_myitoa_00102:
   1111  009a  dd6e05            	ld	l,(ix+5)
   1112  009d  dd6606            	ld	h,(ix+6)
   1113  00a0  e5                	push	hl
   1114  00a1  dd7e04            	ld	a,(ix+4)
   1115  00a4  f5                	push	af
   1116  00a5  33                	inc	sp
-  1117  00a6  cd0000            	call	_itoa_not_zero
+  1117  00a6  cd0000            	call	_myitoa_not_zero
   1118  00a9  f1                	pop	af
   1119  00aa  33                	inc	sp
-  1120                          l_itoa_00104:
+  1120                          l_myitoa_00104:
   1121  00ab  dde1              	pop	ix
   1122  00ad  c9                	ret
   1123                          	SECTION rodata_compiler
@@ -1131,9 +1131,9 @@ src/uart.c:
   1126  0001  00                	DEFB 0x00
   1127                          	SECTION code_compiler
   1128                          ;	---------------------------------
-  1129                          ; Function atoi
+  1129                          ; Function myatoi
   1130                          ; ---------------------------------
-  1131                          _atoi:
+  1131                          _myatoi:
   1132  00ae  dde5              	push	ix
   1133  00b0  dd210000          	ld	ix,0
   1134  00b4  dd39              	add	ix,sp
@@ -1142,10 +1142,10 @@ src/uart.c:
   1137  00bc  cd0000            	call	_strlen_fastcall
   1138  00bf  7d                	ld	a, l
   1139  00c0  b7                	or	a,a
-  1140  00c1  2003              	jr	NZ,l_atoi_00102
+  1140  00c1  2003              	jr	NZ,l_myatoi_00102
   1141  00c3  6f                	ld	l,a
-  1142  00c4  184c              	jr	l_atoi_00107
-  1143                          l_atoi_00102:
+  1142  00c4  184c              	jr	l_myatoi_00107
+  1143                          l_myatoi_00102:
   1144  00c6  5f                	ld	e, a
   1145  00c7  1d                	dec	e
   1146  00c8  dd7e04            	ld	a,(ix+4)
@@ -1160,7 +1160,7 @@ src/uart.c:
   1155  00d7  7b                	ld	a, e
   1156  00d8  1d                	dec	e
   1157  00d9  b7                	or	a, a
-  1158  00da  2835              	jr	Z,l_atoi_00106
+  1158  00da  2835              	jr	Z,l_myatoi_00106
   1159  00dc  dd7e04            	ld	a,(ix+4)
   1160  00df  83                	add	a, e
   1161  00e0  6f                	ld	l, a
@@ -1181,7 +1181,7 @@ src/uart.c:
   1176  00f3  7b                	ld	a, e
   1177  00f4  1d                	dec	e
   1178  00f5  b7                	or	a, a
-  1179  00f6  2819              	jr	Z,l_atoi_00106
+  1179  00f6  2819              	jr	Z,l_myatoi_00106
   1180  00f8  7b                	ld	a, e
   1181  00f9  dd8604            	add	a,(ix+4)
   1182  00fc  5f                	ld	e, a
@@ -1201,9 +1201,9 @@ src/uart.c:
   1196  010e  87                	add	a, a
   1197  010f  81                	add	a, c
   1198  0110  4f                	ld	c, a
-  1199                          l_atoi_00106:
+  1199                          l_myatoi_00106:
   1200  0111  69                	ld	l, c
-  1201                          l_atoi_00107:
+  1201                          l_myatoi_00107:
   1202  0112  dde1              	pop	ix
   1203  0114  c9                	ret
   1204                          ;	---------------------------------
@@ -1340,7 +1340,7 @@ src/uart.c:
   1333  01cf  dd7e06            	ld	a,(ix+6)
   1334  01d2  f5                	push	af
   1335  01d3  33                	inc	sp
-  1336  01d4  cd0000            	call	_itoa_not_zero
+  1336  01d4  cd0000            	call	_myitoa_not_zero
   1337  01d7  33                	inc	sp
   1338  01d8  213600            	ld	hl,___str_6
   1339  01db  e3                	ex	(sp),hl
@@ -1722,7 +1722,7 @@ src/uart.c:
   1694                          l_uart_get_received_data_00107:
   1695  03c8  210500            	ld	hl, +(_buffer + 5)
   1696  03cb  e5                	push	hl
-  1697  03cc  cdae00            	call	_atoi
+  1697  03cc  cdae00            	call	_myatoi
   1698  03cf  f1                	pop	af
   1699  03d0  4d                	ld	c, l
   1700  03d1  dd7e06            	ld	a,(ix+6)

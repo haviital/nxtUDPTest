@@ -34,7 +34,7 @@ extern bool uart_available_rx(void);
 extern uint8_t uart_send_data_packet(unsigned char *data, uint8_t len);
 extern uint8_t uart_read_response(char* expected, char* orExpected_CanBeNull);
 extern uint8_t uart_get_received_data(char* data, uint8_t size);
-extern void itoa(uint8_t num, char* str); 
-extern uint8_t atoi(char* str); 
+extern void myitoa(uint8_t num, char* str); 
+extern uint8_t myatoi(char* str); 
 
 #endif

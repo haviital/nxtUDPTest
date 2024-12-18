@@ -5,8 +5,79 @@
 #include "netcom.h"
 #include "esp.h"
 #include "uart.h"
+#include "uart2.h"
 
 void NetComInit(void)
+{
+    DrawStatusTextAndPageFlip("Init");
+    DrawStatusTextAndPageFlip("Connecting to Wifi");
+    DrawStatusTextAndPageFlip("Connected to Wifi");
+    DrawStatusTextAndPageFlip("Create Server connection");
+
+    // *** Test!
+
+    unsigned char close[20] = "AT+CIPCLOSE";
+    unsigned char ipstart_cmd[60] = "AT+CIPSTART=\"TCP\",\"";
+
+    strcat(ipstart_cmd, SERVER_IP_ADDRESS_2);
+    strcat(ipstart_cmd, "\",");
+    strcat(ipstart_cmd, SERVER_PORT_2);
+
+    uint8_t counter = 10;
+
+    #ifdef PRINT_TO_BUFFER2
+    testBuffer2[0] = 0;
+    #endif
+
+    uart_flush_rx2();
+    while (1)
+    {
+      // Open connection
+      uart_tx2(ipstart_cmd);
+      uart_tx2("\r\n");
+      
+      if(uart_read_expected2("CONNECT") == 0)
+      {
+         // *** Connected ok
+         printf("%u ", counter);
+
+         // Close connetion
+         uart_tx2(close);
+         uart_tx2("\r\n");
+
+         // Note: you MUST read this before calling open again. Otherwise the connection 
+         //       might still be not yet closed and the open fails.
+         if(uart_read_expected2("CLOSED") == 0)
+         {
+            // *** Connection closed.
+         }
+         else
+         {
+            printf("Did not found 'CLOSED'\n");
+            for(;;);  // Loop forever
+         }
+      }
+      else
+      {
+         printf("Did not found 'CONNECTED'.\n");
+         for(;;);  // Loop forever
+      }
+
+        char text[128];
+        sprintf(text, "Test round: %d", 10 - counter);  
+        DrawStatusTextAndPageFlip(text);
+  
+        // Connected ok. Do it again.
+        if(--counter==0)
+            break;
+
+   }  // repeated connect loop
+
+
+
+ }
+
+void NetComInit_old(void)
 {
     // Reset ESP
     // ZXN_NEXTREG(0x02, 0x80);
