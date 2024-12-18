@@ -20,7 +20,7 @@
 #include "lib/zxn/zxnext_layer2.h"
 #include "lib/zxn/zxnext_sprite.h"
 
-// #define NO_GFX 
+#define NO_GFX 
 
 #pragma output CRT_ORG_CODE = 0x6164
 #pragma output REGISTER_SP = 0xC000

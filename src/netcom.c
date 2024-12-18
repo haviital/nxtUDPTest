@@ -10,10 +10,45 @@
 void NetComInit(void)
 {
     DrawStatusTextAndPageFlip("Init");
-    DrawStatusTextAndPageFlip("Connecting to Wifi");
-    DrawStatusTextAndPageFlip("Connected to Wifi");
-    DrawStatusTextAndPageFlip("Create Server connection");
+    uart_flush_rx2();
 
+    DrawStatusTextAndPageFlip("Connecting to Wifi");
+
+    // Disable echo
+    uart_tx2("ATE1\r\n");
+    if(uart_read_expected2("OK") != 0)
+        uart_failed(__FILE__, __LINE__);
+
+    // Connect to wifi AP.
+    char atcmd[256];
+    sprintf(atcmd, "AT+CWJAP=\"%s\",\"%s\"\r\n", g_wifiSsid, g_wifiPassword);
+    uart_tx2(atcmd);
+    if(uart_read_expected2("OK") != 0)
+        uart_failed(__FILE__, __LINE__);
+
+    DrawStatusTextAndPageFlip("Connected to Wifi");
+
+    // Enable single connection mode
+    //AT+CIPMUX=0
+    uart_tx2("AT+CIPMUX=0\r\n");
+    if(uart_read_expected2("OK") != 0)
+        uart_failed(__FILE__, __LINE__);
+   
+    DrawStatusTextAndPageFlip("Create Server connection");
+    // Start UDP connection.
+    // 2 means UDP(?)
+    // 0 means wifi passthrough
+    // AT+CIPSTART="UDP","<remote_ip>",<remote_port>,<local_port>,0
+    // Could also come: "ALREADY CONNECTED\r\nERROR\n\r"
+    sprintf(atcmd, "AT+CIPSTART=\"UDP\",\"%s\",%s,%s,0\r\n", 
+        UDP_SERVER_ADDRESS, UDP_SERVER_PORT,UDP_LOCAL_PORT );
+    uart_tx2(atcmd);
+    if(uart_read_expected_many2("OK", "ERROR") != 0)
+        uart_failed(__FILE__, __LINE__);
+
+    DrawStatusTextAndPageFlip("Create Server connection DONE");
+
+#if 0
     // *** Test!
 
     unsigned char close[20] = "AT+CIPCLOSE";
@@ -29,7 +64,6 @@ void NetComInit(void)
     testBuffer2[0] = 0;
     #endif
 
-    uart_flush_rx2();
     while (1)
     {
       // Open connection
@@ -64,7 +98,7 @@ void NetComInit(void)
       }
 
         char text[128];
-        sprintf(text, "Test round: %d", 10 - counter);  
+        sprintf(text, "Test round: %d", 11 - counter);  
         DrawStatusTextAndPageFlip(text);
   
         // Connected ok. Do it again.
@@ -72,8 +106,7 @@ void NetComInit(void)
             break;
 
    }  // repeated connect loop
-
-
+#endif
 
  }
 
