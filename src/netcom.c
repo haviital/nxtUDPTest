@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include "defines.h"
 #include "netcom.h"
 #include "esp.h"
 #include "uart.h"
@@ -9,6 +10,7 @@
 
 void NetComInit(void)
 {
+    printf("NetComInit()..\n"); //!!HV
     DrawStatusTextAndPageFlip("Init");
     uart_flush_rx2();
 
@@ -17,14 +19,14 @@ void NetComInit(void)
     // Disable echo
     uart_tx2("ATE1\r\n");
     if(uart_read_expected2("OK") != 0)
-        uart_failed(__FILE__, __LINE__);
+        prog_failed(__FILE__, __LINE__);
 
     // Connect to wifi AP.
     char atcmd[256];
     sprintf(atcmd, "AT+CWJAP=\"%s\",\"%s\"\r\n", g_wifiSsid, g_wifiPassword);
     uart_tx2(atcmd);
     if(uart_read_expected2("OK") != 0)
-        uart_failed(__FILE__, __LINE__);
+        prog_failed(__FILE__, __LINE__);
 
     DrawStatusTextAndPageFlip("Connected to Wifi");
 
@@ -32,7 +34,7 @@ void NetComInit(void)
     //AT+CIPMUX=0
     uart_tx2("AT+CIPMUX=0\r\n");
     if(uart_read_expected2("OK") != 0)
-        uart_failed(__FILE__, __LINE__);
+        prog_failed(__FILE__, __LINE__);
    
     DrawStatusTextAndPageFlip("Create Server connection");
     // Start UDP connection.
@@ -44,7 +46,7 @@ void NetComInit(void)
         UDP_SERVER_ADDRESS, UDP_SERVER_PORT,UDP_LOCAL_PORT );
     uart_tx2(atcmd);
     if(uart_read_expected_many2("OK", "ERROR") != 0)
-        uart_failed(__FILE__, __LINE__);
+        prog_failed(__FILE__, __LINE__);
 
     DrawStatusTextAndPageFlip("Create Server connection DONE");
 
@@ -107,7 +109,7 @@ void NetComInit(void)
 
    }  // repeated connect loop
 #endif
-
+        printf("..NetComInit()\n"); //!!HV
  }
 
 void NetComInit_old(void)

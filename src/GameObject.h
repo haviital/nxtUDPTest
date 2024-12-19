@@ -1,7 +1,5 @@
 #include <stdint.h>
-
-#define SCREEN_X 256
-#define SCREEN_Y 192
+#include "defines.h"
 
 typedef struct GameObject_ 
 {

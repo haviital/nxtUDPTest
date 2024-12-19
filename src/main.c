@@ -19,8 +19,7 @@
 
 #include "lib/zxn/zxnext_layer2.h"
 #include "lib/zxn/zxnext_sprite.h"
-
-#define NO_GFX 
+#include "defines.h"
 
 #pragma output CRT_ORG_CODE = 0x6164
 #pragma output REGISTER_SP = 0xC000
@@ -51,8 +50,6 @@
 #define __z88dk_fastcall
 #define __preserves_regs(...)
 #endif
-
-#define CLOUD_SPRITE_Y 40
 
 /*******************************************************************************
  * Macros
@@ -329,7 +326,7 @@ static void create_start_screen(void)
     //printf("Press any key to start\n");
     //in_wait_key();
 
-    //DrawStatusTextAndPageFlip("Ping server");
+    //!!HV DrawStatusTextAndPageFlip("Ping server");
 
     gameState = STATE_NONE; // STATE_CALL_NOP;
 
@@ -519,15 +516,15 @@ int main(void)
     // printf("Finished!");
     // for(;;); // forever
 
-    layer2_fill_rect(0, 0,  256, 192, 0xE3, &shadow_screen);
+    layer2_fill_rect(0, 0,  256, 192, 0xE3, &shadow_screen); // make a hole
     // Swap the double buffered screen.
     layer2_flip_main_shadow_screen();
-    layer2_fill_rect(0, 0,  256, 192, 0xE3, &shadow_screen);
+    layer2_fill_rect(0, 0,  256, 192, 0xE3, &shadow_screen); // make a hole
     // Swap the double buffered screen.
     layer2_flip_main_shadow_screen();
 
     create_sprites();
-
+        
     set_sprite_layers_system(true, false, LAYER_PRIORITIES_S_L_U, false);
 
     DrawGameBackground();
@@ -535,25 +532,49 @@ int main(void)
  
     create_start_screen();
 
+
     // Loop until the end of the game.
+    uint8_t test=0;
     while (true)
     {   
+        //if(frameCount%10==0)
+        {
+            layer2_fill_rect(0, 0, 256, 8, 0xE3, &shadow_screen); // make a hole
+            printAt(0, 0);
+            printf("frame:%u", (++test)+100);
+
+            //printAt(0, 0);
+            //printf("f%lu", frameCount); //!!HV
+
+            //printAt(2, 0);
+            //printf("boo!");
+
+        }
+
         UpdateAndDrawAll();
 
         // Draw Frame count
+        #ifndef NO_GFX
         if( frameCount++ >= 60)
             frameCount = 0;
-        char text[16];
+        char text[64];
         layer2_fill_rect( 0, 192 - 8, 255, 8, 0x00, &shadow_screen); // Clear field.
 
+        strcpy(text, "frame:");
         // frame count
-        myitoa(frameCount, text);
+        char tmpStr[5];
+        myitoa(frameCount, tmpStr);
+        strcat(text, tmpStr);
         //layer2_draw_text(23, 0, text, 0xc, &shadow_screen); 
 
         // game state
         strcat(text, " state:");
-        myitoa(gameState, &text[6]);
+        char stateNumStr[5];
+        myitoa(gameState, stateNumStr);
+        strcat(text, stateNumStr);
+
         layer2_draw_text(23, 0, text, 0xc, &shadow_screen); 
+        #endif
 
         PageFlip();   
     }

@@ -1,10 +1,5 @@
 #include <stdint.h>
-
-#define UDP_SERVER_PORT "4444"
-#define UDP_SERVER_ADDRESS "192.168.100.134"
-#define UDP_LOCAL_PORT "333"
-#define SERVER_IP_ADDRESS_2 "192.168.100.134"
-#define SERVER_PORT_2 "8000"
+#include "defines.h"
 
 typedef struct NopResponse_ 
 {

@@ -3,8 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-
-#define UART_DEBUG_PRINT_ENABLED 0
+#include "defines.h"
 
 __sfr __banked __at 0x153b IO_153B;   // until it is added to headers
 
