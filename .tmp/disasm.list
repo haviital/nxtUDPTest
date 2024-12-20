@@ -2,18 +2,16 @@
 6165.11 FD E5        push iy
 6167.11 D9           exx
 6168.11 E5           push hl
-6169.11 ED 73 DD B9  ld (0B9DDh),sp
+6169.11 ED 73 36 A3  ld (0A336h),sp
 616D.11 31 00 C0     ld sp,0C000h
-6170.11 21 2B B3     ld hl,0B32Bh
+6170.11 21 C7 9C     ld hl,9CC7h
 6173.11 34           inc (hl)
 6174.11 34           inc (hl)
-
-; Note: The address 88D8h is in a different bank.
-6175.11 CD D8 88     call 88D8h
+6175.11 CD 53 7E     call SUB_7E53
 
 6178.11 E5           push hl
 6179.11 C1           pop bc
-617A.11 ED 7B DD B9  ld sp,(0B9DDh)
+617A.11 ED 7B 36 A3  ld sp,(0A336h)
 617E.11 D9           exx
 617F.11 E1           pop hl
 6180.11 D9           exx
@@ -22,5 +20,2052 @@
 6185.11 FB           ei
 6186.11 C9           ret
 
-B9DD.5 00 00 FF...  DEFB 00 00 FF FF FF FF FF FF ; ASCII: ????????
+61C8.11 SUB_61C8:
+61C8.11 7D           ld a,l
+61C9.11 E6 07        and 07h
+61CB.11 6F           ld l,a
+61CC.11 3A 48 9C     ld a,(9C48h)
+61CF.11 E6 F8        and 0F8h
+61D1.11 B5           or l
+61D2.11 32 48 9C     ld (9C48h),a
+61D5.11 D3 FE        out (00FEh),a
+61D7.11 C9           ret
+
+61D8.11 SUB_61D8:
+61D8.11 E5           push hl
+61D9.11 2E 00        ld l,00h
+61DB.11 CD F0 61     call SUB_61F0
+
+61DE.11 E1           pop hl
+61DF.11 C3 E2 61     jp .L1
+
+61E2.11 .L1:
+61E2.11 7D           ld a,l
+61E3.11 21 00 58     ld hl,5800h
+61E6.11 11 01 58     ld de,5801h
+61E9.11 77           ld (hl),a
+61EA.11 01 FF 02     ld bc,02FFh
+61ED.11 ED B0        ldir
+61EF.11 C9           ret
+
+61F0.11 SUB_61F0:
+61F0.11 7D           ld a,l
+61F1.11 21 00 40     ld hl,4000h
+61F4.11 11 01 40     ld de,4001h
+61F7.11 77           ld (hl),a
+61F8.11 01 FF 17     ld bc,17FFh
+61FB.11 ED B0        ldir
+61FD.11 C9           ret
+
+6D4E.11 SUB_6D4E:
+6D4E.11 21 00 00     ld hl,0000h
+6D51.11 37           scf
+6D52.11 C9           ret
+
+6D56.11 SUB_6D56:
+6D56.11 21 FF FF     ld hl,0FFFFh
+6D59.11 37           scf
+6D5A.11 C9           ret
+
+6D5E.11 SUB_6D5E:
+6D5E.11 21 00 00     ld hl,0000h
+6D61.11 37           scf
+6D62.11 3F           ccf
+6D63.11 C9           ret
+
+6D67.11 SUB_6D67:
+6D67.11 2E FF        ld l,0FFh
+6D69.11 26 00        ld h,00h
+6D6B.11 22 8C 9E     ld (9E8Ch),hl
+6D6E.11 C3 56 6D     jp SUB_6D56
+
+6D74.11 SUB_6D74:
+6D74.11 2E FF        ld l,0FFh
+6D76.11 26 00        ld h,00h
+6D78.11 22 8C 9E     ld (9E8Ch),hl
+6D7B.11 C3 4E 6D     jp SUB_6D4E
+
+6E35.11 SUB_6E35:
+6E35.11 7C           ld a,h
+6E36.11 ED 47        ld i,a
+6E38.11 ED 5E        im 2
+6E3A.11 C9           ret
+
+6F00.11 SUB_6F00:
+6F00.11 FD E9        jp (iy)
+
+6F91.11 SUB_6F91:
+6F91.11 7D           ld a,l
+6F92.11 2F           cpl
+6F93.11 6F           ld l,a
+6F94.11 7C           ld a,h
+6F95.11 2F           cpl
+6F96.11 67           ld h,a
+6F97.11 23           inc hl
+6F98.11 C9           ret
+
+6F99.11 SUB_6F99:
+6F99.11 CB 7C        bit 7,h
+6F9B.11 C8           ret z
+
+6F9C.11 21 FF 7F     ld hl,7FFFh.11
+6F9F.11 C9           ret
+
+6FA0.11 SUB_6FA0:
+6FA0.11 21 00 00     ld hl,0000h
+6FA3.11 1B           dec de
+6FA4.11 E5           push hl
+
+6FA5.11 .LOOP:
+6FA5.11 F1           pop af
+6FA6.11 13           inc de
+6FA7.11 1A           ld a,(de)
+6FA8.11 D6 30        sub 30h
+6FAA.11 3F           ccf
+6FAB.11 D0           ret nc
+
+6FAC.11 FE 0A        cp 0Ah
+6FAE.11 D0           ret nc
+
+6FAF.11 E5           push hl
+6FB0.11 29           add hl,hl
+6FB1.11 38 12        jr c,.L1
+
+6FB3.11 4D           ld c,l
+6FB4.11 44           ld b,h
+6FB5.11 29           add hl,hl
+6FB6.11 38 0D        jr c,.L1
+
+6FB8.11 29           add hl,hl
+6FB9.11 38 0A        jr c,.L1
+
+6FBB.11 09           add hl,bc
+6FBC.11 38 07        jr c,.L1
+
+6FBE.11 85           add a,l
+6FBF.11 6F           ld l,a
+6FC0.11 30 E3        jr nc,.LOOP
+
+6FC2.11 24           inc h
+6FC3.11 20 E0        jr nz,.LOOP
+
+6FC5.11 .L1:
+6FC5.11 E1           pop hl
+6FC6.11 37           scf
+6FC7.11 C9           ret
+
+6FF2.11 SUB_6FF2:
+6FF2.11 09           add hl,bc
+6FF3.11 D0           ret nc
+
+6FF4.11 21 FF FF     ld hl,0FFFFh
+6FF7.11 C9           ret
+
+71BA.11 SUB_71BA:
+71BA.11 CD 07 74     call SUB_7407
+
+71BD.11 4D           ld c,l
+71BE.11 44           ld b,h
+71BF.11 C3 D0 71     jp SUB_71D0
+
+71D0.11 SUB_71D0:
+71D0.11 FD 2A FC 9C  ld iy,(9CFCh)
+71D4.11 C3 D7 71     jp .L1
+
+71D7.11 .L1:
+71D7.11 CD 0E 74     call SUB_740E
+
+71DA.11 D8           ret c
+
+71DB.11 21 D4 FF     ld hl,0FFD4h
+71DE.11 39           add hl,sp
+71DF.11 F9           ld sp,hl
+71E0.11 C5           push bc
+71E1.11 D9           exx
+71E2.11 21 00 00     ld hl,0000h
+71E5.11 D9           exx
+71E6.11 6B           ld l,e
+71E7.11 62           ld h,d
+
+71E8.11 .LOOP:
+71E8.11 0E 25        ld c,25h
+71EA.11 CD 9F 77     call SUB_779F
+
+71ED.11 E5           push hl
+71EE.11 B7           or a
+71EF.11 ED 52        sbc hl,de
+71F1.11 4D           ld c,l
+71F2.11 44           ld b,h
+71F3.11 EB           ex de,hl
+71F4.11 C4 CC 76     call nz,SUB_76CC
+
+71F7.11 D1           pop de
+71F8.11 DA 7C 73     jp c,SUB_7378.L2
+
+71FB.11 1A           ld a,(de)
+71FC.11 B7           or a
+71FD.11 28 0B        jr z,.L2
+
+71FF.11 13           inc de
+7200.11 1A           ld a,(de)
+7201.11 FE 25        cp 25h
+7203.11 20 1C        jr nz,SUB_7221
+
+7205.11 6B           ld l,e
+7206.11 62           ld h,d
+7207.11 23           inc hl
+7208.11 18 DE        jr .LOOP
+
+720A.11 .L2:
+720A.11 21 2E 00     ld hl,002Eh
+720D.11 39           add hl,sp
+720E.11 F9           ld sp,hl
+720F.11 D9           exx
+7210.11 E5           push hl
+7211.11 D9           exx
+7212.11 E1           pop hl
+7213.11 B7           or a
+7214.11 C3 99 6F     jp SUB_6F99
+
+7221.11 SUB_7221:
+7221.11 1B           dec de
+7222.11 0E 00        ld c,00h
+
+7224.11 .LOOP1:
+7224.11 13           inc de
+7225.11 1A           ld a,(de)
+7226.11 21 17 72     ld hl,7217h.11
+7229.11 06 05        ld b,05h
+
+722B.11 .LOOP2:
+722B.11 BE           cp (hl)
+722C.11 23           inc hl
+722D.11 28 21        jr z,.L2
+
+722F.11 23           inc hl
+7230.11 10 F9        djnz .LOOP2
+
+7232.11 FD 71 05     ld (iy+5),c
+7235.11 FE 2A        cp 2Ah
+7237.11 20 1C        jr nz,.L3
+
+7239.11 E1           pop hl
+723A.11 13           inc de
+723B.11 D5           push de
+723C.11 CD 02 74     call SUB_7402
+
+723F.11 EB           ex de,hl
+7240.11 CB 7C        bit 7,h
+7242.11 28 07        jr z,.L1
+
+7244.11 CD 91 6F     call SUB_6F91
+
+7247.11 FD CB 05 D6  set 2,(iy+5)
+
+724B.11 .L1:
+724B.11 E3           ex (sp),hl
+724C.11 EB           ex de,hl
+724D.11 E5           push hl
+724E.11 18 12        jr .L4
+
+7250.11 .L2:
+7250.11 7E           ld a,(hl)
+7251.11 B1           or c
+7252.11 4F           ld c,a
+7253.11 18 CF        jr .LOOP1
+
+7255.11 .L3:
+7255.11 CD A0 6F     call SUB_6FA0
+
+7258.11 DA 79 73     jp c,SUB_7378.L1
+
+725B.11 CB 7C        bit 7,h
+725D.11 C2 79 73     jp nz,SUB_7378.L1
+
+7260.11 E3           ex (sp),hl
+7261.11 E5           push hl
+
+7262.11 .L4:
+7262.11 21 01 00     ld hl,0001h
+7265.11 1A           ld a,(de)
+7266.11 FE 2E        cp 2Eh
+7268.11 20 2C        jr nz,.L7
+
+726A.11 FD CB 05 C6  set 0,(iy+5)
+726E.11 13           inc de
+726F.11 1A           ld a,(de)
+7270.11 FE 2A        cp 2Ah
+7272.11 20 17        jr nz,.L6
+
+7274.11 E1           pop hl
+7275.11 13           inc de
+7276.11 D5           push de
+7277.11 CD 02 74     call SUB_7402
+
+727A.11 EB           ex de,hl
+727B.11 CB 7C        bit 7,h
+727D.11 28 07        jr z,.L5
+
+727F.11 21 01 00     ld hl,0001h
+7282.11 FD CB 05 86  res 0,(iy+5)
+
+7286.11 .L5:
+7286.11 E3           ex (sp),hl
+7287.11 EB           ex de,hl
+7288.11 E5           push hl
+7289.11 18 0D        jr .L8
+
+728B.11 .L6:
+728B.11 CD A0 6F     call SUB_6FA0
+
+728E.11 DA 78 73     jp c,SUB_7378
+
+7291.11 CB 7C        bit 7,h
+7293.11 C2 78 73     jp nz,SUB_7378
+
+7296.11 .L7:
+7296.11 E3           ex (sp),hl
+7297.11 E5           push hl
+
+7298.11 .L8:
+7298.11 CD D4 73     call SUB_73D4
+
+729B.11 1A           ld a,(de)
+729C.11 13           inc de
+729D.11 47           ld b,a
+729E.11 79           ld a,c
+729F.11 E6 30        and 30h
+72A1.11 D6 10        sub 10h
+72A3.11 30 19        jr nc,.L10
+
+72A5.11 21 22 73     ld hl,7322h.11
+72A8.11 CD 05 73     call SUB_7305
+
+72AB.11 38 20        jr c,.L11
+
+72AD.11 .L9:
+72AD.11 21 19 73     ld hl,7319h.11
+72B0.11 CD 05 73     call SUB_7305
+
+72B3.11 38 18        jr c,.L11
+
+72B5.11 CD 74 6D     call SUB_6D74
+
+72B8.11 21 32 00     ld hl,0032h
+72BB.11 C3 7F 73     jp SUB_7378.L3
+
+72BE.11 .L10:
+72BE.11 20 ED        jr nz,.L9
+
+72C0.11 21 43 73     ld hl,7343h.11
+72C3.11 CD 05 73     call SUB_7305
+
+72C6.11 30 E5        jr nc,.L9
+
+72C8.11 01 64 73     ld bc,7364h.11
+72CB.11 18 03        jr .L12
+
+72CD.11 .L11:
+72CD.11 01 69 73     ld bc,7369h.11
+
+72D0.11 .L12:
+72D0.11 CB 6F        bit 5,a
+72D2.11 28 04        jr z,.L13
+
+72D4.11 FD CB 05 CE  set 1,(iy+5)
+
+72D8.11 .L13:
+72D8.11 CB 67        bit 4,a
+72DA.11 28 04        jr z,.L14
+
+72DC.11 FD CB 05 A6  res 4,(iy+5)
+
+72E0.11 .L14:
+72E0.11 E6 C0        and 0C0h
+72E2.11 FD 77 04     ld (iy+4),a
+72E5.11 E3           ex (sp),hl
+72E6.11 E5           push hl
+72E7.11 21 0F 00     ld hl,000Fh
+72EA.11 39           add hl,sp
+72EB.11 72           ld (hl),d
+72EC.11 2B           dec hl
+72ED.11 73           ld (hl),e
+72EE.11 2B           dec hl
+72EF.11 D1           pop de
+72F0.11 72           ld (hl),d
+72F1.11 2B           dec hl
+72F2.11 73           ld (hl),e
+72F3.11 2B           dec hl
+72F4.11 70           ld (hl),b
+72F5.11 2B           dec hl
+72F6.11 71           ld (hl),c
+72F7.11 2B           dec hl
+72F8.11 4D           ld c,l
+72F9.11 44           ld b,h
+72FA.11 21 0A 00     ld hl,000Ah
+72FD.11 09           add hl,bc
+72FE.11 7C           ld a,h
+72FF.11 02           ld (bc),a
+7300.11 0B           dec bc
+7301.11 7D           ld a,l
+7302.11 02           ld (bc),a
+7303.11 EB           ex de,hl
+7304.11 C9           ret
+
+7305.11 SUB_7305:
+7305.11 7E           ld a,(hl)
+7306.11 23           inc hl
+7307.11 B7           or a
+7308.11 C8           ret z
+
+7309.11 B8           cp b
+730A.11 28 05        jr z,.L1
+
+730C.11 23           inc hl
+730D.11 23           inc hl
+730E.11 23           inc hl
+730F.11 18 F4        jr SUB_7305
+
+7311.11 .L1:
+7311.11 7E           ld a,(hl)
+7312.11 23           inc hl
+7313.11 46           ld b,(hl)
+7314.11 23           inc hl
+7315.11 66           ld h,(hl)
+7316.11 68           ld l,b
+7317.11 37           scf
+7318.11 C9           ret
+
+7378.11 SUB_7378:
+7378.11 C1           pop bc
+
+7379.11 .L1:
+7379.11 CD 74 6D     call SUB_6D74
+
+737C.11 .L2:
+737C.11 21 2E 00     ld hl,002Eh
+
+737F.11 .L3:
+737F.11 39           add hl,sp
+7380.11 F9           ld sp,hl
+7381.11 D9           exx
+7382.11 E5           push hl
+7383.11 D9           exx
+7384.11 E1           pop hl
+7385.11 CD 99 6F     call SUB_6F99
+
+7388.11 23           inc hl
+7389.11 37           scf
+738A.11 C3 91 6F     jp SUB_6F91
+
+73D4.11 SUB_73D4:
+73D4.11 21 F6 73     ld hl,73F6h.11
+73D7.11 06 06        ld b,06h
+73D9.11 1A           ld a,(de)
+
+73DA.11 .LOOP:
+73DA.11 BE           cp (hl)
+73DB.11 23           inc hl
+73DC.11 28 06        jr z,.L1
+
+73DE.11 23           inc hl
+73DF.11 10 F9        djnz .LOOP
+
+73E1.11 0E 00        ld c,00h
+73E3.11 C9           ret
+
+73E4.11 .L1:
+73E4.11 4E           ld c,(hl)
+73E5.11 13           inc de
+73E6.11 FE 6C        cp 6Ch
+73E8.11 28 03        jr z,.L2
+
+73EA.11 FE 68        cp 68h
+73EC.11 C0           ret nz
+
+73ED.11 .L2:
+73ED.11 47           ld b,a
+73EE.11 1A           ld a,(de)
+73EF.11 B8           cp b
+73F0.11 C0           ret nz
+
+73F1.11 13           inc de
+73F2.11 79           ld a,c
+73F3.11 87           add a,a
+73F4.11 4F           ld c,a
+73F5.11 C9           ret
+
+7402.11 SUB_7402:
+7402.11 5E           ld e,(hl)
+7403.11 23           inc hl
+7404.11 56           ld d,(hl)
+7405.11 23           inc hl
+7406.11 C9           ret
+
+7407.11 SUB_7407:
+7407.11 21 04 00     ld hl,0004h
+740A.11 39           add hl,sp
+740B.11 C3 02 74     jp SUB_7402
+
+740E.11 SUB_740E:
+740E.11 FD 7E 03     ld a,(iy+3)
+7411.11 E6 88        and 88h
+7413.11 FE 80        cp 80h
+7415.11 20 14        jr nz,.L1
+
+7417.11 FD CB 04 4E  bit 1,(iy+4)
+741B.11 C8           ret z
+
+741C.11 C5           push bc
+741D.11 D5           push de
+741E.11 E5           push hl
+741F.11 CD 3A 74     call SUB_743A
+
+7422.11 E1           pop hl
+7423.11 D1           pop de
+7424.11 C1           pop bc
+7425.11 FD 36 04 00  ld (iy+4),00h
+7429.11 B7           or a
+742A.11 C9           ret
+
+742B.11 .L1:
+742B.11 E6 08        and 08h
+742D.11 C2 56 6D     jp nz,SUB_6D56
+
+7430.11 C3 67 6D     jp SUB_6D67
+
+743A.11 SUB_743A:
+743A.11 FD CB 03 5E  bit 3,(iy+3)
+743E.11 C2 56 6D     jp nz,SUB_6D56
+
+7441.11 FD CB 04 4E  bit 1,(iy+4)
+7445.11 28 1D        jr z,.L1
+
+7447.11 FD CB 04 46  bit 0,(iy+4)
+744B.11 28 17        jr z,.L1
+
+744D.11 FD CB 04 86  res 0,(iy+4)
+7451.11 FD CB 03 A6  res 4,(iy+3)
+7455.11 0E 01        ld c,01h
+7457.11 21 FF FF     ld hl,0FFFFh
+745A.11 5D           ld e,l
+745B.11 54           ld d,h
+745C.11 D9           exx
+745D.11 0E 01        ld c,01h
+745F.11 3E 06        ld a,06h
+7461.11 CD 00 6F     call SUB_6F00
+
+7464.11 .L1:
+7464.11 3E 08        ld a,08h
+7466.11 CD 00 6F     call SUB_6F00
+
+7469.11 D2 5E 6D     jp nc,SUB_6D5E
+
+746C.11 C3 56 6D     jp SUB_6D56
+
+76CC.11 SUB_76CC:
+76CC.11 78           ld a,b
+76CD.11 B1           or c
+76CE.11 C8           ret z
+
+76CF.11 3E 02        ld a,02h
+76D1.11 C5           push bc
+76D2.11 D9           exx
+76D3.11 E3           ex (sp),hl
+76D4.11 CD 00 6F     call SUB_6F00
+
+76D7.11 E5           push hl
+76D8.11 D9           exx
+76D9.11 E1           pop hl
+76DA.11 C1           pop bc
+76DB.11 38 09        jr c,.L2
+
+76DD.11 CD F2 6F     call SUB_6FF2
+
+76E0.11 B7           or a
+
+76E1.11 .L1:
+76E1.11 E5           push hl
+76E2.11 D9           exx
+76E3.11 E1           pop hl
+76E4.11 D9           exx
+76E5.11 C9           ret
+
+76E6.11 .L2:
+76E6.11 FD CB 03 DE  set 3,(iy+3)
+76EA.11 CD F2 6F     call SUB_6FF2
+
+76ED.11 37           scf
+76EE.11 18 F1        jr .L1
+
+7772.11 SUB_7772:
+7772.11 E1           pop hl
+7773.11 D1           pop de
+7774.11 E3           ex (sp),hl
+7775.11 C3 91 77     jp SUB_7791
+
+7791.11 SUB_7791:
+7791.11 D5           push de
+7792.11 EB           ex de,hl
+7793.11 CD ED 77     call SUB_77ED
+
+7796.11 EB           ex de,hl
+
+7797.11 .LOOP:
+7797.11 BE           cp (hl)
+7798.11 ED A0        ldi
+779A.11 20 FB        jr nz,.LOOP
+
+779C.11 E1           pop hl
+779D.11 1B           dec de
+779E.11 C9           ret
+
+779F.11 SUB_779F:
+779F.11 7E           ld a,(hl)
+77A0.11 B9           cp c
+77A1.11 C8           ret z
+
+77A2.11 23           inc hl
+77A3.11 B7           or a
+77A4.11 20 F9        jr nz,SUB_779F
+
+77A6.11 2B           dec hl
+77A7.11 37           scf
+77A8.11 C9           ret
+
+77A9.11 SUB_77A9:
+77A9.11 AF           xor a
+77AA.11 4F           ld c,a
+77AB.11 47           ld b,a
+77AC.11 ED B1        cpir
+77AE.11 21 FF FF     ld hl,0FFFFh
+77B1.11 ED 42        sbc hl,bc
+77B3.11 C9           ret
+
+77ED.11 SUB_77ED:
+77ED.11 AF           xor a
+77EE.11 4F           ld c,a
+77EF.11 47           ld b,a
+77F0.11 ED B1        cpir
+77F2.11 2B           dec hl
+77F3.11 C9           ret
+
+7853.11 SUB_7853:
+7853.11 ED 91 07 03  nextreg REG_TURBO_MODE,RTM_28MHZ
+7857.11 2E 08        ld l,08h
+7859.11 01 3B 24     ld bc,243Bh
+785C.11 ED 69        out (c),l
+785E.11 04           inc b
+785F.11 ED 68        in l,(c)
+7861.11 CB F5        set 6,l
+7863.11 7D           ld a,l
+7864.11 ED 92 08     nextreg REG_PERIPHERAL_3,a
+7867.11 3E 08        ld a,08h
+7869.11 F5           push af
+786A.11 33           inc sp
+
+; Note: The address 851Eh is in a different bank.
+786B.11 CD 1E 85     call 851Eh
+
+786E.11 33           inc sp
+786F.11 3E 0B        ld a,0Bh
+7871.11 F5           push af
+7872.11 33           inc sp
+
+; Note: The address 8538h is in a different bank.
+7873.11 CD 38 85     call 8538h
+
+7876.11 33           inc sp
+7877.11 C9           ret
+
+7878.11 SUB_7878:
+7878.11 F3           di
+7879.11 21 00 60     ld hl,6000h.11
+787C.11 CD 35 6E     call SUB_6E35
+
+787F.11 21 00 60     ld hl,6000h.11
+7882.11 36 61        ld (hl),61h
+7884.11 5D           ld e,l
+7885.11 54           ld d,h
+7886.11 13           inc de
+7887.11 01 00 01     ld bc,0100h
+788A.11 ED B0        ldir
+788C.11 21 61 61     ld hl,6161h.11
+788F.11 36 FB        ld (hl),0FBh
+7891.11 2E 62        ld l,62h
+7893.11 36 ED        ld (hl),0EDh
+7895.11 2E 63        ld l,63h
+7897.11 36 4D        ld (hl),4Dh
+7899.11 FB           ei
+789A.11 C9           ret
+
+789B.11 SUB_789B:
+789B.11 DD E5        push ix
+789D.11 DD 21 00 00  ld ix,0000h
+78A1.11 DD 39        add ix,sp
+78A3.11 21 EA FF     ld hl,0FFEAh
+78A6.11 39           add hl,sp
+78A7.11 F9           ld sp,hl
+78A8.11 3E 64        ld a,64h
+78AA.11 F5           push af
+78AB.11 33           inc sp
+
+; Note: The address 902Ah is in a different bank.
+78AC.11 CD 2A 90     call 902Ah
+
+78AF.11 33           inc sp
+78B0.11 21 97 92     ld hl,9297h
+78B3.11 E5           push hl
+
+; Note: The address 903Fh is in a different bank.
+78B4.11 CD 3F 90     call 903Fh
+
+78B7.11 26 64        ld h,64h
+78B9.11 E3           ex (sp),hl
+78BA.11 33           inc sp
+
+; Note: The address 902Ah is in a different bank.
+78BB.11 CD 2A 90     call 902Ah
+
+78BE.11 33           inc sp
+78BF.11 3E 01        ld a,01h
+78C1.11 F5           push af
+78C2.11 33           inc sp
+78C3.11 AF           xor a
+78C4.11 F5           push af
+78C5.11 33           inc sp
+78C6.11 AF           xor a
+78C7.11 57           ld d,a
+78C8.11 1E 28        ld e,28h
+78CA.11 D5           push de
+78CB.11 11 64 1E     ld de,1E64h
+78CE.11 D5           push de
+
+; Note: The address 9054h is in a different bank.
+78CF.11 CD 54 90     call 9054h
+
+78D2.11 F1           pop af
+78D3.11 F1           pop af
+78D4.11 26 65        ld h,65h
+78D6.11 E3           ex (sp),hl
+78D7.11 33           inc sp
+
+; Note: The address 902Ah is in a different bank.
+78D8.11 CD 2A 90     call 902Ah
+
+78DB.11 33           inc sp
+78DC.11 21 97 92     ld hl,9297h
+78DF.11 E5           push hl
+
+; Note: The address 903Fh is in a different bank.
+78E0.11 CD 3F 90     call 903Fh
+
+78E3.11 26 65        ld h,65h
+78E5.11 E3           ex (sp),hl
+78E6.11 33           inc sp
+
+; Note: The address 902Ah is in a different bank.
+78E7.11 CD 2A 90     call 902Ah
+
+78EA.11 33           inc sp
+78EB.11 3E 01        ld a,01h
+78ED.11 F5           push af
+78EE.11 33           inc sp
+78EF.11 AF           xor a
+78F0.11 F5           push af
+78F1.11 33           inc sp
+78F2.11 AF           xor a
+78F3.11 57           ld d,a
+78F4.11 1E 28        ld e,28h
+78F6.11 D5           push de
+78F7.11 11 65 D8     ld de,0D865h
+78FA.11 D5           push de
+
+; Note: The address 9054h is in a different bank.
+78FB.11 CD 54 90     call 9054h
+
+78FE.11 F1           pop af
+78FF.11 F1           pop af
+7900.11 26 66        ld h,66h
+7902.11 E3           ex (sp),hl
+7903.11 33           inc sp
+
+; Note: The address 902Ah is in a different bank.
+7904.11 CD 2A 90     call 902Ah
+
+7907.11 33           inc sp
+7908.11 21 97 93     ld hl,9397h
+790B.11 E5           push hl
+
+; Note: The address 903Fh is in a different bank.
+790C.11 CD 3F 90     call 903Fh
+
+790F.11 26 66        ld h,66h
+7911.11 E3           ex (sp),hl
+7912.11 33           inc sp
+
+; Note: The address 902Ah is in a different bank.
+7913.11 CD 2A 90     call 902Ah
+
+7916.11 33           inc sp
+7917.11 3E 01        ld a,01h
+7919.11 F5           push af
+791A.11 33           inc sp
+791B.11 AF           xor a
+791C.11 F5           push af
+791D.11 33           inc sp
+791E.11 AF           xor a
+791F.11 57           ld d,a
+7920.11 1E 9A        ld e,9Ah
+7922.11 D5           push de
+7923.11 11 66 D0     ld de,0D066h
+7926.11 D5           push de
+
+; Note: The address 9054h is in a different bank.
+7927.11 CD 54 90     call 9054h
+
+792A.11 F1           pop af
+792B.11 F1           pop af
+792C.11 26 67        ld h,67h
+792E.11 E3           ex (sp),hl
+792F.11 33           inc sp
+
+; Note: The address 902Ah is in a different bank.
+7930.11 CD 2A 90     call 902Ah
+
+7933.11 33           inc sp
+7934.11 21 97 94     ld hl,9497h
+7937.11 E5           push hl
+
+; Note: The address 903Fh is in a different bank.
+7938.11 CD 3F 90     call 903Fh
+
+793B.11 26 67        ld h,67h
+793D.11 E3           ex (sp),hl
+793E.11 33           inc sp
+
+; Note: The address 902Ah is in a different bank.
+793F.11 CD 2A 90     call 902Ah
+
+7942.11 33           inc sp
+7943.11 3E 01        ld a,01h
+7945.11 F5           push af
+7946.11 33           inc sp
+7947.11 AF           xor a
+7948.11 F5           push af
+7949.11 33           inc sp
+794A.11 AF           xor a
+794B.11 57           ld d,a
+794C.11 1E 9A        ld e,9Ah
+794E.11 D5           push de
+794F.11 11 67 E0     ld de,0E067h
+7952.11 D5           push de
+
+; Note: The address 9054h is in a different bank.
+7953.11 CD 54 90     call 9054h
+
+7956.11 F1           pop af
+7957.11 F1           pop af
+7958.11 26 68        ld h,68h
+795A.11 E3           ex (sp),hl
+795B.11 33           inc sp
+
+; Note: The address 902Ah is in a different bank.
+795C.11 CD 2A 90     call 902Ah
+
+795F.11 33           inc sp
+7960.11 21 97 95     ld hl,9597h
+7963.11 E5           push hl
+
+; Note: The address 903Fh is in a different bank.
+7964.11 CD 3F 90     call 903Fh
+
+7967.11 26 68        ld h,68h
+7969.11 E3           ex (sp),hl
+796A.11 33           inc sp
+
+; Note: The address 902Ah is in a different bank.
+796B.11 CD 2A 90     call 902Ah
+
+796E.11 33           inc sp
+796F.11 3E 01        ld a,01h
+7971.11 F5           push af
+7972.11 33           inc sp
+7973.11 AF           xor a
+7974.11 F5           push af
+7975.11 33           inc sp
+7976.11 AF           xor a
+7977.11 57           ld d,a
+7978.11 1E AA        ld e,0AAh
+797A.11 D5           push de
+797B.11 11 68 D0     ld de,0D068h
+797E.11 D5           push de
+
+; Note: The address 9054h is in a different bank.
+797F.11 CD 54 90     call 9054h
+
+7982.11 F1           pop af
+7983.11 F1           pop af
+7984.11 26 69        ld h,69h
+7986.11 E3           ex (sp),hl
+7987.11 33           inc sp
+
+; Note: The address 902Ah is in a different bank.
+7988.11 CD 2A 90     call 902Ah
+
+798B.11 33           inc sp
+798C.11 21 97 96     ld hl,9697h
+798F.11 E5           push hl
+
+; Note: The address 903Fh is in a different bank.
+7990.11 CD 3F 90     call 903Fh
+
+7993.11 26 69        ld h,69h
+7995.11 E3           ex (sp),hl
+7996.11 33           inc sp
+
+; Note: The address 902Ah is in a different bank.
+7997.11 CD 2A 90     call 902Ah
+
+799A.11 33           inc sp
+799B.11 3E 01        ld a,01h
+799D.11 F5           push af
+799E.11 33           inc sp
+799F.11 AF           xor a
+79A0.11 F5           push af
+79A1.11 33           inc sp
+79A2.11 AF           xor a
+79A3.11 57           ld d,a
+79A4.11 1E AA        ld e,0AAh
+79A6.11 D5           push de
+79A7.11 11 69 E0     ld de,0E069h
+79AA.11 D5           push de
+
+; Note: The address 9054h is in a different bank.
+79AB.11 CD 54 90     call 9054h
+
+79AE.11 F1           pop af
+79AF.11 F1           pop af
+79B0.11 26 6A        ld h,6Ah
+79B2.11 E3           ex (sp),hl
+79B3.11 33           inc sp
+
+; Note: The address 902Ah is in a different bank.
+79B4.11 CD 2A 90     call 902Ah
+
+79B7.11 33           inc sp
+79B8.11 21 37 99     ld hl,9937h
+79BB.11 E5           push hl
+
+; Note: The address 903Fh is in a different bank.
+79BC.11 CD 3F 90     call 903Fh
+
+79BF.11 26 6A        ld h,6Ah
+79C1.11 E3           ex (sp),hl
+79C2.11 33           inc sp
+
+; Note: The address 902Ah is in a different bank.
+79C3.11 CD 2A 90     call 902Ah
+
+79C6.11 33           inc sp
+79C7.11 3E 01        ld a,01h
+79C9.11 F5           push af
+79CA.11 33           inc sp
+79CB.11 AF           xor a
+79CC.11 F5           push af
+79CD.11 33           inc sp
+79CE.11 AF           xor a
+79CF.11 57           ld d,a
+79D0.11 1E A4        ld e,0A4h
+79D2.11 D5           push de
+79D3.11 11 6A 1C     ld de,1C6Ah
+79D6.11 D5           push de
+
+; Note: The address 9054h is in a different bank.
+79D7.11 CD 54 90     call 9054h
+
+79DA.11 F1           pop af
+79DB.11 F1           pop af
+79DC.11 26 6B        ld h,6Bh
+79DE.11 E3           ex (sp),hl
+79DF.11 33           inc sp
+
+; Note: The address 902Ah is in a different bank.
+79E0.11 CD 2A 90     call 902Ah
+
+79E3.11 33           inc sp
+79E4.11 21 37 9A     ld hl,9A37h
+79E7.11 E5           push hl
+
+; Note: The address 903Fh is in a different bank.
+79E8.11 CD 3F 90     call 903Fh
+
+79EB.11 26 6B        ld h,6Bh
+79ED.11 E3           ex (sp),hl
+79EE.11 33           inc sp
+
+; Note: The address 902Ah is in a different bank.
+79EF.11 CD 2A 90     call 902Ah
+
+79F2.11 33           inc sp
+79F3.11 3E 01        ld a,01h
+79F5.11 F5           push af
+79F6.11 33           inc sp
+79F7.11 AF           xor a
+79F8.11 F5           push af
+79F9.11 33           inc sp
+79FA.11 AF           xor a
+79FB.11 57           ld d,a
+79FC.11 1E A4        ld e,0A4h
+79FE.11 D5           push de
+79FF.11 11 6B 2C     ld de,2C6Bh
+7A02.11 D5           push de
+
+; Note: The address 9054h is in a different bank.
+7A03.11 CD 54 90     call 9054h
+
+7A06.11 F1           pop af
+7A07.11 F1           pop af
+7A08.11 F1           pop af
+7A09.11 DD 36 EA 1E  ld (ix-22),1Eh
+7A0D.11 DD 36 EB 58  ld (ix-21),58h
+7A11.11 DD 36 EC 00  ld (ix-20),00h
+7A15.11 DD 36 ED 03  ld (ix-19),03h
+7A19.11 DD 36 EE 00  ld (ix-18),00h
+7A1D.11 DD 36 EF 00  ld (ix-17),00h
+7A21.11 DD 36 F0 01  ld (ix-16),01h
+7A25.11 DD 36 F1 00  ld (ix-15),00h
+7A29.11 01 90 9E     ld bc,9E90h
+7A2C.11 11 00 00     ld de,0000h
+
+7A2F.11 .LOOP1:
+7A2F.11 7B           ld a,e
+7A30.11 D6 0A        sub 0Ah
+7A32.11 7A           ld a,d
+7A33.11 17           rla
+7A34.11 3F           ccf
+7A35.11 1F           rra
+7A36.11 DE 80        sbc a,80h
+7A38.11 D2 FD 7A     jp nc,.L1
+
+7A3B.11 6B           ld l,e
+7A3C.11 62           ld h,d
+7A3D.11 29           add hl,hl
+7A3E.11 29           add hl,hl
+7A3F.11 29           add hl,hl
+7A40.11 09           add hl,bc
+7A41.11 DD 75 FA     ld (ix-6),l
+7A44.11 DD 74 FB     ld (ix-5),h
+7A47.11 DD 6E FA     ld l,(ix-6)
+7A4A.11 DD 66 FB     ld h,(ix-5)
+7A4D.11 D5           push de
+7A4E.11 C5           push bc
+7A4F.11 EB           ex de,hl
+7A50.11 21 04 00     ld hl,0004h
+7A53.11 39           add hl,sp
+7A54.11 01 08 00     ld bc,0008h
+7A57.11 ED B0        ldir
+7A59.11 C1           pop bc
+7A5A.11 D1           pop de
+7A5B.11 DD 7E FA     ld a,(ix-6)
+7A5E.11 C6 01        add a,01h
+7A60.11 DD 77 FC     ld (ix-4),a
+7A63.11 DD 7E FB     ld a,(ix-5)
+7A66.11 CE 00        adc a,00h
+7A68.11 DD 77 FD     ld (ix-3),a
+7A6B.11 7B           ld a,e
+7A6C.11 ED 23        swapnib
+7A6E.11 07           rlca
+7A6F.11 E6 E0        and 0E0h
+7A71.11 DD 6E FC     ld l,(ix-4)
+7A74.11 DD 66 FD     ld h,(ix-3)
+7A77.11 77           ld (hl),a
+7A78.11 DD 7E FA     ld a,(ix-6)
+7A7B.11 C6 04        add a,04h
+7A7D.11 6F           ld l,a
+7A7E.11 DD 7E FB     ld a,(ix-5)
+7A81.11 CE 00        adc a,00h
+7A83.11 DD 73 FF     ld (ix-1),e
+7A86.11 67           ld h,a
+7A87.11 DD 7E FF     ld a,(ix-1)
+7A8A.11 77           ld (hl),a
+7A8B.11 C5           push bc
+7A8C.11 D5           push de
+7A8D.11 DD 7E FF     ld a,(ix-1)
+7A90.11 F5           push af
+7A91.11 33           inc sp
+
+; Note: The address 902Ah is in a different bank.
+7A92.11 CD 2A 90     call 902Ah
+
+7A95.11 33           inc sp
+7A96.11 21 97 91     ld hl,9197h
+7A99.11 E5           push hl
+
+; Note: The address 903Fh is in a different bank.
+7A9A.11 CD 3F 90     call 903Fh
+
+7A9D.11 F1           pop af
+7A9E.11 DD 7E FF     ld a,(ix-1)
+7AA1.11 F5           push af
+7AA2.11 33           inc sp
+
+; Note: The address 902Ah is in a different bank.
+7AA3.11 CD 2A 90     call 902Ah
+
+7AA6.11 33           inc sp
+7AA7.11 D1           pop de
+7AA8.11 C1           pop bc
+7AA9.11 DD 6E FA     ld l,(ix-6)
+7AAC.11 DD 66 FB     ld h,(ix-5)
+7AAF.11 C5           push bc
+7AB0.11 01 06 00     ld bc,0006h
+7AB3.11 09           add hl,bc
+7AB4.11 C1           pop bc
+7AB5.11 7E           ld a,(hl)
+7AB6.11 EE 01        xor 01h
+7AB8.11 DD 77 FE     ld (ix-2),a
+7ABB.11 DD 6E FC     ld l,(ix-4)
+7ABE.11 DD 66 FD     ld h,(ix-3)
+7AC1.11 7E           ld a,(hl)
+7AC2.11 DD 77 FF     ld (ix-1),a
+7AC5.11 DD 6E FA     ld l,(ix-6)
+7AC8.11 DD 66 FB     ld h,(ix-5)
+7ACB.11 7E           ld a,(hl)
+7ACC.11 DD 6E FA     ld l,(ix-6)
+7ACF.11 DD 66 FB     ld h,(ix-5)
+7AD2.11 23           inc hl
+7AD3.11 23           inc hl
+7AD4.11 23           inc hl
+7AD5.11 23           inc hl
+7AD6.11 23           inc hl
+7AD7.11 6E           ld l,(hl)
+7AD8.11 C5           push bc
+7AD9.11 D5           push de
+7ADA.11 DD 66 FE     ld h,(ix-2)
+7ADD.11 E5           push hl
+7ADE.11 33           inc sp
+7ADF.11 26 00        ld h,00h
+7AE1.11 E5           push hl
+7AE2.11 33           inc sp
+7AE3.11 26 00        ld h,00h
+7AE5.11 E5           push hl
+7AE6.11 33           inc sp
+7AE7.11 DD 66 FF     ld h,(ix-1)
+7AEA.11 E5           push hl
+7AEB.11 33           inc sp
+7AEC.11 F5           push af
+7AED.11 33           inc sp
+7AEE.11 7D           ld a,l
+7AEF.11 F5           push af
+7AF0.11 33           inc sp
+
+; Note: The address 9054h is in a different bank.
+7AF1.11 CD 54 90     call 9054h
+
+7AF4.11 F1           pop af
+7AF5.11 F1           pop af
+7AF6.11 F1           pop af
+7AF7.11 D1           pop de
+7AF8.11 C1           pop bc
+7AF9.11 13           inc de
+7AFA.11 C3 2F 7A     jp .LOOP1
+
+7AFD.11 .L1:
+7AFD.11 DD 36 F2 1E  ld (ix-14),1Eh
+7B01.11 DD 36 F3 58  ld (ix-13),58h
+7B05.11 DD 36 F4 00  ld (ix-12),00h
+7B09.11 DD 36 F5 03  ld (ix-11),03h
+7B0D.11 DD 36 F6 00  ld (ix-10),00h
+7B11.11 DD 36 F7 00  ld (ix-9),00h
+7B15.11 DD 36 F8 01  ld (ix-8),01h
+7B19.11 DD 36 F9 00  ld (ix-7),00h
+7B1D.11 01 00 00     ld bc,0000h
+
+7B20.11 .LOOP2:
+7B20.11 79           ld a,c
+7B21.11 D6 0A        sub 0Ah
+7B23.11 78           ld a,b
+7B24.11 17           rla
+7B25.11 3F           ccf
+7B26.11 1F           rra
+7B27.11 DE 80        sbc a,80h
+7B29.11 D2 D6 7B     jp nc,.L5
+
+7B2C.11 79           ld a,c
+7B2D.11 C6 0A        add a,0Ah
+7B2F.11 DD 77 FF     ld (ix-1),a
+7B32.11 69           ld l,c
+7B33.11 60           ld h,b
+7B34.11 29           add hl,hl
+7B35.11 29           add hl,hl
+7B36.11 29           add hl,hl
+7B37.11 EB           ex de,hl
+7B38.11 21 E0 9E     ld hl,9EE0h
+7B3B.11 19           add hl,de
+7B3C.11 EB           ex de,hl
+7B3D.11 6B           ld l,e
+7B3E.11 62           ld h,d
+7B3F.11 D5           push de
+7B40.11 C5           push bc
+7B41.11 EB           ex de,hl
+7B42.11 21 0C 00     ld hl,000Ch
+7B45.11 39           add hl,sp
+7B46.11 01 08 00     ld bc,0008h
+7B49.11 ED B0        ldir
+7B4B.11 C1           pop bc
+7B4C.11 D1           pop de
+7B4D.11 3E D8        ld a,0D8h
+7B4F.11 12           ld (de),a
+7B50.11 21 01 00     ld hl,0001h
+7B53.11 19           add hl,de
+7B54.11 DD 75 FC     ld (ix-4),l
+7B57.11 DD 74 FD     ld (ix-3),h
+7B5A.11 79           ld a,c
+7B5B.11 ED 23        swapnib
+7B5D.11 07           rlca
+7B5E.11 E6 E0        and 0E0h
+7B60.11 DD 6E FC     ld l,(ix-4)
+7B63.11 DD 66 FD     ld h,(ix-3)
+7B66.11 77           ld (hl),a
+7B67.11 6B           ld l,e
+7B68.11 62           ld h,d
+7B69.11 23           inc hl
+7B6A.11 23           inc hl
+7B6B.11 23           inc hl
+7B6C.11 7E           ld a,(hl)
+7B6D.11 ED 44        neg
+7B6F.11 77           ld (hl),a
+7B70.11 21 04 00     ld hl,0004h
+7B73.11 19           add hl,de
+7B74.11 DD 7E FF     ld a,(ix-1)
+7B77.11 77           ld (hl),a
+7B78.11 C5           push bc
+7B79.11 D5           push de
+7B7A.11 F5           push af
+7B7B.11 33           inc sp
+
+; Note: The address 902Ah is in a different bank.
+7B7C.11 CD 2A 90     call 902Ah
+
+7B7F.11 33           inc sp
+7B80.11 D1           pop de
+7B81.11 C1           pop bc
+7B82.11 6B           ld l,e
+7B83.11 62           ld h,d
+7B84.11 C5           push bc
+7B85.11 01 06 00     ld bc,0006h
+7B88.11 09           add hl,bc
+7B89.11 C1           pop bc
+7B8A.11 6E           ld l,(hl)
+7B8B.11 CB 45        bit 0,l
+7B8D.11 20 0D        jr nz,.L2
+
+7B8F.11 6B           ld l,e
+7B90.11 62           ld h,d
+7B91.11 C5           push bc
+7B92.11 01 07 00     ld bc,0007h
+7B95.11 09           add hl,bc
+7B96.11 C1           pop bc
+7B97.11 6E           ld l,(hl)
+7B98.11 CB 45        bit 0,l
+7B9A.11 20 06        jr nz,.L3
+
+7B9C.11 .L2:
+7B9C.11 DD 36 FE 00  ld (ix-2),00h
+7BA0.11 18 04        jr .L4
+
+7BA2.11 .L3:
+7BA2.11 DD 36 FE 01  ld (ix-2),01h
+
+7BA6.11 .L4:
+7BA6.11 DD 6E FC     ld l,(ix-4)
+7BA9.11 DD 66 FD     ld h,(ix-3)
+7BAC.11 7E           ld a,(hl)
+7BAD.11 DD 77 FF     ld (ix-1),a
+7BB0.11 1A           ld a,(de)
+7BB1.11 21 05 00     ld hl,0005h
+7BB4.11 19           add hl,de
+7BB5.11 5E           ld e,(hl)
+7BB6.11 C5           push bc
+7BB7.11 DD 66 FE     ld h,(ix-2)
+7BBA.11 E5           push hl
+7BBB.11 33           inc sp
+7BBC.11 26 00        ld h,00h
+7BBE.11 E5           push hl
+7BBF.11 33           inc sp
+7BC0.11 26 00        ld h,00h
+7BC2.11 E5           push hl
+7BC3.11 33           inc sp
+7BC4.11 DD 66 FF     ld h,(ix-1)
+7BC7.11 E5           push hl
+7BC8.11 33           inc sp
+7BC9.11 57           ld d,a
+7BCA.11 D5           push de
+
+; Note: The address 9054h is in a different bank.
+7BCB.11 CD 54 90     call 9054h
+
+7BCE.11 F1           pop af
+7BCF.11 F1           pop af
+7BD0.11 F1           pop af
+7BD1.11 C1           pop bc
+7BD2.11 03           inc bc
+7BD3.11 C3 20 7B     jp .LOOP2
+
+7BD6.11 .L5:
+7BD6.11 DD F9        ld sp,ix
+7BD8.11 DD E1        pop ix
+7BDA.11 C9           ret
+
+7BDB.11 SUB_7BDB:
+7BDB.11 DD E5        push ix
+7BDD.11 DD 21 00 00  ld ix,0000h
+7BE1.11 DD 39        add ix,sp
+7BE3.11 01 00 00     ld bc,0000h
+7BE6.11 1E 00        ld e,00h
+
+7BE8.11 .LOOP:
+7BE8.11 79           ld a,c
+7BE9.11 C5           push bc
+7BEA.11 D5           push de
+7BEB.11 DD 6E 04     ld l,(ix+4)
+7BEE.11 DD 66 05     ld h,(ix+5)
+7BF1.11 E5           push hl
+7BF2.11 26 1A        ld h,1Ah
+7BF4.11 E5           push hl
+7BF5.11 33           inc sp
+7BF6.11 21 10 00     ld hl,0010h
+7BF9.11 E5           push hl
+7BFA.11 21 97 97     ld hl,9797h
+7BFD.11 E5           push hl
+7BFE.11 26 28        ld h,28h
+7C00.11 E5           push hl
+7C01.11 33           inc sp
+7C02.11 F5           push af
+7C03.11 33           inc sp
+
+; Note: The address 8A52h is in a different bank.
+7C04.11 CD 52 8A     call 8A52h
+
+7C07.11 21 09 00     ld hl,0009h
+7C0A.11 39           add hl,sp
+7C0B.11 F9           ld sp,hl
+7C0C.11 D1           pop de
+7C0D.11 C1           pop bc
+7C0E.11 3E 10        ld a,10h
+7C10.11 ED 33        add bc,a
+7C12.11 1C           inc e
+7C13.11 7B           ld a,e
+7C14.11 D6 10        sub 10h
+7C16.11 38 D0        jr c,.LOOP
+
+7C18.11 DD E1        pop ix
+7C1A.11 C9           ret
+
+7C1B.11 SUB_7C1B:
+7C1B.11 21 E6 9D     ld hl,9DE6h
+7C1E.11 E5           push hl
+7C1F.11 11 28 FF     ld de,0FF28h
+7C22.11 D5           push de
+7C23.11 21 00 01     ld hl,0100h
+7C26.11 E5           push hl
+7C27.11 AF           xor a
+7C28.11 F5           push af
+7C29.11 33           inc sp
+7C2A.11 AF           xor a
+7C2B.11 F5           push af
+7C2C.11 33           inc sp
+
+; Note: The address 8731h is in a different bank.
+7C2D.11 CD 31 87     call 8731h
+
+7C30.11 F1           pop af
+7C31.11 F1           pop af
+7C32.11 F1           pop af
+7C33.11 21 E6 9D     ld hl,9DE6h
+7C36.11 E3           ex (sp),hl
+7C37.11 11 9A 7B     ld de,7B9Ah.11
+7C3A.11 D5           push de
+7C3B.11 21 00 01     ld hl,0100h
+7C3E.11 E5           push hl
+7C3F.11 3E 28        ld a,28h
+7C41.11 F5           push af
+7C42.11 33           inc sp
+7C43.11 AF           xor a
+7C44.11 F5           push af
+7C45.11 33           inc sp
+
+; Note: The address 8731h is in a different bank.
+7C46.11 CD 31 87     call 8731h
+
+7C49.11 F1           pop af
+7C4A.11 F1           pop af
+7C4B.11 F1           pop af
+7C4C.11 21 E6 9D     ld hl,9DE6h
+7C4F.11 E3           ex (sp),hl
+7C50.11 CD DB 7B     call SUB_7BDB
+
+7C53.11 F1           pop af
+
+; Note: The address 8552h is in a different bank.
+7C54.11 C3 52 85     jp 8552h
+
+7C57.11 SUB_7C57:
+7C57.11 2E 00        ld l,00h
+7C59.11 CD C8 61     call SUB_61C8
+
+7C5C.11 2E 78        ld l,78h
+7C5E.11 CD D8 61     call SUB_61D8
+
+7C61.11 21 0B 00     ld hl,000Bh
+7C64.11 E5           push hl
+7C65.11 2E 01        ld l,01h
+7C67.11 E5           push hl
+7C68.11 21 37 91     ld hl,9137h
+7C6B.11 E5           push hl
+7C6C.11 CD BA 71     call SUB_71BA
+
+7C6F.11 F1           pop af
+7C70.11 F1           pop af
+7C71.11 F1           pop af
+
+; Note: The address 801Fh is in a different bank.
+7C72.11 CD 1F 80     call 801Fh
+
+7C75.11 21 EB 9D     ld hl,9DEBh
+7C78.11 36 01        ld (hl),01h
+7C7A.11 C9           ret
+
+7CDB.11 SUB_7CDB:
+7CDB.11 DD E5        push ix
+7CDD.11 DD 21 00 00  ld ix,0000h
+7CE1.11 DD 39        add ix,sp
+7CE3.11 DD 6E 04     ld l,(ix+4)
+7CE6.11 DD 66 05     ld h,(ix+5)
+7CE9.11 CD A9 77     call SUB_77A9
+
+7CEC.11 21 E6 9D     ld hl,9DE6h
+7CEF.11 E5           push hl
+7CF0.11 11 08 FF     ld de,0FF08h
+7CF3.11 D5           push de
+7CF4.11 21 FF 00     ld hl,00FFh
+7CF7.11 E5           push hl
+7CF8.11 11 01 18     ld de,1801h
+7CFB.11 D5           push de
+
+; Note: The address 8731h is in a different bank.
+7CFC.11 CD 31 87     call 8731h
+
+7CFF.11 F1           pop af
+7D00.11 F1           pop af
+7D01.11 F1           pop af
+7D02.11 21 E6 9D     ld hl,9DE6h
+7D05.11 E3           ex (sp),hl
+7D06.11 3E 0C        ld a,0Ch
+7D08.11 F5           push af
+7D09.11 33           inc sp
+7D0A.11 DD 6E 04     ld l,(ix+4)
+7D0D.11 DD 66 05     ld h,(ix+5)
+7D10.11 E5           push hl
+7D11.11 AF           xor a
+7D12.11 57           ld d,a
+7D13.11 1E 03        ld e,03h
+7D15.11 D5           push de
+
+; Note: The address 858Fh is in a different bank.
+7D16.11 CD 8F 85     call 858Fh
+
+7D19.11 F1           pop af
+7D1A.11 F1           pop af
+7D1B.11 F1           pop af
+7D1C.11 33           inc sp
+7D1D.11 DD E1        pop ix
+7D1F.11 C9           ret
+
+7D20.11 SUB_7D20:
+7D20.11 DD E5        push ix
+7D22.11 DD 21 00 00  ld ix,0000h
+7D26.11 DD 39        add ix,sp
+7D28.11 DD 6E 04     ld l,(ix+4)
+7D2B.11 DD 66 05     ld h,(ix+5)
+7D2E.11 E5           push hl
+7D2F.11 CD DB 7C     call SUB_7CDB
+
+7D32.11 F1           pop af
+7D33.11 CD 47 7D     call SUB_7D47
+
+7D36.11 CD 4F 7E     call SUB_7E4F
+
+7D39.11 DD 6E 04     ld l,(ix+4)
+7D3C.11 DD 66 05     ld h,(ix+5)
+7D3F.11 E5           push hl
+7D40.11 CD DB 7C     call SUB_7CDB
+
+7D43.11 F1           pop af
+7D44.11 DD E1        pop ix
+7D46.11 C9           ret
+
+7D47.11 SUB_7D47:
+7D47.11 DD E5        push ix
+7D49.11 DD 21 00 00  ld ix,0000h
+7D4D.11 DD 39        add ix,sp
+7D4F.11 F5           push af
+7D50.11 F5           push af
+7D51.11 AF           xor a
+7D52.11 DD 77 FE     ld (ix-2),a
+7D55.11 DD 77 FF     ld (ix-1),a
+
+7D58.11 .LOOP:
+7D58.11 DD 7E FE     ld a,(ix-2)
+7D5B.11 D6 0A        sub 0Ah
+7D5D.11 3E 00        ld a,00h
+7D5F.11 17           rla
+7D60.11 3F           ccf
+7D61.11 1F           rra
+7D62.11 DE 80        sbc a,80h
+7D64.11 D2 D0 7D     jp nc,.L6
+
+7D67.11 C1           pop bc
+7D68.11 E1           pop hl
+7D69.11 E5           push hl
+7D6A.11 C5           push bc
+7D6B.11 29           add hl,hl
+7D6C.11 29           add hl,hl
+7D6D.11 29           add hl,hl
+7D6E.11 11 90 9E     ld de,9E90h
+7D71.11 19           add hl,de
+7D72.11 4D           ld c,l
+7D73.11 44           ld b,h
+7D74.11 59           ld e,c
+7D75.11 50           ld d,b
+7D76.11 21 07 00     ld hl,0007h
+7D79.11 19           add hl,de
+7D7A.11 5E           ld e,(hl)
+7D7B.11 CB 43        bit 0,e
+7D7D.11 28 07        jr z,.L1
+
+7D7F.11 C5           push bc
+7D80.11 C5           push bc
+7D81.11 CD 4F 7F     call SUB_7F4F
+
+7D84.11 F1           pop af
+7D85.11 C1           pop bc
+
+7D86.11 .L1:
+7D86.11 21 01 00     ld hl,0001h
+7D89.11 09           add hl,bc
+7D8A.11 E3           ex (sp),hl
+7D8B.11 E1           pop hl
+7D8C.11 E5           push hl
+7D8D.11 5E           ld e,(hl)
+7D8E.11 21 06 00     ld hl,0006h
+7D91.11 09           add hl,bc
+7D92.11 7B           ld a,e
+7D93.11 D6 28        sub 28h
+7D95.11 38 05        jr c,.L2
+
+7D97.11 3E A4        ld a,0A4h
+7D99.11 93           sub e
+7D9A.11 30 04        jr nc,.L3
+
+7D9C.11 .L2:
+7D9C.11 36 01        ld (hl),01h
+7D9E.11 18 02        jr .L4
+
+7DA0.11 .L3:
+7DA0.11 36 00        ld (hl),00h
+
+7DA2.11 .L4:
+7DA2.11 59           ld e,c
+7DA3.11 50           ld d,b
+7DA4.11 13           inc de
+7DA5.11 13           inc de
+7DA6.11 13           inc de
+7DA7.11 1A           ld a,(de)
+7DA8.11 CB 7F        bit 7,a
+7DAA.11 28 13        jr z,.L5
+
+7DAC.11 E1           pop hl
+7DAD.11 E5           push hl
+7DAE.11 7E           ld a,(hl)
+7DAF.11 D6 28        sub 28h
+7DB1.11 30 0C        jr nc,.L5
+
+7DB3.11 3E 1E        ld a,1Eh
+7DB5.11 02           ld (bc),a
+7DB6.11 69           ld l,c
+7DB7.11 60           ld h,b
+7DB8.11 23           inc hl
+7DB9.11 23           inc hl
+7DBA.11 36 00        ld (hl),00h
+7DBC.11 3E 03        ld a,03h
+7DBE.11 12           ld (de),a
+
+7DBF.11 .L5:
+7DBF.11 C5           push bc
+7DC0.11 CD BD 7F     call SUB_7FBD
+
+7DC3.11 F1           pop af
+7DC4.11 DD 34 FE     inc (ix-2)
+7DC7.11 C2 58 7D     jp nz,.LOOP
+
+7DCA.11 DD 34 FF     inc (ix-1)
+7DCD.11 C3 58 7D     jp .LOOP
+
+7DD0.11 .L6:
+7DD0.11 DD F9        ld sp,ix
+7DD2.11 DD E1        pop ix
+7DD4.11 C9           ret
+
+7DD5.11 SUB_7DD5:
+7DD5.11 DD E5        push ix
+7DD7.11 DD 21 00 00  ld ix,0000h
+7DDB.11 DD 39        add ix,sp
+7DDD.11 3B           dec sp
+7DDE.11 CD 47 7D     call SUB_7D47
+
+7DE1.11 3A EB 9D     ld a,(9DEBh)
+7DE4.11 3D           dec a
+7DE5.11 20 64        jr nz,.L4
+
+7DE7.11 DD 36 FF 00  ld (ix-1),00h
+7DEB.11 3E 01        ld a,01h
+7DED.11 F5           push af
+7DEE.11 33           inc sp
+7DEF.11 21 01 00     ld hl,0001h
+7DF2.11 39           add hl,sp
+7DF3.11 E5           push hl
+
+; Note: The address 8474h is in a different bank.
+7DF4.11 CD 74 84     call 8474h
+
+7DF7.11 F1           pop af
+7DF8.11 33           inc sp
+7DF9.11 4D           ld c,l
+7DFA.11 79           ld a,c
+7DFB.11 B7           or a
+7DFC.11 28 14        jr z,.L1
+
+7DFE.11 C5           push bc
+7DFF.11 21 00 00     ld hl,0000h
+7E02.11 E5           push hl
+7E03.11 21 C1 01     ld hl,01C1h
+7E06.11 E5           push hl
+7E07.11 21 3D 91     ld hl,913Dh
+7E0A.11 E5           push hl
+
+; Note: The address 84E0h is in a different bank.
+7E0B.11 CD E0 84     call 84E0h
+
+7E0E.11 F1           pop af
+7E0F.11 F1           pop af
+7E10.11 F1           pop af
+7E11.11 C1           pop bc
+
+7E12.11 .L1:
+7E12.11 79           ld a,c
+7E13.11 B7           or a
+7E14.11 20 08        jr nz,.L2
+
+7E16.11 21 48 91     ld hl,9148h
+7E19.11 E5           push hl
+7E1A.11 CD 20 7D     call SUB_7D20
+
+7E1D.11 F1           pop af
+
+7E1E.11 .L2:
+7E1E.11 21 63 91     ld hl,9163h
+7E21.11 E5           push hl
+
+; Note: The address 8335h is in a different bank.
+7E22.11 CD 35 83     call 8335h
+
+7E25.11 F1           pop af
+7E26.11 7D           ld a,l
+7E27.11 B7           or a
+7E28.11 28 14        jr z,.L3
+
+7E2A.11 21 00 00     ld hl,0000h
+7E2D.11 E5           push hl
+7E2E.11 21 CC 01     ld hl,01CCh
+7E31.11 E5           push hl
+7E32.11 21 3D 91     ld hl,913Dh
+7E35.11 E5           push hl
+
+; Note: The address 84E0h is in a different bank.
+7E36.11 CD E0 84     call 84E0h
+
+7E39.11 F1           pop af
+7E3A.11 F1           pop af
+7E3B.11 F1           pop af
+7E3C.11 18 0D        jr .L4
+
+7E3E.11 .L3:
+7E3E.11 21 6B 91     ld hl,916Bh
+7E41.11 E5           push hl
+7E42.11 CD 20 7D     call SUB_7D20
+
+7E45.11 F1           pop af
+7E46.11 21 EB 9D     ld hl,9DEBh
+7E49.11 36 00        ld (hl),00h
+
+7E4B.11 .L4:
+7E4B.11 33           inc sp
+7E4C.11 DD E1        pop ix
+7E4E.11 C9           ret
+
+7E4F.11 SUB_7E4F:
+7E4F.11 76           halt
+
+; Note: The address 8552h is in a different bank.
+7E50.11 C3 52 85     jp 8552h
+
+7E53.11 SUB_7E53:
+7E53.11 DD E5        push ix
+7E55.11 21 B6 FF     ld hl,0FFB6h
+7E58.11 39           add hl,sp
+7E59.11 F9           ld sp,hl
+7E5A.11 CD 53 78     call SUB_7853
+
+7E5D.11 CD 78 78     call SUB_7878
+
+7E60.11 21 E6 9D     ld hl,9DE6h
+7E63.11 E5           push hl
+7E64.11 11 C0 E3     ld de,0E3C0h
+7E67.11 D5           push de
+7E68.11 21 00 01     ld hl,0100h
+7E6B.11 E5           push hl
+7E6C.11 AF           xor a
+7E6D.11 F5           push af
+7E6E.11 33           inc sp
+7E6F.11 AF           xor a
+7E70.11 F5           push af
+7E71.11 33           inc sp
+
+; Note: The address 8731h is in a different bank.
+7E72.11 CD 31 87     call 8731h
+
+7E75.11 F1           pop af
+7E76.11 F1           pop af
+7E77.11 F1           pop af
+7E78.11 F1           pop af
+
+; Note: The address 8552h is in a different bank.
+7E79.11 CD 52 85     call 8552h
+
+7E7C.11 21 E6 9D     ld hl,9DE6h
+7E7F.11 E5           push hl
+7E80.11 11 C0 E3     ld de,0E3C0h
+7E83.11 D5           push de
+7E84.11 21 00 01     ld hl,0100h
+7E87.11 E5           push hl
+7E88.11 AF           xor a
+7E89.11 F5           push af
+7E8A.11 33           inc sp
+7E8B.11 AF           xor a
+7E8C.11 F5           push af
+7E8D.11 33           inc sp
+
+; Note: The address 8731h is in a different bank.
+7E8E.11 CD 31 87     call 8731h
+
+7E91.11 F1           pop af
+7E92.11 F1           pop af
+7E93.11 F1           pop af
+7E94.11 F1           pop af
+
+; Note: The address 8552h is in a different bank.
+7E95.11 CD 52 85     call 8552h
+
+7E98.11 CD 9B 78     call SUB_789B
+
+7E9B.11 AF           xor a
+7E9C.11 F5           push af
+7E9D.11 33           inc sp
+7E9E.11 AF           xor a
+7E9F.11 F5           push af
+7EA0.11 33           inc sp
+7EA1.11 AF           xor a
+7EA2.11 57           ld d,a
+7EA3.11 1E 01        ld e,01h
+7EA5.11 D5           push de
+
+; Note: The address 8FEEh is in a different bank.
+7EA6.11 CD EE 8F     call 8FEEh
+
+7EA9.11 F1           pop af
+7EAA.11 F1           pop af
+7EAB.11 CD 1B 7C     call SUB_7C1B
+
+7EAE.11 CD 1B 7C     call SUB_7C1B
+
+7EB1.11 CD 57 7C     call SUB_7C57
+
+7EB4.11 .LOOP1:
+7EB4.11 CD D5 7D     call SUB_7DD5
+
+7EB7.11 21 EC 9D     ld hl,9DECh
+7EBA.11 4E           ld c,(hl)
+7EBB.11 34           inc (hl)
+7EBC.11 79           ld a,c
+7EBD.11 D6 3C        sub 3Ch
+7EBF.11 38 02        jr c,.L1
+
+7EC1.11 36 00        ld (hl),00h
+
+7EC3.11 .L1:
+7EC3.11 21 E6 9D     ld hl,9DE6h
+7EC6.11 E5           push hl
+7EC7.11 AF           xor a
+7EC8.11 57           ld d,a
+7EC9.11 1E 08        ld e,08h
+7ECB.11 D5           push de
+7ECC.11 21 FF 00     ld hl,00FFh
+7ECF.11 E5           push hl
+7ED0.11 3E B8        ld a,0B8h
+7ED2.11 F5           push af
+7ED3.11 33           inc sp
+7ED4.11 AF           xor a
+7ED5.11 F5           push af
+7ED6.11 33           inc sp
+
+; Note: The address 8731h is in a different bank.
+7ED7.11 CD 31 87     call 8731h
+
+7EDA.11 F1           pop af
+7EDB.11 F1           pop af
+7EDC.11 F1           pop af
+7EDD.11 F1           pop af
+7EDE.11 21 00 00     ld hl,0000h
+7EE1.11 39           add hl,sp
+7EE2.11 EB           ex de,hl
+7EE3.11 21 88 91     ld hl,9188h
+7EE6.11 AF           xor a
+
+7EE7.11 .LOOP2:
+7EE7.11 BE           cp (hl)
+7EE8.11 ED A0        ldi
+7EEA.11 20 FB        jr nz,.LOOP2
+
+7EEC.11 21 40 00     ld hl,0040h
+7EEF.11 39           add hl,sp
+7EF0.11 E5           push hl
+7EF1.11 3A EC 9D     ld a,(9DECh)
+7EF4.11 F5           push af
+7EF5.11 33           inc sp
+
+; Note: The address 8204h is in a different bank.
+7EF6.11 CD 04 82     call 8204h
+
+7EF9.11 F1           pop af
+7EFA.11 33           inc sp
+7EFB.11 21 40 00     ld hl,0040h
+7EFE.11 39           add hl,sp
+7EFF.11 E5           push hl
+7F00.11 21 02 00     ld hl,0002h
+7F03.11 39           add hl,sp
+7F04.11 E5           push hl
+7F05.11 CD 72 77     call SUB_7772
+
+7F08.11 21 8F 91     ld hl,918Fh
+7F0B.11 E5           push hl
+7F0C.11 21 02 00     ld hl,0002h
+7F0F.11 39           add hl,sp
+7F10.11 E5           push hl
+7F11.11 CD 72 77     call SUB_7772
+
+7F14.11 21 45 00     ld hl,0045h
+7F17.11 39           add hl,sp
+7F18.11 E5           push hl
+7F19.11 3A EB 9D     ld a,(9DEBh)
+7F1C.11 F5           push af
+7F1D.11 33           inc sp
+
+; Note: The address 8204h is in a different bank.
+7F1E.11 CD 04 82     call 8204h
+
+7F21.11 F1           pop af
+7F22.11 33           inc sp
+7F23.11 21 45 00     ld hl,0045h
+7F26.11 39           add hl,sp
+7F27.11 E5           push hl
+7F28.11 21 02 00     ld hl,0002h
+7F2B.11 39           add hl,sp
+7F2C.11 E5           push hl
+7F2D.11 CD 72 77     call SUB_7772
+
+7F30.11 21 E6 9D     ld hl,9DE6h
+7F33.11 E5           push hl
+7F34.11 3E 0C        ld a,0Ch
+7F36.11 F5           push af
+7F37.11 33           inc sp
+7F38.11 21 03 00     ld hl,0003h
+7F3B.11 39           add hl,sp
+7F3C.11 E5           push hl
+7F3D.11 AF           xor a
+7F3E.11 57           ld d,a
+7F3F.11 1E 17        ld e,17h
+7F41.11 D5           push de
+
+; Note: The address 858Fh is in a different bank.
+7F42.11 CD 8F 85     call 858Fh
+
+7F45.11 F1           pop af
+7F46.11 F1           pop af
+7F47.11 F1           pop af
+7F48.11 33           inc sp
+7F49.11 CD 4F 7E     call SUB_7E4F
+
+7F4C.11 C3 B4 7E     jp .LOOP1
+
+7F4F.11 SUB_7F4F:
+7F4F.11 DD E5        push ix
+7F51.11 DD 21 00 00  ld ix,0000h
+7F55.11 DD 39        add ix,sp
+7F57.11 F5           push af
+7F58.11 DD 4E 04     ld c,(ix+4)
+7F5B.11 DD 46 05     ld b,(ix+5)
+7F5E.11 0A           ld a,(bc)
+7F5F.11 69           ld l,c
+7F60.11 60           ld h,b
+7F61.11 23           inc hl
+7F62.11 23           inc hl
+7F63.11 5E           ld e,(hl)
+7F64.11 83           add a,e
+7F65.11 02           ld (bc),a
+7F66.11 59           ld e,c
+7F67.11 50           ld d,b
+7F68.11 13           inc de
+7F69.11 13           inc de
+7F6A.11 13           inc de
+7F6B.11 1A           ld a,(de)
+7F6C.11 6F           ld l,a
+7F6D.11 03           inc bc
+7F6E.11 AF           xor a
+7F6F.11 95           sub l
+7F70.11 E2 75 7F     jp po,.L1
+
+7F73.11 EE 80        xor 80h
+
+7F75.11 .L1:
+7F75.11 F2 8C 7F     jp p,.L2
+
+7F78.11 0A           ld a,(bc)
+7F79.11 DD 77 FF     ld (ix-1),a
+7F7C.11 65           ld h,l
+7F7D.11 3E C0        ld a,0C0h
+7F7F.11 94           sub h
+7F80.11 67           ld h,a
+7F81.11 DD 7E FF     ld a,(ix-1)
+7F84.11 94           sub h
+7F85.11 30 05        jr nc,.L2
+
+7F87.11 DD 7E FF     ld a,(ix-1)
+7F8A.11 85           add a,l
+7F8B.11 02           ld (bc),a
+
+7F8C.11 .L2:
+7F8C.11 1A           ld a,(de)
+7F8D.11 5F           ld e,a
+7F8E.11 CB 7B        bit 7,e
+7F90.11 28 26        jr z,.L4
+
+7F92.11 0A           ld a,(bc)
+7F93.11 57           ld d,a
+7F94.11 7B           ld a,e
+7F95.11 6F           ld l,a
+7F96.11 07           rlca
+7F97.11 9F           sbc a,a
+7F98.11 67           ld h,a
+7F99.11 AF           xor a
+7F9A.11 95           sub l
+7F9B.11 DD 77 FE     ld (ix-2),a
+7F9E.11 9F           sbc a,a
+7F9F.11 94           sub h
+7FA0.11 DD 77 FF     ld (ix-1),a
+7FA3.11 6A           ld l,d
+7FA4.11 26 00        ld h,00h
+7FA6.11 DD 7E FE     ld a,(ix-2)
+7FA9.11 95           sub l
+7FAA.11 3E 00        ld a,00h
+7FAC.11 9C           sbc a,h
+7FAD.11 E2 B2 7F     jp po,.L3
+
+7FB0.11 EE 80        xor 80h
+
+7FB2.11 .L3:
+7FB2.11 F2 B8 7F     jp p,.L4
+
+7FB5.11 7A           ld a,d
+7FB6.11 83           add a,e
+7FB7.11 02           ld (bc),a
+
+7FB8.11 .L4:
+7FB8.11 DD F9        ld sp,ix
+7FBA.11 DD E1        pop ix
+7FBC.11 C9           ret
+
+7FBD.11 SUB_7FBD:
+7FBD.11 DD E5        push ix
+7FBF.11 DD 21 00 00  ld ix,0000h
+7FC3.11 DD 39        add ix,sp
+7FC5.11 3B           dec sp
+7FC6.11 DD 4E 04     ld c,(ix+4)
+7FC9.11 DD 46 05     ld b,(ix+5)
+7FCC.11 59           ld e,c
+7FCD.11 50           ld d,b
+7FCE.11 21 04 00     ld hl,0004h
+7FD1.11 19           add hl,de
+7FD2.11 7E           ld a,(hl)
+7FD3.11 C5           push bc
+7FD4.11 F5           push af
+7FD5.11 33           inc sp
+
+; Note: The address 902Ah is in a different bank.
+7FD6.11 CD 2A 90     call 902Ah
+
+7FD9.11 33           inc sp
+7FDA.11 C1           pop bc
+7FDB.11 59           ld e,c
+7FDC.11 50           ld d,b
+7FDD.11 21 06 00     ld hl,0006h
+7FE0.11 19           add hl,de
+7FE1.11 5E           ld e,(hl)
+7FE2.11 CB 43        bit 0,e
+7FE4.11 20 0B        jr nz,.L1
+
+7FE6.11 59           ld e,c
+7FE7.11 50           ld d,b
+7FE8.11 21 07 00     ld hl,0007h
+7FEB.11 19           add hl,de
+7FEC.11 5E           ld e,(hl)
+7FED.11 CB 43        bit 0,e
+7FEF.11 20 03        jr nz,.L2
+
+7FF1.11 .L1:
+7FF1.11 AF           xor a
+7FF2.11 18 02        jr .L3
+
+7FF4.11 .L2:
+7FF4.11 3E 01        ld a,01h
+
+7FF6.11 .L3:
+7FF6.11 69           ld l,c
+7FF7.11 60           ld h,b
+7FF8.11 23           inc hl
+7FF9.11 5E           ld e,(hl)
+7FFA.11 F5           push af
+7FFB.11 0A           ld a,(bc)
+7FFC.11 DD 77 FF     ld (ix-1),a
+
+; Note: The address 8000h is in a different bank.
+7FFF.11 F1           pop af
+
+9C48.4 07 4B 9C...  DEFB 07 4B 9C 00 01 00 FE 00 ; ASCII: ?K??????
+9CFC.4 00 9D ED...  DEFB 00 9D ED 9C C3 C0 9C 80 ; ASCII: ????????
+9DEB.4 00           DEFB 00 ; ASCII: ?
+9DEC.4 00 41 54...  DEFB 00 41 54 0D 0A 00 41 54 ; ASCII: ?AT???AT
+9E8C.4 00 00 00...  DEFB 00 00 00 00 00 00 00 00 ; ASCII: ????????
+A336.5 00 00 FF...  DEFB 00 00 FF FF FF FF FF FF ; ASCII: ????????
 C000.0 00 00 00...  DEFB 00 00 00 00 00 00 00 00 ; ASCII: ????????

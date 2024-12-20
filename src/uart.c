@@ -9,52 +9,7 @@
 #include "uart.h"
 //#include "user.h"
 
-
-
-void myitoa_not_zero(uint8_t num, char* str) 
-{
-    int i = 0;
-    if(num>9)
-      i = 1;
-    else if(num>99)
-      i = 2;
-    str[i+1] = '\0'; // Add the string terminator
-
-    // Process individual digits
-    while (num != 0) {
-        int rem = num % 10;
-        str[i--] = rem + '0';
-        num = num / 10;
-    }
-   
-    //return str;
-}
-
-void myitoa(uint8_t num, char* str) 
-{
-   if(num==0)
-      strcpy(str, "0");
-   else 
-      myitoa_not_zero(num, str);   
-}
-
-uint8_t myatoi(char* str) 
-{
-   uint8_t num = 0;
-   uint8_t pos = strlen(str);
-   if(pos==0)
-      return 0;
-   pos--;
-   num += str[pos] - '0';
-   if(pos-- > 0)
-   {
-      num += (str[pos] - '0') * 10;
-      if(pos-- > 0)
-         num += (str[pos] - '0') * 100;
-   }
-   
-   return num;
-}
+#if 0
 
 void uart_send_at_cmd(unsigned char *cmd)
 {
@@ -333,3 +288,4 @@ unsigned char uart_rx_readline_last(unsigned char *s, unsigned int len)
    
    return URR_OK;
 }
+#endif

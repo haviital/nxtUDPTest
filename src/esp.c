@@ -42,7 +42,7 @@ uint16_t esp_response_time_ms;
 // BUFFER
 
 unsigned char buffer[256];
-
+#if 0
 unsigned char esp_response_ok(void)
 {
    unsigned char ret;
@@ -232,3 +232,4 @@ unsigned char esp_detect_bps(void)
    
    return 0;
 }
+#endif

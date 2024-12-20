@@ -28,8 +28,8 @@
 #pragma output CLIB_STDIO_HEAP_SIZE = 0
 #pragma output CLIB_FOPEN_MAX = -1
 
-#include "esp.h"
-#include "uart.h"
+// #include "esp.h"
+#include "uart2.h"
 #include "GameObject.h"
 #include "gfx.h"
 #include "netcom.h"
@@ -328,7 +328,7 @@ static void create_start_screen(void)
 
     //!!HV DrawStatusTextAndPageFlip("Ping server");
 
-    gameState = STATE_NONE; // STATE_CALL_NOP;
+    gameState = STATE_CALL_NOP;
 
     //printf("Press any key to start\n");
     //in_wait_key();
@@ -445,29 +445,34 @@ void UpdateAndDrawAll(void)
            // Send NOP to the server.
             uint8_t serverCommandsNop = 0;
             uint8_t packetLen = 1;
-            uint8_t err = uart_send_data_packet(&serverCommandsNop, packetLen);
-            if(err)
-                printf("uart_send_data_packet(). err=%u, buffer=%s\n", 
-                    err, buffer);
+            uint8_t err = uart_send_data_packet2(&serverCommandsNop, packetLen);
+            if(err) PROG_FAILED;
+                // printf("uart_send_data_packet(). err=%u, buffer=%s\n", 
+                //     err, buffer);
 
             if(!err) 
                 DrawStatusTextAndPageFlip("Ping server (sent to UART)");
             // Read NOP send response.
             // The response should be: "Recv 1 bytes\n\rSEND OK\n\r"
-            err = uart_read_response("SEND OK", NULL);
+            err = uart_read_expected2("SEND OK");
             if(err)
-                printf("uart_read_response(). err=%u, buffer=%s\n", 
-                    err, buffer);
-            if(!err) 
+            {
+                PROG_FAILED;                
+                //printf("uart_read_response(). err=%u, buffer=%s\n", 
+                //    err, buffer);
+            }
+            else 
             {
                 DrawStatusTextAndPageFlip("Ping server (sent to Server)");
-                gameState = STATE_WAIT_FOR_NOP;
+                //gameState = STATE_WAIT_FOR_NOP;
+                gameState = STATE_NONE;
             }
         }
         break;   
 
         case STATE_WAIT_FOR_NOP:
         {
+            #if 0
             // Read received data for NOP.
             NopResponse resp;
             //printf("STATE_WAIT_FOR_NOP,");
@@ -488,6 +493,7 @@ void UpdateAndDrawAll(void)
 
                 gameState = STATE_CALL_NOP;
             }
+            #endif
         }
         break;
 
@@ -537,19 +543,10 @@ int main(void)
     uint8_t test=0;
     while (true)
     {   
-        //if(frameCount%10==0)
-        {
-            layer2_fill_rect(0, 0, 256, 8, 0xE3, &shadow_screen); // make a hole
-            printAt(0, 0);
-            printf("frame:%u", (++test)+100);
-
-            //printAt(0, 0);
-            //printf("f%lu", frameCount); //!!HV
-
-            //printAt(2, 0);
-            //printf("boo!");
-
-        }
+        // Print fps on ULA screen.
+        // layer2_fill_rect(0, 0, 256, 8, 0xE3, &shadow_screen); // make a hole
+        // printAt(0, 0);
+        // printf("frame:%u", (++test)+100);
 
         UpdateAndDrawAll();
 

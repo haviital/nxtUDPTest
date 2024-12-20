@@ -39,15 +39,75 @@ char* replaceCrAndLn2(char* str, char* newStr)
    return newStr;
 }
 
+void myitoa_not_zero(uint8_t num, char* str) 
+{
+    int i = 0;
+    if(num>9)
+      i = 1;
+    else if(num>99)
+      i = 2;
+    str[i+1] = '\0'; // Add the string terminator
+
+    // Process individual digits
+    while (num != 0) {
+        int rem = num % 10;
+        str[i--] = rem + '0';
+        num = num / 10;
+    }
+   
+    //return str;
+}
+
+void myitoa(uint8_t num, char* str) 
+{
+   if(num==0)
+      strcpy(str, "0");
+   else 
+      myitoa_not_zero(num, str);   
+}
+
+uint8_t myatoi(char* str) 
+{
+   uint8_t num = 0;
+   uint8_t pos = strlen(str);
+   if(pos==0)
+      return 0;
+   pos--;
+   num += str[pos] - '0';
+   if(pos-- > 0)
+   {
+      num += (str[pos] - '0') * 10;
+      if(pos-- > 0)
+         num += (str[pos] - '0') * 100;
+   }
+   
+   return num;
+}
+
+
 
 void uart_tx2(unsigned char *s)
 {
    while (*s)
    {
-      while (IO_133B & 0x02)
+      // Wait until the previuos data has been sent.
+      while (IO_133B & 0x02)  // Is TX buffer full?
          user_break();
       
       IO_133B = *s++;
+   }
+}
+
+void uart_raw_tx2(unsigned char *s, uint16_t size)
+{
+   while (size)
+   {
+      // Wait until the previuos data has been sent.
+      while (IO_133B & 0x02)  // Is TX buffer full?
+         user_break();
+      
+      IO_133B = *s++;
+      size--;
    }
 }
 
@@ -57,7 +117,7 @@ unsigned char uart_rx_char2(void)
    //printf(" uart_rx_char2 ");
 
    // Wait until there is a byte in rx.
-   while (!(IO_133B & 0x01))
+   while (!(IO_133B & 0x01)) // Is there data in RX port?
    {
       user_break(); 
    }
@@ -226,6 +286,31 @@ uint8_t uart_read_expected_many2(char* expected1, char* expected2)
    }  // response bytes comparison loop
 
    return 1; // Not found.   
+}
+
+uint8_t uart_send_data_packet2(unsigned char *data, uint8_t len)
+{
+   if( len==0 )
+      return 1;
+
+   // Send AT command to UART to start sending the UDP packet.
+   char atcmd[32];
+   strcpy(atcmd, "AT+CIPSEND=");
+   (void)myitoa_not_zero(len, &(atcmd[11]));
+   strcat(atcmd, "\r\n");
+   if(UART_DEBUG_PRINT_ENABLED) printf("call: %s\n", atcmd);
+   uart_tx2(atcmd);
+   //*buffer = 0;
+
+   // Read response from UART. 
+   // There should be: "OK\n\r>\n\r".
+   uint8_t err = uart_read_expected2(">");
+   if(err>0)
+      return err;
+
+    // Send data to UART. Check the response in the next frame.
+    uart_raw_tx2(data, len);
+    return 0;
 }
 
 void prog_failed(char* sourceFile, int32_t lineNum)

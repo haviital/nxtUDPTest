@@ -18,3 +18,5 @@
 
 #define BUFFER_MAX_SIZE2 512
 
+#define PROG_FAILED prog_failed(__FILE__, __LINE__)
+

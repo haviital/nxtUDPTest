@@ -10,7 +10,7 @@
 
 void NetComInit(void)
 {
-    printf("NetComInit()..\n"); //!!HV
+    //printf("NetComInit()..\n"); //!!HV
     DrawStatusTextAndPageFlip("Init");
     uart_flush_rx2();
 
@@ -50,70 +50,12 @@ void NetComInit(void)
 
     DrawStatusTextAndPageFlip("Create Server connection DONE");
 
-#if 0
-    // *** Test!
-
-    unsigned char close[20] = "AT+CIPCLOSE";
-    unsigned char ipstart_cmd[60] = "AT+CIPSTART=\"TCP\",\"";
-
-    strcat(ipstart_cmd, SERVER_IP_ADDRESS_2);
-    strcat(ipstart_cmd, "\",");
-    strcat(ipstart_cmd, SERVER_PORT_2);
-
-    uint8_t counter = 10;
-
-    #ifdef PRINT_TO_BUFFER2
-    testBuffer2[0] = 0;
-    #endif
-
-    while (1)
-    {
-      // Open connection
-      uart_tx2(ipstart_cmd);
-      uart_tx2("\r\n");
-      
-      if(uart_read_expected2("CONNECT") == 0)
-      {
-         // *** Connected ok
-         printf("%u ", counter);
-
-         // Close connetion
-         uart_tx2(close);
-         uart_tx2("\r\n");
-
-         // Note: you MUST read this before calling open again. Otherwise the connection 
-         //       might still be not yet closed and the open fails.
-         if(uart_read_expected2("CLOSED") == 0)
-         {
-            // *** Connection closed.
-         }
-         else
-         {
-            printf("Did not found 'CLOSED'\n");
-            for(;;);  // Loop forever
-         }
-      }
-      else
-      {
-         printf("Did not found 'CONNECTED'.\n");
-         for(;;);  // Loop forever
-      }
-
-        char text[128];
-        sprintf(text, "Test round: %d", 11 - counter);  
-        DrawStatusTextAndPageFlip(text);
-  
-        // Connected ok. Do it again.
-        if(--counter==0)
-            break;
-
-   }  // repeated connect loop
-#endif
-        printf("..NetComInit()\n"); //!!HV
+    //printf("..NetComInit()\n"); //!!HV
  }
 
 void NetComInit_old(void)
 {
+    #if 0
     // Reset ESP
     // ZXN_NEXTREG(0x02, 0x80);
     // z80_delay_ms(100*8);       // 100ms, about 8x longer for 28MHz
@@ -196,6 +138,7 @@ void NetComInit_old(void)
     sprintf(atcmd, "AT+CIPSTART=\"UDP\",\"%s\",%s,%s,0\r\n", 
         UDP_SERVER_ADDRESS, UDP_SERVER_PORT,UDP_LOCAL_PORT );
     uart_send_at_cmd_custom_response(atcmd, "OK\r\n", "ERROR\r\n"); 
+    #endif
 }
 
 
