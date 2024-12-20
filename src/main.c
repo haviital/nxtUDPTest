@@ -464,33 +464,35 @@ void UpdateAndDrawAll(void)
             else 
             {
                 DrawStatusTextAndPageFlip("Ping server (sent to Server)");
-                //gameState = STATE_WAIT_FOR_NOP;
-                gameState = STATE_NONE;
+                gameState = STATE_WAIT_FOR_NOP;
+                //gameState = STATE_NONE;
             }
         }
         break;   
 
         case STATE_WAIT_FOR_NOP:
         {
-            #if 0
+            #if 1
             // Read received data for NOP.
             NopResponse resp;
             //printf("STATE_WAIT_FOR_NOP,");
-            if(uart_available_rx())
+            if(uart_available_rx2())
             {
                 //printf("call uart_get_received_data().\n");
-                uint8_t err = uart_get_received_data((char*)&resp, sizeof(NopResponse));
-                if(err)
-                {
-                    printf("uart_get_received_data(). err=%u, buffer=%s\n",err, buffer);
-                }
-                if(!err)
-                {
-                    DrawStatusTextAndPageFlip("Server responded!");
-                    //printf("uart_get_received_data(). OK\n");
-                    StartNewPacket();
-                }
+                uint8_t err = uart_receive_data_packet2((char*)&resp, sizeof(NopResponse));
+                if(err) PROG_FAILED;
+                
+                DrawStatusTextAndPageFlip("Server responded!");
 
+                // Check the result.
+                if(resp.cmd != 0 )
+                    PROG_FAILED;
+                if( resp.flags != 1 )
+                    PROG_FAILED;
+
+                //printf("uart_get_received_data(). OK\n");
+                StartNewPacket();
+ 
                 gameState = STATE_CALL_NOP;
             }
             #endif
@@ -579,4 +581,18 @@ int main(void)
     // Trig a soft reset. The Next hardware registers and I/O ports will be reset by NextZXOS after a soft reset.
     //ZXN_NEXTREG(REG_RESET, RR_SOFT_RESET);
     //return 0;
+}
+
+void prog_failed(char* sourceFile, int32_t lineNum)
+{
+   // Make L2 screen transparent.
+   layer2_fill_rect(0, 0,  256, 192, 0xE3, &shadow_screen); // make a hole
+   layer2_flip_main_shadow_screen();
+
+   //printf("uart_failed()\n");
+   char text[128];
+   sprintf(text, "FAILED in file: %s (%lu)", sourceFile, lineNum);
+   printf(text);
+   zx_border(2);  // red border
+   for(;;);
 }

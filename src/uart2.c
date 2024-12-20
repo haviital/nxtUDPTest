@@ -84,8 +84,6 @@ uint8_t myatoi(char* str)
    return num;
 }
 
-
-
 void uart_tx2(unsigned char *s)
 {
    while (*s)
@@ -110,6 +108,12 @@ void uart_raw_tx2(unsigned char *s, uint16_t size)
       size--;
    }
 }
+
+bool uart_available_rx2(void)
+{
+   return (IO_133B & 0x01); // Is there data in RX port?
+}
+
 
 // Wait until there is one byte from uart.
 unsigned char uart_rx_char2(void)
@@ -288,6 +292,29 @@ uint8_t uart_read_expected_many2(char* expected1, char* expected2)
    return 1; // Not found.   
 }
 
+// Read until the char is found and return the chars (not ending to \0) before that.
+// maxLen should contain the ending null.
+uint8_t uart_read_until_char(char untilChar, char* receivedData, uint8_t maxLen)
+{
+   uint8_t i=0;
+   while(i<maxLen-1)
+   {
+      // read byte from uart
+      char byte = uart_rx_char2();
+
+      if(byte==untilChar)
+      {
+         receivedData[i] = 0;  // ending null
+         return 0;  // Found the bookmark char.
+      }
+
+      receivedData[i] = byte; // Store the byte read.
+      i++;
+   }
+
+   return 1; // Not found.
+}
+
 uint8_t uart_send_data_packet2(unsigned char *data, uint8_t len)
 {
    if( len==0 )
@@ -313,13 +340,35 @@ uint8_t uart_send_data_packet2(unsigned char *data, uint8_t len)
     return 0;
 }
 
-void prog_failed(char* sourceFile, int32_t lineNum)
+uint8_t uart_receive_data_packet2(char* receivedData, uint8_t size)
 {
-   //printf("uart_failed()\n");
-   char text[128];
-   sprintf(text, "FAILED in file: %s (%lu)", sourceFile, lineNum);
-   printf(text);
-   for(;;);
+   // Should get: "+IPD,
+
+   // Read the string.
+   uint8_t err = uart_read_expected2("+IPD,"); 
+   if(err)
+      return 1;
+
+   // Get the number of bytes as a string.
+   char receivedFromUart[4]; // includes the ending null. 
+   err = uart_read_until_char(':', receivedFromUart, 4);
+   if(err)
+      return 2;
+
+   uint8_t dataLen = myatoi(receivedFromUart);
+   if(dataLen!=size)
+   {
+      return 3;
+   }
+
+   // Read actual data
+   for(uint8_t i=0; i<dataLen; i++)
+      receivedData[i] = uart_rx_char2();
+
+   return 0;
 }
+
+
+
 
 
