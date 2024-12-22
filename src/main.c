@@ -128,11 +128,9 @@ static layer2_screen_t shadow_screen = {SHADOW_SCREEN};
 
 //layer2_screen_t off_screen = {OFF_SCREEN, 0, 1, 3};
 
-#define INCOMING_PACKET_GOB_COUNT 10
+#define INCOMING_PACKET_GOB_COUNT 30
 static GameObject incomingPacketGobs[INCOMING_PACKET_GOB_COUNT];
 
-#define OUTGOING_PACKET_GOB_COUNT 10
-static GameObject outgoingPacketGobs[OUTGOING_PACKET_GOB_COUNT];
 
 enum state
 {
@@ -258,24 +256,6 @@ static void create_sprites(void)
         set_sprite_slot(sprIndex);
         set_sprite_attributes_ext(incomingPacketGobs[i].spritePatternIndex, 
             incomingPacketGobs[i].x, incomingPacketGobs[i].y, 0, 0, !incomingPacketGobs[i].isHidden);
-    }
-
-    // Outgoing data packet gobs
-    GameObject defaultGob2 = {.x = 30, .y= 88, .sx=0, .sy=3, .spriteIndex=0, 
-        .spritePatternIndex = CLOUD_PATTERN_SLOT, .isHidden=true, .isActive=false};
-    for(int i=0; i<OUTGOING_PACKET_GOB_COUNT; i++)
-    {
-        int sprIndex = i + INCOMING_PACKET_GOB_COUNT;
-        outgoingPacketGobs[i] = defaultGob2;
-        outgoingPacketGobs[i].x = 216;
-        outgoingPacketGobs[i].y = i*32;
-        outgoingPacketGobs[i].sy = -outgoingPacketGobs[i].sy;
-        outgoingPacketGobs[i].spriteIndex = sprIndex;
-        //set_sprite_slot(i);
-        //set_sprite_pattern(packet);
-        set_sprite_slot(sprIndex);
-        set_sprite_attributes_ext(outgoingPacketGobs[i].spritePatternIndex, outgoingPacketGobs[i].x, 
-                outgoingPacketGobs[i].y, 0, 0, !outgoingPacketGobs[i].isHidden && outgoingPacketGobs[i].isActive );
     }
 }
 
@@ -412,28 +392,9 @@ static void UpdateGameObjects(void)
         // Note: draw also an inactive gob so that the sprite is set to invisible.
         GobDraw(gob);
     }
-
-#if 0
-    for(int i=0; i<OUTGOING_PACKET_GOB_COUNT; i++)
-    {
-        // Calculate next position of sprite.
-        //testSprite.x += testSprite.dx;
-        //testSprite.y += testSprite.dy;
-        if(outgoingPacketGobs[i].isActive)
-            GobUpdate(&outgoingPacketGobs[i]);
-
-        // Hide if inside clouds
-        if(outgoingPacketGobs[i].y < CLOUD_SPRITE_Y || outgoingPacketGobs[i].y>164)
-            outgoingPacketGobs[i].isHidden = true;
-        else
-            outgoingPacketGobs[i].isHidden = false;
-
-         GobDraw(&outgoingPacketGobs[i]);
-    }
-#endif    
 }
 
-void UpdateAndDrawAll(void)
+void UpdateAndDrawAll(void)   
 {
     UpdateGameObjects();
 

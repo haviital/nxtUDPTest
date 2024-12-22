@@ -41,6 +41,44 @@
             "rootFolder": "${workspaceFolder}",
             "load": "Add your .nex or .sna file to load",
             "topOfStack": "Add your top of stack / label name"
+        },
+        {
+            "type": "dezog",
+            "request": "launch",
+            "name": "build & launch cspect",
+            "remoteType": "cspect",
+            "cspect": {
+                "port": 11000
+            },
+            "zsim": {
+                "visualMemory": true,
+                "memoryModel": "ZX48K",
+                "ulaScreen": "spectrum",
+                "zxKeyboard": "spectrum",
+                "zxBeeper": true
+            },
+            "sjasmplus": [
+                {
+                    "path": "Add your assembler list or sld filez"
+                }
+            ],
+            "z88dkv2": [{
+                "path": "build/test.lis",
+                "srcDirs": [""],
+                "mapFile": "build/test.map",
+                "excludeFiles": [  ]
+            }],
+            "commandsAfterLaunch": [],
+            "history": {
+                "reverseDebugInstructionCount": 1000000,
+                "spotCount": 10,
+                "codeCoverageEnabled": true
+            },
+            "startAutomatically": false,
+            "rootFolder": "${workspaceFolder}",
+            "load": "test.nex",
+            "topOfStack": ""
+            //"preLaunchTask": "z88dk"
         }
     ]
 }
