@@ -17,7 +17,11 @@ void NetComInit(void)
     DrawStatusTextAndPageFlip("Connecting to Wifi");
 
     // Disable echo
+    #ifdef AT_ECHO_ON
     uart_tx2("ATE1\r\n");
+    #else
+    uart_tx2("ATE0\r\n");
+    #endif
     if(uart_read_expected2("OK") != 0)
         prog_failed(__FILE__, __LINE__);
 

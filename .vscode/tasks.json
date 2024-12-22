@@ -63,6 +63,14 @@
                     "message": 4
                 }
             }
+        },
+        {
+            "label": "z88dk-and-CSpect",
+            "dependsOn": ["z88dk", "CSpect"],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
         }
     ]
 }

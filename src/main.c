@@ -377,7 +377,7 @@ static void UpdateGameObjects(void)
         if(gob->y < CLOUD_SPRITE_Y || gob->y > 164)
             gob->isHidden = true;
         else
-            gob->isHidden = false;
+            gob->isHidden = false;       
 
         // Afer moved from the server up to cloud, start moving from cloud down to Next.
         if(gob->sy < 0 && gob->y < 40 )
@@ -394,7 +394,7 @@ static void UpdateGameObjects(void)
     }
 }
 
-void UpdateAndDrawAll(void)   
+void UpdateAndDrawAll(void)      
 {
     UpdateGameObjects();
 

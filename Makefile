@@ -48,7 +48,7 @@ $(EXEC) : $(OBJS)
 .PHONY: clean dirs install
 
 install: all
-	mv $(EXEC) bin
+	# mv $(EXEC) bin
 
 clean:
 	rm -rf $(OUT_DIR) /tmp/tmpXX*

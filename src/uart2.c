@@ -126,7 +126,7 @@ unsigned char uart_rx_char2(void)
       user_break(); 
    }
    unsigned char byte2 = IO_143B;
-   #ifdef PRINT_TO_SCREEN2
+   #ifdef UART_PRINT_TO_SCREEN2
    if(byte2>31)
       printf("%c", byte2);
    else
@@ -157,7 +157,7 @@ void uart_flush_rx2(void)
       while (IO_133B & 0x01)
       {
         c = IO_143B;
-        #ifdef PRINT_TO_SCREEN2
+        #ifdef UART_PRINT_TO_SCREEN2
         if(c>31)
            printf("%c", c);
         else
