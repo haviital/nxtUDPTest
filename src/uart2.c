@@ -86,27 +86,50 @@ uint8_t myatoi(char* str)
 
 void uart_tx2(unsigned char *s)
 {
+   uint16_t timeout_ms = UART_TIMEOUT_MS;
    while (*s)
    {
       // Wait until the previuos data has been sent.
       while (IO_133B & 0x02)  // Is TX buffer full?
+      {
+         if (!(timeout_ms--)) 
+         {
+            printf("Timeout error! ");
+            PROG_FAILED;
+        }
+         z80_delay_ms(1*8);   // 8x for 28MHz
+
          user_break();
+      }
       
       IO_133B = *s++;
    }
 }
 
-void uart_raw_tx2(unsigned char *s, uint16_t size)
+uint8_t uart_raw_tx2(unsigned char *s, uint16_t size)
 {
+   uint16_t timeout_ms = UART_TIMEOUT_MS;
    while (size)
    {
       // Wait until the previuos data has been sent.
       while (IO_133B & 0x02)  // Is TX buffer full?
+      {
+         if (!(timeout_ms--)) 
+         {
+            //printf("Timeout error! ");
+            //PROG_FAILED;
+            return 1; // Timeout
+         }
+         z80_delay_ms(1*8);   // 8x for 28MHz
+
          user_break();
+      }
       
       IO_133B = *s++;
       size--;
    }
+
+   return 0;
 }
 
 bool uart_available_rx2(void)
@@ -121,8 +144,16 @@ unsigned char uart_rx_char2(void)
    //printf(" uart_rx_char2 ");
 
    // Wait until there is a byte in rx.
+   uint16_t timeout_ms = UART_TIMEOUT_MS;
    while (!(IO_133B & 0x01)) // Is there data in RX port?
    {
+      if (!(timeout_ms--)) 
+      {
+         printf("Timeout error! ");
+         PROG_FAILED;
+      }
+      z80_delay_ms(1*8);   // 8x for 28MHz
+
       user_break(); 
    }
    unsigned char byte2 = IO_143B;
@@ -151,6 +182,7 @@ void uart_flush_rx2(void)
 {
    // flush read buffer2
    //printf("Flushing: \n");
+   uint16_t timeout_ms = UART_TIMEOUT_MS;
    unsigned char c;
    while(1)
    {
@@ -175,6 +207,14 @@ void uart_flush_rx2(void)
             strcat(testBuffer2, text_);
          }
          #endif
+
+         if (!(timeout_ms--)) 
+         {
+            printf("Timeout error! ");
+            PROG_FAILED;
+         }
+         z80_delay_ms(1*8);   // 8x for 28MHz
+
          user_break();
       }
 
@@ -333,11 +373,14 @@ uint8_t uart_send_data_packet2(unsigned char *data, uint8_t len)
    // There should be: "OK\n\r>\n\r".
    uint8_t err = uart_read_expected2(">");
    if(err>0)
-      return err;
+      return err+20;
 
     // Send data to UART. Check the response in the next frame.
-    uart_raw_tx2(data, len);
-    return 0;
+    err = uart_raw_tx2(data, len);
+    if(err>0)
+      return err+10;
+
+   return 0;
 }
 
 uint8_t uart_receive_data_packet2(char* receivedData, uint8_t size)

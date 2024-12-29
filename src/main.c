@@ -11,6 +11,7 @@
 #include <arch/zxn.h>
 #include <input.h>
 #include <z80.h>
+
 #include <intrinsic.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -141,7 +142,9 @@ enum state
 
 uint8_t gameState = STATE_NONE;
 uint8_t frameCount = 0;
-
+uint16_t packetCounter = 0;
+uint8_t packetsPerSecond = 0;
+ 
 void StartNewPacket(void);
 void PageFlip(void);
 
@@ -387,7 +390,13 @@ static void UpdateGameObjects(void)
             gob->sy = 3;           
         }
 
-        // TODO: when reached Next => inactive
+        // When reached SpecNext => inactive
+        if( gob->x==30 && // Going down to Next
+            gob->y > 164) // Reached Next
+        {
+            gob->isActive = false;
+            //gob->isHidden = true;
+        }
 
         // Note: draw also an inactive gob so that the sprite is set to invisible.
         GobDraw(gob);
@@ -407,27 +416,25 @@ void UpdateAndDrawAll(void)
             uint8_t serverCommandsNop = 0;
             uint8_t packetLen = 1;
             uint8_t err = uart_send_data_packet2(&serverCommandsNop, packetLen);
-            if(err) PROG_FAILED;
-                // printf("uart_send_data_packet(). err=%u, buffer=%s\n", 
-                //     err, buffer);
+            if(err) PROG_FAILED1(err);
 
-            if(!err) 
-                DrawStatusTextAndPageFlip("Ping server (sent to UART)");
+            DrawStatusTextAndPageFlip("Ping server (sent to UART)");
+
+            // Switch border color
+            packetCounter++;
+            if((packetCounter & 1) == 0)
+                zx_border(INK_WHITE);
+            else
+                zx_border(INK_BLUE);
+
             // Read NOP send response.
             // The response should be: "Recv 1 bytes\n\rSEND OK\n\r"
             err = uart_read_expected2("SEND OK");
-            if(err)
-            {
-                PROG_FAILED;                
-                //printf("uart_read_response(). err=%u, buffer=%s\n", 
-                //    err, buffer);
-            }
-            else 
-            {
-                DrawStatusTextAndPageFlip("Ping server (sent to Server)");
-                gameState = STATE_WAIT_FOR_NOP;
-                //gameState = STATE_NONE;
-            }
+            if(err) PROG_FAILED; 
+
+            DrawStatusTextAndPageFlip("Ping server (sent to Server)");
+            gameState = STATE_WAIT_FOR_NOP;
+            //gameState = STATE_NONE;
         }
         break;   
 
@@ -474,6 +481,12 @@ void PageFlip(void)
         layer2_flip_main_shadow_screen();
 }
 
+int GetUsedStack(void)
+{
+    uint8_t stackEnd = 0;
+    return(0xc000   - (uint16_t)&stackEnd);
+}
+
 int main(void)
 {
 
@@ -507,31 +520,40 @@ int main(void)
     while (true)
     {   
         // Print fps on ULA screen.
-        // layer2_fill_rect(0, 0, 256, 8, 0xE3, &shadow_screen); // make a hole
-        // printAt(0, 0);
-        // printf("frame:%u", (++test)+100);
+        layer2_fill_rect(0, 0, 256, 8, 0xE3, &shadow_screen); // make a hole
+        printAt(0, 0);
+        printf("Stack usage: %u bytes\n", GetUsedStack());
 
         UpdateAndDrawAll();
 
         // Draw Frame count
         #ifndef NO_GFX
-        if( frameCount++ >= 60)
+        if( frameCount++ >= 50)
+        {
+            packetsPerSecond = packetCounter*50/frameCount;
             frameCount = 0;
-        char text[64];
+            packetCounter = 0;
+        }
+        char text[128];
         layer2_fill_rect( 0, 192 - 8, 255, 8, 0x00, &shadow_screen); // Clear field.
 
         strcpy(text, "frame:");
         // frame count
-        char tmpStr[5];
+        char tmpStr[32];
         myitoa(frameCount, tmpStr);
         strcat(text, tmpStr);
         //layer2_draw_text(23, 0, text, 0xc, &shadow_screen); 
 
         // game state
         strcat(text, " state:");
-        char stateNumStr[5];
-        myitoa(gameState, stateNumStr);
-        strcat(text, stateNumStr);
+        myitoa(gameState, tmpStr);
+        strcat(text, tmpStr);
+
+        // Packets per second
+        strcat(text, " ");
+        myitoa(packetsPerSecond, tmpStr);
+        strcat(text, tmpStr);
+        strcat(text, " pkg/sec");
 
         layer2_draw_text(23, 0, text, 0xc, &shadow_screen); 
         #endif
@@ -544,7 +566,7 @@ int main(void)
     //return 0;
 }
 
-void prog_failed(char* sourceFile, int32_t lineNum)
+void prog_failed(char* sourceFile, int32_t lineNum, uint8_t err)
 {
    // Make L2 screen transparent.
    layer2_fill_rect(0, 0,  256, 192, 0xE3, &shadow_screen); // make a hole
@@ -552,7 +574,7 @@ void prog_failed(char* sourceFile, int32_t lineNum)
 
    //printf("uart_failed()\n");
    char text[128];
-   sprintf(text, "FAILED in file: %s (%lu)", sourceFile, lineNum);
+   sprintf(text, "FAILED (err:%u) in file: %s (%lu)", err, sourceFile, lineNum);
    printf(text);
    zx_border(2);  // red border
    for(;;);

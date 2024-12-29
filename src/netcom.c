@@ -4,9 +4,9 @@
 
 #include "defines.h"
 #include "netcom.h"
-#include "esp.h"
-#include "uart.h"
 #include "uart2.h"
+
+void DrawStatusTextAndPageFlip(char* text);
 
 void NetComInit(void)
 {
@@ -23,14 +23,14 @@ void NetComInit(void)
     uart_tx2("ATE0\r\n");
     #endif
     if(uart_read_expected2("OK") != 0)
-        prog_failed(__FILE__, __LINE__);
+        PROG_FAILED;
 
     // Connect to wifi AP.
     char atcmd[256];
     sprintf(atcmd, "AT+CWJAP=\"%s\",\"%s\"\r\n", g_wifiSsid, g_wifiPassword);
     uart_tx2(atcmd);
     if(uart_read_expected2("OK") != 0)
-        prog_failed(__FILE__, __LINE__);
+        PROG_FAILED;
 
     DrawStatusTextAndPageFlip("Connected to Wifi");
 
@@ -38,7 +38,7 @@ void NetComInit(void)
     //AT+CIPMUX=0
     uart_tx2("AT+CIPMUX=0\r\n");
     if(uart_read_expected2("OK") != 0)
-        prog_failed(__FILE__, __LINE__);
+        PROG_FAILED;
    
     DrawStatusTextAndPageFlip("Create Server connection");
     // Start UDP connection.
@@ -50,7 +50,7 @@ void NetComInit(void)
         UDP_SERVER_ADDRESS, UDP_SERVER_PORT,UDP_LOCAL_PORT );
     uart_tx2(atcmd);
     if(uart_read_expected_many2("OK", "ERROR") != 0)
-        prog_failed(__FILE__, __LINE__);
+        PROG_FAILED;
 
     DrawStatusTextAndPageFlip("Create Server connection DONE");
 

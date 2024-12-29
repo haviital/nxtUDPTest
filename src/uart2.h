@@ -22,6 +22,6 @@ uint8_t uart_read_expected_many2(char* expected1, char* expected2);
 uint8_t uart_send_data_packet2(unsigned char *data, uint8_t len);
 uint8_t uart_receive_data_packet2(char* receivedData, uint8_t size);
 
-void prog_failed(char* sourceFile, int32_t lineNum);
+void prog_failed(char* sourceFile, int32_t lineNum, uint8_t err);
 
 
