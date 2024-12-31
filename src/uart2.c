@@ -39,51 +39,6 @@ char* replaceCrAndLn2(char* str, char* newStr)
    return newStr;
 }
 
-void myitoa_not_zero(uint8_t num, char* str) 
-{
-    int i = 0;
-    if(num>9)
-      i = 1;
-    else if(num>99)
-      i = 2;
-    str[i+1] = '\0'; // Add the string terminator
-
-    // Process individual digits
-    while (num != 0) {
-        int rem = num % 10;
-        str[i--] = rem + '0';
-        num = num / 10;
-    }
-   
-    //return str;
-}
-
-void myitoa(uint8_t num, char* str) 
-{
-   if(num==0)
-      strcpy(str, "0");
-   else 
-      myitoa_not_zero(num, str);   
-}
-
-uint8_t myatoi(char* str) 
-{
-   uint8_t num = 0;
-   uint8_t pos = strlen(str);
-   if(pos==0)
-      return 0;
-   pos--;
-   num += str[pos] - '0';
-   if(pos-- > 0)
-   {
-      num += (str[pos] - '0') * 10;
-      if(pos-- > 0)
-         num += (str[pos] - '0') * 100;
-   }
-   
-   return num;
-}
-
 void uart_tx2(unsigned char *s)
 {
    uint16_t timeout_ms = UART_TIMEOUT_MS;
@@ -137,20 +92,27 @@ bool uart_available_rx2(void)
    return (IO_133B & 0x01); // Is there data in RX port?
 }
 
+bool uart_available_rx_wait_once(uint16_t waitTimeMs)
+{
+   if(IO_133B & 0x01) // Is there data in RX port?
+      return true;
+
+   z80_delay_ms(waitTimeMs*8);
+   return (IO_133B & 0x01); // Is there data in RX port?
+ }
+
 
 // Wait until there is one byte from uart.
-unsigned char uart_rx_char2(void)
+uint8_t uart_rx_char_timeout(unsigned char* ch, uint16_t timeout_ms)
 {
    //printf(" uart_rx_char2 ");
 
    // Wait until there is a byte in rx.
-   uint16_t timeout_ms = UART_TIMEOUT_MS;
    while (!(IO_133B & 0x01)) // Is there data in RX port?
    {
       if (!(timeout_ms--)) 
       {
-         printf("Timeout error! ");
-         PROG_FAILED;
+         return 1; // Timeout
       }
       z80_delay_ms(1*8);   // 8x for 28MHz
 
@@ -175,7 +137,18 @@ unsigned char uart_rx_char2(void)
       strcat(testBuffer2, text_);
    }
    #endif
-   return( byte2 );
+   *ch = byte2;
+   return 0;
+}
+
+// Wait until there is one byte from uart.
+unsigned char uart_rx_char2(void)
+{
+   char ch=0;
+   uint8_t err = uart_rx_char_timeout(&ch, UART_TIMEOUT_MS);
+   if(err) PROG_FAILED;
+   
+   return ch;
 }
 
 void uart_flush_rx2(void)
@@ -227,6 +200,49 @@ void uart_flush_rx2(void)
       if(!(IO_133B & 0x01))
          break;
    }
+}
+
+uint8_t uart_read_until_expected(char* expected)
+{
+   uint16_t expectedStringPos = 0;
+   const uint16_t expectedLen = strlen(expected);
+   const uint16_t timeout_ms = 10;
+ 
+   // First read out all the garbage before the expected string.
+   char ch=0;
+   uint8_t err = 0;
+   while(true)
+   {
+      err = uart_rx_char_timeout(&ch, timeout_ms);
+      if(err==1) 
+         break; // Timeout error.
+      else if( err != 0) 
+         PROG_FAILED1(err);
+
+      // Check if the char is expected.
+      if(ch==expected[expectedStringPos])
+      {
+         // Advance the expected string position.
+         if(++expectedStringPos >= expectedLen)
+            break;  // All checked!
+      }
+      else
+      {
+         // Did not find the char belonging to expected string.
+         // Start again!
+         expectedStringPos = 0;
+
+         // Check if the char is expected.
+         if(ch==expected[expectedStringPos])
+         {
+            // Advance the expected string position.
+            if(++expectedStringPos >= expectedLen)
+               break;  // All checked!
+         }
+      }
+   }
+
+   return err; // Not found.
 }
 
 uint8_t uart_read_expected2(char* expected)
@@ -363,7 +379,7 @@ uint8_t uart_send_data_packet2(unsigned char *data, uint8_t len)
    // Send AT command to UART to start sending the UDP packet.
    char atcmd[32];
    strcpy(atcmd, "AT+CIPSEND=");
-   (void)myitoa_not_zero(len, &(atcmd[11]));
+   itoa(len, &(atcmd[11]), 10);
    strcat(atcmd, "\r\n");
    if(UART_DEBUG_PRINT_ENABLED) printf("call: %s\n", atcmd);
    uart_tx2(atcmd);
@@ -383,28 +399,29 @@ uint8_t uart_send_data_packet2(unsigned char *data, uint8_t len)
    return 0;
 }
 
-uint8_t uart_receive_data_packet2(char* receivedData, uint8_t size)
+uint8_t uart_receive_data_packet_if_any(char* receivedData, uint8_t size)
 {
-   // Should get: "+IPD,
-
-   // Read the string.
-   uint8_t err = uart_read_expected2("+IPD,"); 
+   // Read UART until the string was found or there is timeout.
+   uint8_t err = uart_read_until_expected("+IPD,"); 
    if(err)
-      return 1;
+      return err;  // Note: 1 is a timeout. Not an error.
 
+   // Read the packet from UART. 
    // Get the number of bytes as a string.
+   // Read until the colon. Get the number of bytes back (as a string).
    char receivedFromUart[4]; // includes the ending null. 
    err = uart_read_until_char(':', receivedFromUart, 4);
    if(err)
-      return 2;
+      return 20 + err;
 
-   uint8_t dataLen = myatoi(receivedFromUart);
+   // Convert the string to a number.
+   uint8_t dataLen = atoi(receivedFromUart);
    if(dataLen!=size)
    {
       return 3;
    }
 
-   // Read actual data
+   // Read actual data.
    for(uint8_t i=0; i<dataLen; i++)
       receivedData[i] = uart_rx_char2();
 

@@ -17,6 +17,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "lib/zxn/zxnext_layer2.h"
 #include "lib/zxn/zxnext_sprite.h"
@@ -142,8 +143,12 @@ enum state
 
 uint8_t gameState = STATE_NONE;
 uint8_t frameCount = 0;
-uint16_t packetCounter = 0;
-uint8_t packetsPerSecond = 0;
+uint16_t totalSendPacketCount = 0;
+uint16_t totalReceivedPacketCount = 0;
+uint8_t sendPacketsPerSecondInterval = 0;
+uint8_t recvPacketsPerSecondInterval = 0;
+uint16_t sendPacketCountPerSecond = 0;
+uint16_t recvPacketCountPerSecond = 0;
  
 void StartNewPacket(void);
 void PageFlip(void);
@@ -317,6 +322,15 @@ static void create_start_screen(void)
     //in_wait_key();
 }
 
+void FlipBorderColor(bool reset)
+{
+    static uint8_t color = 0;
+    if(reset) color=0;
+    zx_border(color);
+    color++;
+}
+
+
 void StartNewPacket(void)
 {
     // Find first inactive (free) gob.
@@ -405,65 +419,34 @@ static void UpdateGameObjects(void)
 
 void UpdateAndDrawAll(void)      
 {
+    FlipBorderColor(false);
     UpdateGameObjects();
+    FlipBorderColor(false);
 
     switch(gameState)
     {
 
         case STATE_CALL_NOP:
         {
-           // Send NOP to the server.
-            uint8_t serverCommandsNop = 0;
-            uint8_t packetLen = 1;
-            uint8_t err = uart_send_data_packet2(&serverCommandsNop, packetLen);
-            if(err) PROG_FAILED1(err);
+            uint16_t receivedPacketCount = 0;
+            uint8_t err = SendOrReceiveData(MSG_ID_TESTLOOPBACK, &receivedPacketCount);
+            FlipBorderColor(false);
 
-            DrawStatusTextAndPageFlip("Ping server (sent to UART)");
+            // Advance sent packet counter.
+            //totalSendPacketCount++;
+            //sendPacketCountPerSecond++;
 
-            // Switch border color
-            packetCounter++;
-            if((packetCounter & 1) == 0)
-                zx_border(INK_WHITE);
-            else
-                zx_border(INK_BLUE);
-
-            // Read NOP send response.
-            // The response should be: "Recv 1 bytes\n\rSEND OK\n\r"
-            err = uart_read_expected2("SEND OK");
-            if(err) PROG_FAILED; 
-
-            DrawStatusTextAndPageFlip("Ping server (sent to Server)");
-            gameState = STATE_WAIT_FOR_NOP;
             //gameState = STATE_NONE;
-        }
-        break;   
 
-        case STATE_WAIT_FOR_NOP:
-        {
-            #if 1
-            // Read received data for NOP.
-            NopResponse resp;
-            //printf("STATE_WAIT_FOR_NOP,");
-            if(uart_available_rx2())
+            if(receivedPacketCount>0)
             {
-                //printf("call uart_get_received_data().\n");
-                uint8_t err = uart_receive_data_packet2((char*)&resp, sizeof(NopResponse));
-                if(err) PROG_FAILED;
-                
-                DrawStatusTextAndPageFlip("Server responded!");
-
-                // Check the result.
-                if(resp.cmd != 0 )
-                    PROG_FAILED;
-                if( resp.flags != 1 )
-                    PROG_FAILED;
-
+                //totalReceivedPacketCount += receivedPacketCount;
                 //printf("uart_get_received_data(). OK\n");
+                FlipBorderColor(false);                
                 StartNewPacket();
- 
-                gameState = STATE_CALL_NOP;
+                FlipBorderColor(false);
+                gameState = STATE_CALL_NOP;  
             }
-            #endif
         }
         break;
 
@@ -472,7 +455,7 @@ void UpdateAndDrawAll(void)
     }
 }
 
-void PageFlip(void)
+void PageFlip()
 {
         // Wait for vertical blanking interval.
         intrinsic_halt();
@@ -481,7 +464,7 @@ void PageFlip(void)
         layer2_flip_main_shadow_screen();
 }
 
-int GetUsedStack(void)
+int16_t GetUsedStack(void)
 {
     uint8_t stackEnd = 0;
     return(0xc000   - (uint16_t)&stackEnd);
@@ -519,43 +502,92 @@ int main(void)
     uint8_t test=0;
     while (true)
     {   
-        // Print fps on ULA screen.
+        FlipBorderColor(true);
+#if 0        
+        z80_delay_ms(1*8);   // 8x for 28MHz
+        FlipBorderColor(false);
+        z80_delay_ms(1*8);   // 8x for 28MHz
+        FlipBorderColor(false);
+        z80_delay_ms(1*8);   // 8x for 28MHz
+        FlipBorderColor(false);
+        z80_delay_ms(1*8);   // 8x for 28MHz
+        FlipBorderColor(false);
+        z80_delay_ms(1*8);   // 8x for 28MHz
+        FlipBorderColor(false);
+        z80_delay_ms(1*8);   // 8x for 28MHz
+        FlipBorderColor(false);
+        z80_delay_ms(1*8);   // 8x for 28MHz
+        FlipBorderColor(false);
+        z80_delay_ms(1*8);   // 8x for 28MHz
+        FlipBorderColor(false);
+        z80_delay_ms(1*8);   // 8x for 28MHz
+        FlipBorderColor(false);
+#endif
+        // Print on ULA screen.
         layer2_fill_rect(0, 0, 256, 8, 0xE3, &shadow_screen); // make a hole
         printAt(0, 0);
-        printf("Stack usage: %u bytes\n", GetUsedStack());
+        printf("Stack usage: 0x%X bytes\n", GetUsedStack());
 
+        FlipBorderColor(false);
         UpdateAndDrawAll();
+        FlipBorderColor(false);
 
         // Draw Frame count
-        #ifndef NO_GFX
         if( frameCount++ >= 50)
         {
-            packetsPerSecond = packetCounter*50/frameCount;
-            frameCount = 0;
-            packetCounter = 0;
-        }
-        char text[128];
-        layer2_fill_rect( 0, 192 - 8, 255, 8, 0x00, &shadow_screen); // Clear field.
+            sendPacketsPerSecondInterval =  (uint8_t)(sendPacketCountPerSecond & 0xFF);
+            recvPacketsPerSecondInterval =  (uint8_t)(recvPacketCountPerSecond & 0xFF);
 
-        strcpy(text, "frame:");
-        // frame count
+            frameCount = 0;
+            sendPacketCountPerSecond = 0;
+            recvPacketCountPerSecond = 0;
+        }
+
+        char text[128];
+        text[0]=0;
+        #ifndef NO_GFX
+        layer2_fill_rect( 0, 192 - 8, 255, 8, 0x00, &shadow_screen); // Clear field.
+        #endif
+    
         char tmpStr[32];
-        myitoa(frameCount, tmpStr);
-        strcat(text, tmpStr);
+
+        // frame count
+        // strcpy(text, "frame:");
+        // itoa(frameCount, tmpStr, 10);
+        // strcat(text, tmpStr);
+
         //layer2_draw_text(23, 0, text, 0xc, &shadow_screen); 
 
-        // game state
-        strcat(text, " state:");
-        myitoa(gameState, tmpStr);
-        strcat(text, tmpStr);
+         // Packets per second
+        //strcat(text, " snd/rcv:");
 
-        // Packets per second
-        strcat(text, " ");
-        myitoa(packetsPerSecond, tmpStr);
+        itoa(sendPacketsPerSecondInterval, tmpStr, 10);
         strcat(text, tmpStr);
-        strcat(text, " pkg/sec");
+        strcat(text, "/");
+        itoa(recvPacketsPerSecondInterval, tmpStr, 10);
+        strcat(text, tmpStr);
+        strcat(text, " pkg/s ");
 
+        // Send and received packets
+        itoa(totalSendPacketCount,tmpStr,10);
+        strcat(text, tmpStr);
+        strcat(text, "/");
+        itoa(totalReceivedPacketCount,tmpStr,10);
+        strcat(text, tmpStr);
+        strcat(text, " pkg ");
+
+        //!!HV 
+        // printAt(8,0); 
+        // printf("sendPacketCountPerSecond = %u\n", sendPacketCountPerSecond);
+        // printf("recvPacketCountPerSecond = %u\n", recvPacketCountPerSecond);
+        // printf("frame                    = %u\n", frameCount);
+        // printf("send/recv when frame=0: %u/%u\n", sendPacketsPerSecondInterval, recvPacketsPerSecondInterval);
+        FlipBorderColor(false);
+
+        #ifndef NO_GFX
         layer2_draw_text(23, 0, text, 0xc, &shadow_screen); 
+        #else
+        printStrAt(23,0, text);
         #endif
 
         PageFlip();   
@@ -574,8 +606,9 @@ void prog_failed(char* sourceFile, int32_t lineNum, uint8_t err)
 
    //printf("uart_failed()\n");
    char text[128];
-   sprintf(text, "FAILED (err:%u) in file: %s (%lu)", err, sourceFile, lineNum);
+   sprintf(text, "FAILED (err:%u) in file: %s (%lu)\n", err, sourceFile, lineNum);
    printf(text);
+   printf("Stack usage after error: 0x%X bytes\n", GetUsedStack());
    zx_border(2);  // red border
    for(;;);
 }

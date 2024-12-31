@@ -2,6 +2,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include <z80.h>
+
 #include "defines.h"
 #include "netcom.h"
 #include "uart2.h"
@@ -57,107 +59,136 @@ void NetComInit(void)
     //printf("..NetComInit()\n"); //!!HV
  }
 
-void NetComInit_old(void)
+uint8_t SendOrReceiveData(uint8_t msgId, uint16_t* receivedPacketCount)
 {
-    #if 0
-    // Reset ESP
-    // ZXN_NEXTREG(0x02, 0x80);
-    // z80_delay_ms(100*8);       // 100ms, about 8x longer for 28MHz
-    // XN_NEXTREG(0x02, 0);
-    // z80_delay_ms(8000U*8U);      // 8s, about 8x longer for 28MHz
+    // *** Check if there is data to receive.
+    while(uart_available_rx2())  // wait 10ms for data to exist 
+    {
+        FlipBorderColor(false);
 
-    //printf("Init\r\n");
-    DrawStatusTextAndPageFlip("Init");
+        switch(msgId)
+        {
+            case MSG_ID_NOP:
+            {
+                // Receive UDP data if exists.
+                NopResponse resp;
+                uint8_t err = uart_receive_data_packet_if_any((char*)&resp, sizeof(NopResponse));
+                if(err && err != 1) PROG_FAILED;  // Note: 1 is timeout. Not an error.
 
-    esp_response_time_ms = 66 + ESP_FW_RESPONSE_TIME_MS;   // two bit periods at 300bps
-    uart_rx_readline_last(buffer, sizeof(buffer)-1);   // clear Rx
+                // If the packet was found, check the result.
+                if(!err)
+                {
+                    if(resp.cmd != 0 )
+                        PROG_FAILED;
+                    if( resp.flags != 1 )
+                        PROG_FAILED;
+                 }
+            }
+            break;
+            
+            case MSG_ID_TESTLOOPBACK:
+            {
+                // The request struct.
 
-    //esp_response_time_ms = 66 + ESP_FW_RESPONSE_TIME_MS;   // two bit periods at 300bps
-    esp_response_time_ms = 66 + ESP_FW_RESPONSE_TIME_MS * 100;   // two bit periods at 300bps
-   
-    //printf("ESP AT+GMR follows...\n");
-    //uart_rx_readline_last(buffer, sizeof(buffer)-1);   // clear Rx
+                // Send packet to the server. The server sends it back 3 times.
+                TestLoopBackResponse serverCommandsTestLoopBack;
+                uint8_t err = uart_receive_data_packet_if_any((char*)&serverCommandsTestLoopBack, 
+                    MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE);
+                if(err && err != 1) PROG_FAILED;  // Note: 1 is timeout. Not an error.
 
-    // Send AT command to UART and print response.
-    //uart_send_at_cmd(STRING_ESP_TX_AT_GMR);
+                // If the packet was found, check the result.
+                if(!err)
+                {
+                    if( serverCommandsTestLoopBack.cmd != MSG_ID_TESTLOOPBACK )
+                        PROG_FAILED;
+                    if( serverCommandsTestLoopBack.packetSize != MSG_TESTLOOPBACK_RANDOM_DATA_SIZE )
+                    {
+                        printf("packetSize=%u (%u)", serverCommandsTestLoopBack.packetSize, 
+                            MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE);
+                        PROG_FAILED;
+                    }
 
-#if 0 
+                    // Init the test data for verification when it comes back
+                    for(uint8_t i=0; i<MSG_TESTLOOPBACK_RANDOM_DATA_SIZE; i++)
+                        if(serverCommandsTestLoopBack.packetData[i] != i)
+                            PROG_FAILED1(i);
+                }
+            }
+            break;
+            
+            default:
+                PROG_FAILED;
+        }
 
-     // Print the wifi init status
-    //uart_send_at_cmd("AT+CWINIT?\r\n");
 
-    // Print the wifi mode
-    uart_send_at_cmd("AT+CWMODE?\r\n");
+        (*receivedPacketCount)++;
+        totalReceivedPacketCount++;
+        recvPacketCountPerSecond++;
 
-    // Print the wifi state
-    uart_send_at_cmd("AT+CWSTATE?\r\n");
+        z80_delay_ms(1*8);   // 8x for 28MHz
+    }
 
-    // Set parametes for the AP list.
-    // - The first parameter is 1, meaning that the result of the command AT+CWLAP will be ordered according to RSSI;
-    // - The second parameter is 31, namely 0x1F, meaning that the corresponding bits of <print mask> are set to 1. All parameters will be shown in the result of AT+CWLAP.
-    uart_send_at_cmd("AT+CWLAPOPT=1,31\r\n");
+    // *** Now send the packet to the server via UART & UDP.
+    while(true)
+    {
+        switch(msgId)
+        {
+            case MSG_ID_NOP:
+            {
+                // Send NOP to the server.
+                uint8_t serverCommandsNop = 0;
+                uint8_t packetLen = 1;
+                uint8_t err = uart_send_data_packet2(&serverCommandsNop, packetLen);
+                if(err) PROG_FAILED1(err);
+            }
+            break;
+            
+            case MSG_ID_TESTLOOPBACK:
+            {
+                // The request struct.
+                 TestLoopBackRequest serverCommandsTestLoopBack = 
+                {
+                    .cmd = MSG_ID_TESTLOOPBACK,
+                    // Server TESTLOOPBACKGUID: b679c980-0a2f-4c71-a0cf-fe9dcfef3a17
+                    .testGuid = 
+                    {
+                        0xb6, 0x79, 0xc9, 0x80, 0x0a, 0x2f, 0x4c, 0x71, 
+                        0xa0, 0xcf, 0xfe, 0x9d, 0xcf, 0xef, 0x3a, 0x17
+                    },
+                    .loopPacketCount = 3,  // 3 other "clients"
+                    .packetSize = MSG_TESTLOOPBACK_RANDOM_DATA_SIZE,  // Random data size.                  
+                };
 
-    // List wifi access points
-    esp_response_time_ms = 66 + ESP_FW_RESPONSE_TIME_MS * 100*10;   // two bit periods at 300bps
-    uart_send_at_cmd("AT+CWLAP\r\n");
+                // Init the test data for verification when it comes back
+                for(uint8_t i=0; i<MSG_TESTLOOPBACK_RANDOM_DATA_SIZE; i++)
+                    serverCommandsTestLoopBack.packetData[i] = i;
 
-    //
-    //uart_send_at_cmd("AT+CWLAP=\"5GCPE_5DFEC5\"\r\n");
+                // Send packet to the server. The server sends it back 3 times.
+                uint8_t err = uart_send_data_packet2((uint8_t*)&serverCommandsTestLoopBack, 
+                    MSG_TESTLOOPBACK_REQUEST_STRUCT_SIZE);
+                if(err) PROG_FAILED1(err);
+            }
+            break;
+            
+            default:
+                PROG_FAILED;
+        }
 
-   //
-    //uart_send_at_cmd("AT+CWLAP=\"Koti_9751\"\r\n");
-#endif
+        // Read send response (from UART?).
+        // The response should be: "Recv 1 bytes\n\rSEND OK\n\r"
+        // TODO: Can "+IPD" interfere before SEND OK?
+        uint8_t err = uart_read_expected2("SEND OK");
+        if(err) PROG_FAILED; 
 
-   DrawStatusTextAndPageFlip("Connecting to Wifi");
+        totalSendPacketCount++;
+        sendPacketCountPerSecond++;
 
-    // Disable echo
-    uart_send_at_cmd("ATE0\r\n");
+        int32_t delta = totalSendPacketCount - totalReceivedPacketCount; 
+        // if(delta < 10)
+            break;
 
-    // Set speed.
-    //uart_send_at_cmd("AT+UART_CUR=115273,8,1,0,0\r\n");
- 
-    // Connect to wifi AP.
-    char atcmd[256];
-    sprintf(atcmd, "AT+CWJAP=\"%s\",\"%s\"\r\n", g_wifiSsid, g_wifiPassword);
-    esp_response_time_ms = 66 + ESP_FW_RESPONSE_TIME_MS * 100*10;   // longer timeout
-    uart_send_at_cmd(atcmd); 
+        z80_delay_ms(1*8);   // 8x for 28MHz
+    }
 
-    DrawStatusTextAndPageFlip("Connected to Wifi");
-
-    // Get my IP address
-    // AT+CIFSR
-    //uart_send_at_cmd("AT+CIFSR\r\n");
-
-    // Enable single connection mode
-    //AT+CIPMUX=0
-    //esp_response_time_ms = 66 + ESP_FW_RESPONSE_TIME_MS*10;   // normal timeout
-    uart_send_at_cmd("AT+CIPMUX=0\r\n");
-    DrawStatusTextAndPageFlip("Create Server connection");
-
-    // Start UDP connection.
-    // 2 means UDP(?)
-    // 0 means wifi passthrough
-    // AT+CIPSTART="UDP","<remote_ip>",<remote_port>,<local_port>,0
-    // Could also come: "ALREADY CONNECTED\r\nERROR\n\r"
-    sprintf(atcmd, "AT+CIPSTART=\"UDP\",\"%s\",%s,%s,0\r\n", 
-        UDP_SERVER_ADDRESS, UDP_SERVER_PORT,UDP_LOCAL_PORT );
-    uart_send_at_cmd_custom_response(atcmd, "OK\r\n", "ERROR\r\n"); 
-    #endif
+    return 0;
 }
-
-
-/*
-void main_esp_detect_bps(void)
-{
-   printf("Detecting ESP baud rate\n");
-   
-   if (!esp_detect_bps())
-   {
-      esp_bps = 115200UL;
-      printf("\n  Failed, selecting default");
-   }
-
-   printf("\n  Setting uart to %lu\n", esp_bps);
-   uart_set_prescaler(uart_compute_prescaler(esp_bps));
-}
-*/
