@@ -122,6 +122,9 @@ static void test_blit_transparent(layer2_screen_t *screen);
 //char g_wifiPassword[128] = "mypassword";
 #include "..\..\mycredentials.h"
 
+// Defines
+#define DATA_SPR_SPEED 5
+
 // Local
 
 static uint8_t test_number = 0;
@@ -142,13 +145,16 @@ enum state
 };
 
 uint8_t gameState = STATE_NONE;
-uint8_t frameCount = 0;
+uint8_t frameCountForOneSecond = 0;
+uint8_t frameCount8Bit = 0;
 uint16_t totalSendPacketCount = 0;
 uint16_t totalReceivedPacketCount = 0;
-uint8_t sendPacketsPerSecondInterval = 0;
-uint8_t recvPacketsPerSecondInterval = 0;
+uint16_t sendPacketsPerSecondInterval = 0;
+uint16_t recvPacketsPerSecondInterval = 0;
 uint16_t sendPacketCountPerSecond = 0;
 uint16_t recvPacketCountPerSecond = 0;
+uint8_t numClonedPackets = 3;
+uint16_t totalSeconds = 0;
  
 void StartNewPacket(void);
 void PageFlip(void);
@@ -251,7 +257,7 @@ static void create_sprites(void)
    // *** Moving sprites
 
     // Incoming data packet gobs
-    GameObject defaultGob = {.x = 30, .y= 88, .sx=0, .sy=3, .spriteIndex=0, 
+    GameObject defaultGob = {.x = 30, .y= 88, .sx=0, .sy=DATA_SPR_SPEED, .spriteIndex=0, 
         .spritePatternIndex = CLOUD_PATTERN_SLOT, .isHidden=true, .isActive=false};
     for(int i=0; i<INCOMING_PACKET_GOB_COUNT; i++)
     {
@@ -324,6 +330,8 @@ static void create_start_screen(void)
 
 void FlipBorderColor(bool reset)
 {
+    return;
+
     static uint8_t color = 0;
     if(reset) color=0;
     zx_border(color);
@@ -347,13 +355,15 @@ void StartNewPacket(void)
         gobp->x = 216;
         gobp->y = 154;
         gobp->sx = 0;
-        gobp->sy = -3;
+        gobp->sy = -DATA_SPR_SPEED;
     }
 }
 
 void DrawStatusText(char* text)
 {
     #ifdef NO_GFX
+    printf(text);
+    printf("\n");
     return;
     #endif
 
@@ -366,6 +376,8 @@ void DrawStatusText(char* text)
 void DrawStatusTextAndPageFlip(char* text)
 {
     #ifdef NO_GFX
+    printf(text);
+    printf("\n");
     return;
     #endif
 
@@ -401,7 +413,7 @@ static void UpdateGameObjects(void)
         {
             gob->x = 30;
             gob->sx = 0;
-            gob->sy = 3;           
+            gob->sy = DATA_SPR_SPEED;           
         }
 
         // When reached SpecNext => inactive
@@ -429,8 +441,14 @@ void UpdateAndDrawAll(void)
         case STATE_CALL_NOP:
         {
             uint16_t receivedPacketCount = 0;
-            uint8_t err = SendOrReceiveData(MSG_ID_TESTLOOPBACK, &receivedPacketCount);
+            //uint8_t err = SendOrReceiveData(MSG_ID_TESTLOOPBACK, &receivedPacketCount);
             FlipBorderColor(false);
+
+            uint8_t err =  ReceiveMessage(MSG_ID_TESTLOOPBACK, &receivedPacketCount);
+
+            // Only send every 8th frame
+            if((frameCount8Bit & 0x7) == 0)
+                err =  SendMessage(MSG_ID_TESTLOOPBACK);
 
             // Advance sent packet counter.
             //totalSendPacketCount++;
@@ -455,7 +473,7 @@ void UpdateAndDrawAll(void)
     }
 }
 
-void PageFlip()
+void PageFlip(void)
 {
         // Wait for vertical blanking interval.
         intrinsic_halt();
@@ -481,7 +499,7 @@ int main(void)
     // printf("Finished!");
     // for(;;); // forever
 
-    layer2_fill_rect(0, 0,  256, 192, 0xE3, &shadow_screen); // make a hole
+    layer2_fill_rect(0, 0,  256, 192, 0xE3, &shadow_screen); // make a hole for the whole screen
     // Swap the double buffered screen.
     layer2_flip_main_shadow_screen();
     layer2_fill_rect(0, 0,  256, 192, 0xE3, &shadow_screen); // make a hole
@@ -503,44 +521,69 @@ int main(void)
     while (true)
     {   
         FlipBorderColor(true);
-#if 0        
-        z80_delay_ms(1*8);   // 8x for 28MHz
-        FlipBorderColor(false);
-        z80_delay_ms(1*8);   // 8x for 28MHz
-        FlipBorderColor(false);
-        z80_delay_ms(1*8);   // 8x for 28MHz
-        FlipBorderColor(false);
-        z80_delay_ms(1*8);   // 8x for 28MHz
-        FlipBorderColor(false);
-        z80_delay_ms(1*8);   // 8x for 28MHz
-        FlipBorderColor(false);
-        z80_delay_ms(1*8);   // 8x for 28MHz
-        FlipBorderColor(false);
-        z80_delay_ms(1*8);   // 8x for 28MHz
-        FlipBorderColor(false);
-        z80_delay_ms(1*8);   // 8x for 28MHz
-        FlipBorderColor(false);
-        z80_delay_ms(1*8);   // 8x for 28MHz
-        FlipBorderColor(false);
+        //zx_border(INK_GREEN);
+
+        //
+        if (in_key_pressed(IN_KEY_SCANCODE_1))
+            numClonedPackets = 1;
+        else if (in_key_pressed(IN_KEY_SCANCODE_2))
+            numClonedPackets = 3;
+        else if (in_key_pressed(IN_KEY_SCANCODE_3))
+            numClonedPackets = 7;
+        
+
+#if 0    
+        const int delay = 800;
+        // for(int i=0; i<delay; i++);
+        // FlipBorderColor(false);
+        // for(int i=0; i<delay; i++);
+        // FlipBorderColor(false);
+        // for(int i=0; i<delay; i++);
+        // FlipBorderColor(false);
+        // for(int i=0; i<delay; i++);
+        // FlipBorderColor(false);
+        // for(int i=0; i<delay; i++);
+        // FlipBorderColor(false);
+        // for(int i=0; i<delay; i++);
+        // FlipBorderColor(false);
+        // for(int i=0; i<delay; i++);
+        // FlipBorderColor(false);
+        // for(int i=0; i<delay; i++);
+        // FlipBorderColor(false);
+        // for(int i=0; i<delay; i++);
+        // FlipBorderColor(false);
+
+        // zx_border(INK_RED);
+        // z80_delay_ms(1*8);   // 8x for 28MHz        
+        // zx_border(INK_WHITE);
+        // z80_delay_ms(1*8);   // 8x for 28MHz        
+        // zx_border(INK_RED);
+        // z80_delay_ms(1*8);   // 8x for 28MHz        
+        // zx_border(INK_WHITE);
+
 #endif
         // Print on ULA screen.
         layer2_fill_rect(0, 0, 256, 8, 0xE3, &shadow_screen); // make a hole
         printAt(0, 0);
-        printf("Stack usage: 0x%X bytes\n", GetUsedStack());
+        printf("Cloned packets: %u", numClonedPackets);
 
         FlipBorderColor(false);
         UpdateAndDrawAll();
         FlipBorderColor(false);
 
-        // Draw Frame count
-        if( frameCount++ >= 50)
-        {
-            sendPacketsPerSecondInterval =  (uint8_t)(sendPacketCountPerSecond & 0xFF);
-            recvPacketsPerSecondInterval =  (uint8_t)(recvPacketCountPerSecond & 0xFF);
+        frameCount8Bit++;
 
-            frameCount = 0;
+        // Draw Frame count
+        if( frameCountForOneSecond++ >= 50)
+        {
+            sendPacketsPerSecondInterval =  sendPacketCountPerSecond;
+            recvPacketsPerSecondInterval =  recvPacketCountPerSecond;
+
+            frameCountForOneSecond = 0;
             sendPacketCountPerSecond = 0;
             recvPacketCountPerSecond = 0;
+
+            totalSeconds++;
         }
 
         char text[128];
@@ -549,17 +592,22 @@ int main(void)
         layer2_fill_rect( 0, 192 - 8, 255, 8, 0x00, &shadow_screen); // Clear field.
         #endif
     
-        char tmpStr[32];
+        char tmpStr[64];
 
         // frame count
         // strcpy(text, "frame:");
-        // itoa(frameCount, tmpStr, 10);
+        // itoa(frameCountForOneSecond, tmpStr, 10);
         // strcat(text, tmpStr);
 
         //layer2_draw_text(23, 0, text, 0xc, &shadow_screen); 
 
          // Packets per second
         //strcat(text, " snd/rcv:");
+
+        
+        itoa(totalSeconds, tmpStr, 10);
+        strcat(text, tmpStr);
+        strcat(text, "s ");
 
         itoa(sendPacketsPerSecondInterval, tmpStr, 10);
         strcat(text, tmpStr);
@@ -580,15 +628,19 @@ int main(void)
         // printAt(8,0); 
         // printf("sendPacketCountPerSecond = %u\n", sendPacketCountPerSecond);
         // printf("recvPacketCountPerSecond = %u\n", recvPacketCountPerSecond);
-        // printf("frame                    = %u\n", frameCount);
+        // printf("frame                    = %u\n", frameCountForOneSecond);
         // printf("send/recv when frame=0: %u/%u\n", sendPacketsPerSecondInterval, recvPacketsPerSecondInterval);
         FlipBorderColor(false);
 
         #ifndef NO_GFX
         layer2_draw_text(23, 0, text, 0xc, &shadow_screen); 
         #else
+        // Draw a hole for the whole screen,
+        layer2_fill_rect(0, 0, 256, 192, 0xE3, &shadow_screen); // make a hole
         printStrAt(23,0, text);
         #endif
+
+        zx_border(INK_BLACK);
 
         PageFlip();   
     }

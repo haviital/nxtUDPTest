@@ -5,7 +5,7 @@
 // Choose one
 // // #define PRINT_TO_BUFFER2  // Either this or
 //#define UART_PRINT_TO_SCREEN2 // this one.
-#define UART_DEBUG_PRINT_ENABLED 0
+#define UART_SPECIAL_DEBUG_PRINT_ENABLED 0
 //#define AT_ECHO_ON  // Set echo on.
 
 #define CLOUD_SPRITE_Y 40
@@ -26,6 +26,7 @@
 #define PROG_FAILED prog_failed(__FILE__, __LINE__, 0)
 #define PROG_FAILED1(err) prog_failed(__FILE__, __LINE__, err)
 
+extern uint8_t numClonedPackets;
 
 void FlipBorderColor(bool reset);
 

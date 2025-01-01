@@ -39,5 +39,8 @@ extern uint16_t sendPacketCountPerSecond;
 extern uint16_t recvPacketCountPerSecond;
 
 void NetComInit(void);
-uint8_t SendOrReceiveData(uint8_t msgId, uint16_t* receivedPacketCount);
+//uint8_t SendOrReceiveData(uint8_t msgId, uint16_t* receivedPacketCount);
+uint8_t SendMessage(uint8_t msgId);
+uint8_t ReceiveMessage(uint8_t msgId, uint16_t* receivedPacketCount);
+
 

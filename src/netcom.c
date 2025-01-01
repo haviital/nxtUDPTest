@@ -59,10 +59,9 @@ void NetComInit(void)
     //printf("..NetComInit()\n"); //!!HV
  }
 
-uint8_t SendOrReceiveData(uint8_t msgId, uint16_t* receivedPacketCount)
+uint8_t ReceiveMessage(uint8_t msgId, uint16_t* receivedPacketCount)
 {
-    // *** Check if there is data to receive.
-    while(uart_available_rx2())  // wait 10ms for data to exist 
+    if(uart_available_rx2()) 
     {
         FlipBorderColor(false);
 
@@ -120,75 +119,72 @@ uint8_t SendOrReceiveData(uint8_t msgId, uint16_t* receivedPacketCount)
                 PROG_FAILED;
         }
 
-
         (*receivedPacketCount)++;
         totalReceivedPacketCount++;
         recvPacketCountPerSecond++;
 
-        z80_delay_ms(1*8);   // 8x for 28MHz
+        //z80_delay_ms(1*8);   // 8x for 28MHz
     }
+}
+
+uint8_t SendMessage(uint8_t msgId)
+{
+    // *** Check if there is data to receive.
 
     // *** Now send the packet to the server via UART & UDP.
-    while(true)
+    switch(msgId)
     {
-        switch(msgId)
+        case MSG_ID_NOP:
         {
-            case MSG_ID_NOP:
-            {
-                // Send NOP to the server.
-                uint8_t serverCommandsNop = 0;
-                uint8_t packetLen = 1;
-                uint8_t err = uart_send_data_packet2(&serverCommandsNop, packetLen);
-                if(err) PROG_FAILED1(err);
-            }
-            break;
-            
-            case MSG_ID_TESTLOOPBACK:
-            {
-                // The request struct.
-                 TestLoopBackRequest serverCommandsTestLoopBack = 
-                {
-                    .cmd = MSG_ID_TESTLOOPBACK,
-                    // Server TESTLOOPBACKGUID: b679c980-0a2f-4c71-a0cf-fe9dcfef3a17
-                    .testGuid = 
-                    {
-                        0xb6, 0x79, 0xc9, 0x80, 0x0a, 0x2f, 0x4c, 0x71, 
-                        0xa0, 0xcf, 0xfe, 0x9d, 0xcf, 0xef, 0x3a, 0x17
-                    },
-                    .loopPacketCount = 3,  // 3 other "clients"
-                    .packetSize = MSG_TESTLOOPBACK_RANDOM_DATA_SIZE,  // Random data size.                  
-                };
-
-                // Init the test data for verification when it comes back
-                for(uint8_t i=0; i<MSG_TESTLOOPBACK_RANDOM_DATA_SIZE; i++)
-                    serverCommandsTestLoopBack.packetData[i] = i;
-
-                // Send packet to the server. The server sends it back 3 times.
-                uint8_t err = uart_send_data_packet2((uint8_t*)&serverCommandsTestLoopBack, 
-                    MSG_TESTLOOPBACK_REQUEST_STRUCT_SIZE);
-                if(err) PROG_FAILED1(err);
-            }
-            break;
-            
-            default:
-                PROG_FAILED;
+            // Send NOP to the server.
+            uint8_t serverCommandsNop = 0;
+            uint8_t packetLen = 1;
+            uint8_t err = uart_send_data_packet2(&serverCommandsNop, packetLen);
+            if(err) PROG_FAILED1(err);
         }
+        break;
+        
+        case MSG_ID_TESTLOOPBACK:
+        {
+            // The request struct.
+                TestLoopBackRequest serverCommandsTestLoopBack = 
+            {
+                .cmd = MSG_ID_TESTLOOPBACK,
+                // Server TESTLOOPBACKGUID: b679c980-0a2f-4c71-a0cf-fe9dcfef3a17
+                .testGuid = 
+                {
+                    0xb6, 0x79, 0xc9, 0x80, 0x0a, 0x2f, 0x4c, 0x71, 
+                    0xa0, 0xcf, 0xfe, 0x9d, 0xcf, 0xef, 0x3a, 0x17
+                },
+                .loopPacketCount = numClonedPackets,  // Count of faked "clients"
+                .packetSize = MSG_TESTLOOPBACK_RANDOM_DATA_SIZE,  // Random data size.                  
+            };
 
-        // Read send response (from UART?).
-        // The response should be: "Recv 1 bytes\n\rSEND OK\n\r"
-        // TODO: Can "+IPD" interfere before SEND OK?
-        uint8_t err = uart_read_expected2("SEND OK");
-        if(err) PROG_FAILED; 
+            // Init the test data for verification when it comes back
+            for(uint8_t i=0; i<MSG_TESTLOOPBACK_RANDOM_DATA_SIZE; i++)
+                serverCommandsTestLoopBack.packetData[i] = i;
 
-        totalSendPacketCount++;
-        sendPacketCountPerSecond++;
-
-        int32_t delta = totalSendPacketCount - totalReceivedPacketCount; 
-        // if(delta < 10)
-            break;
-
-        z80_delay_ms(1*8);   // 8x for 28MHz
+            // Send packet to the server. The server sends it back 3 times.
+            uint8_t err = uart_send_data_packet2((uint8_t*)&serverCommandsTestLoopBack, 
+                MSG_TESTLOOPBACK_REQUEST_STRUCT_SIZE);
+            if(err) PROG_FAILED1(err);
+        }
+        break;
+        
+        default:
+            PROG_FAILED;
     }
+
+    // Read send response (from UART?).
+    // The response should be: "Recv 1 bytes\n\rSEND OK\n\r"
+    // TODO: Can "+IPD" interfere before SEND OK?
+    uint8_t err = uart_read_expected2("SEND OK");
+    if(err) PROG_FAILED; 
+
+    totalSendPacketCount++;
+    sendPacketCountPerSecond++;
+
+    //int32_t delta = totalSendPacketCount - totalReceivedPacketCount; 
 
     return 0;
 }

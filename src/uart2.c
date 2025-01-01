@@ -20,6 +20,7 @@ void user_break(void)
 {
    if (in_key_pressed(IN_KEY_SCANCODE_SPACE | 0x8000))  // CAPS+SPACE
       exit((int)err_break);
+
 }
 
 char* replaceCrAndLn2(char* str, char* newStr)
@@ -41,6 +42,7 @@ char* replaceCrAndLn2(char* str, char* newStr)
 
 void uart_tx2(unsigned char *s)
 {
+   if(UART_SPECIAL_DEBUG_PRINT_ENABLED) printf("uart_tx2: %s\n", s);
    uint16_t timeout_ms = UART_TIMEOUT_MS;
    while (*s)
    {
@@ -101,6 +103,17 @@ bool uart_available_rx_wait_once(uint16_t waitTimeMs)
    return (IO_133B & 0x01); // Is there data in RX port?
  }
 
+void uart_pretty_print(char c)
+{
+   if(c>31)
+      printf("%c", c);
+   else if(c==10)
+      printf("n", c);
+   else if(c==13)
+      printf("r", c);
+   else
+      printf("<%u>", c);
+}
 
 // Wait until there is one byte from uart.
 uint8_t uart_rx_char_timeout(unsigned char* ch, uint16_t timeout_ms)
@@ -110,32 +123,16 @@ uint8_t uart_rx_char_timeout(unsigned char* ch, uint16_t timeout_ms)
    // Wait until there is a byte in rx.
    while (!(IO_133B & 0x01)) // Is there data in RX port?
    {
-      if (!(timeout_ms--)) 
-      {
+      if (timeout_ms--==0) 
          return 1; // Timeout
-      }
+
       z80_delay_ms(1*8);   // 8x for 28MHz
 
       user_break(); 
    }
    unsigned char byte2 = IO_143B;
    #ifdef UART_PRINT_TO_SCREEN2
-   if(byte2>31)
-      printf("%c", byte2);
-   else
-      printf("<%u>", byte2);
-   #elif defined(PRINT_TO_BUFFER2)
-   char* text_[16];
-   if(byte2>31)
-   {
-      sprintf(text_, "%c", byte2);
-      strcat(testBuffer2, text_);
-   }
-   else
-   {
-      sprintf(text_, "<%u>", byte2);
-      strcat(testBuffer2, text_);
-   }
+   uart_pretty_print(byte2);
    #endif
    *ch = byte2;
    return 0;
@@ -146,7 +143,11 @@ unsigned char uart_rx_char2(void)
 {
    char ch=0;
    uint8_t err = uart_rx_char_timeout(&ch, UART_TIMEOUT_MS);
-   if(err) PROG_FAILED;
+   if(err) 
+   {
+      printf("timeout error (%lu ms)!\n", (uint16_t)UART_TIMEOUT_MS);
+      PROG_FAILED;
+   }
    
    return ch;
 }
@@ -381,7 +382,7 @@ uint8_t uart_send_data_packet2(unsigned char *data, uint8_t len)
    strcpy(atcmd, "AT+CIPSEND=");
    itoa(len, &(atcmd[11]), 10);
    strcat(atcmd, "\r\n");
-   if(UART_DEBUG_PRINT_ENABLED) printf("call: %s\n", atcmd);
+   if(UART_SPECIAL_DEBUG_PRINT_ENABLED) printf("call: %s\n", atcmd);
    uart_tx2(atcmd);
    //*buffer = 0;
 
