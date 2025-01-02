@@ -16,8 +16,8 @@ MKDIR = mkdir -p
 CC=zcc
 AS=zcc
 TARGET=+zxn -subtype=nex
-VERBOSITY=-vn
-#VERBOSITY=-v
+#VERBOSITY=-vn
+VERBOSITY=-v
 OUT_DIR=build bin
 PRAGMA_FILE=zpragma.inc
 #DEBUGFLAGS := --list --c-code-in-asm
@@ -28,9 +28,9 @@ OBJS=$(patsubst %, src/%, $(OBJECTS))
 #C_OPT_FLAGS=-SO3 --max-allocs-per-node200000 --opt-code-size
 C_OPT_FLAGS=-SO3 --max-allocs-per-node200000
 
-CFLAGS=$(TARGET) $(VERBOSITY) -c $(C_OPT_FLAGS) -compiler sdcc -clib=sdcc_iy -pragma-include:$(PRAGMA_FILE)
-LDFLAGS=$(TARGET) $(VERBOSITY) --list -m -s -clib=sdcc_iy -llib/zxn/zxnext_layer2 -llib/zxn/zxnext_sprite -pragma-include:$(PRAGMA_FILE)
-ASFLAGS=$(TARGET) $(VERBOSITY) -c --list -m -s
+CFLAGS=$(TARGET) $(VERBOSITY) -c $(C_OPT_FLAGS) -compiler sdcc -clib=sdcc_iy -pragma-include:$(PRAGMA_FILE) -no-cleanup
+LDFLAGS=$(TARGET) $(VERBOSITY) --list -m -s -clib=sdcc_iy -llib/zxn/zxnext_layer2 -llib/zxn/zxnext_sprite -pragma-include:$(PRAGMA_FILE) -no-cleanup
+ASFLAGS=$(TARGET) $(VERBOSITY) -c --list -m -s -no-cleanup
 
 EXEC=$(EXEC_OUTPUT).nex
 

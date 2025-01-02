@@ -10,6 +10,7 @@ typedef struct GameObject_
 
     uint8_t spriteIndex;  // Sprite index.
     uint8_t spritePatternIndex; // Srite bitmap data slot.
+    uint8_t spritePaletteOffset; // Sprite palette offset.
     bool isHidden;  // True is the game objec is not visible.
     bool isActive;  // True is the game object is active. False , if it is not updated or drawn.
 

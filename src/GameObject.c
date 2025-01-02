@@ -33,5 +33,6 @@ void GobDraw(GameObject* gob)
 {
     // Update sprite position.
     set_sprite_slot(gob->spriteIndex);
-    set_sprite_attributes_ext(gob->spritePatternIndex, gob->x, gob->y, 0, 0, !gob->isHidden && gob->isActive);
+    set_sprite_attributes_ext(gob->spritePatternIndex, gob->x, gob->y,  
+        gob->spritePaletteOffset, 0, !gob->isHidden && gob->isActive);
 }

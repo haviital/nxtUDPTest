@@ -124,6 +124,15 @@ static void test_blit_transparent(layer2_screen_t *screen);
 
 // Defines
 #define DATA_SPR_SPEED 5
+#define PACKET_SPRITE_PATTERN_SLOT 0
+#define CLOUD_SPRITE_PATTERN_SLOT 1
+#define SERVER_SPRITE_0_PATTERN_SLOT 2
+#define SERVER_SPRITE_1_PATTERN_SLOT 3
+#define SERVER_SPRITE_2_PATTERN_SLOT 4
+#define SERVER_SPRITE_3_PATTERN_SLOT 5
+#define SPECNEXT_SPRITE_0_PATTERN_SLOT 6
+#define SPECNEXT_SPRITE_1_PATTERN_SLOT 7
+
 
 // Local
 
@@ -135,7 +144,8 @@ static layer2_screen_t shadow_screen = {SHADOW_SCREEN};
 
 #define INCOMING_PACKET_GOB_COUNT 30
 static GameObject incomingPacketGobs[INCOMING_PACKET_GOB_COUNT];
-
+#define OUTGOING_PACKET_GOB_COUNT 5
+static GameObject outgoingPacketGobs[OUTGOING_PACKET_GOB_COUNT];
 
 enum state
 {
@@ -156,7 +166,7 @@ uint16_t recvPacketCountPerSecond = 0;
 uint8_t numClonedPackets = 3;
 uint16_t totalSeconds = 0;
  
-void StartNewPacket(void);
+void StartNewPacket(bool isIncoming);
 void PageFlip(void);
 
 
@@ -198,79 +208,101 @@ static void init_isr(void)
     intrinsic_ei();
 }
 
-#define CLOUD_PATTERN_SLOT 0
 static void create_sprites(void)
 {
     // *** Static sprites
 
     #ifndef NO_GFX
     // Cloud sprite 0
-    set_sprite_slot(100);
+    set_sprite_slot(CLOUD_SPRITE_PATTERN_SLOT);
     set_sprite_pattern(cloudSpr);
     set_sprite_slot(100);
-    set_sprite_attributes_ext(100, 30, 40, 0, 0, true);
+    set_sprite_attributes_ext(CLOUD_SPRITE_PATTERN_SLOT, 30, 40, 0, 0, true);
 
     // Cloud sprite 1
+    //set_sprite_slot(101);
+    //set_sprite_pattern(cloudSpr);
     set_sprite_slot(101);
-    set_sprite_pattern(cloudSpr);
-    set_sprite_slot(101);
-    set_sprite_attributes_ext(101, 216, 40, 0, 0, true);
+    set_sprite_attributes_ext(CLOUD_SPRITE_PATTERN_SLOT, 216, 40, 0, 0, true);
 
     // Server sprite 0
-    set_sprite_slot(102);
+    set_sprite_slot(SERVER_SPRITE_0_PATTERN_SLOT);
     set_sprite_pattern(serverSpr0);
     set_sprite_slot(102);
-    set_sprite_attributes_ext(102, 208, 154, 0, 0, true);
+    set_sprite_attributes_ext(SERVER_SPRITE_0_PATTERN_SLOT, 208, 154, 0, 0, true);
 
     // Server sprite 1
-    set_sprite_slot(103);
+    set_sprite_slot(SERVER_SPRITE_1_PATTERN_SLOT);
     set_sprite_pattern(serverSpr1);
     set_sprite_slot(103);
-    set_sprite_attributes_ext(103, (int)(208+16), 154, 0, 0, true);
+    set_sprite_attributes_ext(SERVER_SPRITE_1_PATTERN_SLOT, (int)(208+16), 154, 0, 0, true);
 
     // Server sprite 2
-    set_sprite_slot(104);
+    set_sprite_slot(SERVER_SPRITE_2_PATTERN_SLOT);
     set_sprite_pattern(serverSpr2);
     set_sprite_slot(104);
-    set_sprite_attributes_ext(104, 208, (int)(154+16), 0, 0, true);
+    set_sprite_attributes_ext(SERVER_SPRITE_2_PATTERN_SLOT, 208, (int)(154+16), 0, 0, true);
 
     // Server sprite 3
-    set_sprite_slot(105);
+    set_sprite_slot(SERVER_SPRITE_3_PATTERN_SLOT);
     set_sprite_pattern(serverSpr3);
     set_sprite_slot(105);
-    set_sprite_attributes_ext(105, (int)(208+16), (int)(154+16), 0, 0, true);
+    set_sprite_attributes_ext(SERVER_SPRITE_3_PATTERN_SLOT, (int)(208+16), (int)(154+16), 0, 0, true);
 
     // SpecNext sprite 0
-    set_sprite_slot(106);
+    set_sprite_slot(SPECNEXT_SPRITE_0_PATTERN_SLOT);
     set_sprite_pattern(specnextSpr0);
     set_sprite_slot(106);
-    set_sprite_attributes_ext(106, 28, (int)(154+10), 0, 0, true);
+    set_sprite_attributes_ext(SPECNEXT_SPRITE_0_PATTERN_SLOT, 28, (int)(154+10), 0, 0, true);
 
     // SpecNext sprite 1
-    set_sprite_slot(107);
+    set_sprite_slot(SPECNEXT_SPRITE_1_PATTERN_SLOT);
     set_sprite_pattern(specnextSpr1);
     set_sprite_slot(107);
-    set_sprite_attributes_ext(107, 28+16, (int)(154+10), 0, 0, true);
+    set_sprite_attributes_ext(SPECNEXT_SPRITE_1_PATTERN_SLOT, 28+16, (int)(154+10), 0, 0, true);
 
     #endif  // NO_GFX
 
    // *** Moving sprites
 
+    // Map sprite bitmap(pattern) to the certain pattern slot. 
+    set_sprite_slot(PACKET_SPRITE_PATTERN_SLOT);
+    set_sprite_pattern(packet);
+
     // Incoming data packet gobs
-    GameObject defaultGob = {.x = 30, .y= 88, .sx=0, .sy=DATA_SPR_SPEED, .spriteIndex=0, 
-        .spritePatternIndex = CLOUD_PATTERN_SLOT, .isHidden=true, .isActive=false};
+    GameObject defaultGob = {.x = 30, .y= 88, .sx=0, .sy=DATA_SPR_SPEED, .spriteIndex=0, .spritePaletteOffset=0,
+        .spritePatternIndex = PACKET_SPRITE_PATTERN_SLOT, .isHidden=true, .isActive=false};
     for(int i=0; i<INCOMING_PACKET_GOB_COUNT; i++)
     {
         int sprIndex = i;
         incomingPacketGobs[i] = defaultGob;
         incomingPacketGobs[i].y = i*32;
         incomingPacketGobs[i].spriteIndex = sprIndex;
-        set_sprite_slot(sprIndex);
-        set_sprite_pattern(packet);
+        incomingPacketGobs[i].spritePaletteOffset = 0;
+        //set_sprite_slot(sprIndex);
+        //set_sprite_pattern(packet);
         set_sprite_slot(sprIndex);
         set_sprite_attributes_ext(incomingPacketGobs[i].spritePatternIndex, 
-            incomingPacketGobs[i].x, incomingPacketGobs[i].y, 0, 0, !incomingPacketGobs[i].isHidden);
+            incomingPacketGobs[i].x, incomingPacketGobs[i].y, incomingPacketGobs[i].spritePaletteOffset, 
+            0, !incomingPacketGobs[i].isHidden);
     }
+
+    // Outgoing data packet gobs
+    GameObject defaultGob2 = {.x = 40, .y= 100, .sx=0, .sy=DATA_SPR_SPEED, .spriteIndex=0, .spritePaletteOffset=0, 
+        .spritePatternIndex = PACKET_SPRITE_PATTERN_SLOT, .isHidden=true, .isActive=false};
+    for(int i=0; i<OUTGOING_PACKET_GOB_COUNT; i++)
+    {
+        int sprIndex = i+INCOMING_PACKET_GOB_COUNT;
+        outgoingPacketGobs[i] = defaultGob2;
+        //incomingPacketGobs[i].y = i*32;
+        outgoingPacketGobs[i].spriteIndex = sprIndex;
+        outgoingPacketGobs[i].spritePaletteOffset = 1;
+        set_sprite_slot(sprIndex);
+        set_sprite_attributes_ext(outgoingPacketGobs[i].spritePatternIndex, 
+            outgoingPacketGobs[i].x, outgoingPacketGobs[i].y, outgoingPacketGobs[i].spritePaletteOffset, 
+            0, !outgoingPacketGobs[i].isHidden);
+    }
+
 }
 
 static void DrawCloudEdge(layer2_screen_t *screen)
@@ -339,23 +371,46 @@ void FlipBorderColor(bool reset)
 }
 
 
-void StartNewPacket(void)
+void StartNewPacket(bool isIncoming)
 {
-    // Find first inactive (free) gob.
-    int i=0;
-    for(; i<INCOMING_PACKET_GOB_COUNT; i++)
-        if(!incomingPacketGobs[i].isActive)
-            break;
-
-    // If a free packet was found,  
-    if(i<INCOMING_PACKET_GOB_COUNT)
+    if(isIncoming)
     {
-        GameObject* gobp = &incomingPacketGobs[i];
-        gobp->isActive = true;
-        gobp->x = 216;
-        gobp->y = 154;
-        gobp->sx = 0;
-        gobp->sy = -DATA_SPR_SPEED;
+        // Find first inactive (free) gob.
+        int i=0;
+        for(; i<INCOMING_PACKET_GOB_COUNT; i++)
+            if(!incomingPacketGobs[i].isActive)
+                break;
+
+        // If a free packet was found,  
+        if(i<INCOMING_PACKET_GOB_COUNT)
+        {
+            GameObject* gobp = &incomingPacketGobs[i];
+            gobp->isActive = true;
+            gobp->x = 216;
+            gobp->y = 154;
+            gobp->sx = 0;
+            gobp->sy = -DATA_SPR_SPEED;
+        }
+    }
+    else
+    {
+        // Outgoing packet
+        // Find first inactive (free) gob.
+        int i=0;
+        for(; i<OUTGOING_PACKET_GOB_COUNT; i++)
+            if(!outgoingPacketGobs[i].isActive)
+                break;
+
+        // If a free packet was found,  
+        if(i<OUTGOING_PACKET_GOB_COUNT)
+        {
+            GameObject* gobp = &outgoingPacketGobs[i];
+            gobp->isActive = true;
+            gobp->x = 40;
+            gobp->y = 154;
+            gobp->sx = 0;
+            gobp->sy = -DATA_SPR_SPEED;
+        }
     }
 }
 
@@ -427,6 +482,33 @@ static void UpdateGameObjects(void)
         // Note: draw also an inactive gob so that the sprite is set to invisible.
         GobDraw(gob);
     }
+
+    for(int i=0; i<OUTGOING_PACKET_GOB_COUNT; i++)
+    {
+        // Calculate next position of sprite.
+        GameObject* gob = &outgoingPacketGobs[i];
+        if(gob->isActive)
+            GobUpdate(gob);
+
+        // Afer moved from the server up to cloud, start moving from cloud down to Next.
+        if(gob->sy < 0 && gob->y < 40 )
+        {
+            gob->x = 206;
+            gob->sx = 0;
+            gob->sy = DATA_SPR_SPEED;           
+        }
+
+        // When reached SpecNext => inactive
+        if( gob->x==206 && // Going down to Next
+            gob->y > 164) // Reached Server
+        {
+            gob->isActive = false;
+            //gob->isHidden = true;
+        }
+
+        // Note: draw also an inactive gob so that the sprite is set to invisible.
+        GobDraw(gob);
+    }
 }
 
 void UpdateAndDrawAll(void)      
@@ -448,7 +530,10 @@ void UpdateAndDrawAll(void)
 
             // Only send every 8th frame
             if((frameCount8Bit & 0x7) == 0)
+            {
                 err =  SendMessage(MSG_ID_TESTLOOPBACK);
+                StartNewPacket(false);
+            }
 
             // Advance sent packet counter.
             //totalSendPacketCount++;
@@ -461,7 +546,7 @@ void UpdateAndDrawAll(void)
                 //totalReceivedPacketCount += receivedPacketCount;
                 //printf("uart_get_received_data(). OK\n");
                 FlipBorderColor(false);                
-                StartNewPacket();
+                StartNewPacket(true);
                 FlipBorderColor(false);
                 gameState = STATE_CALL_NOP;  
             }

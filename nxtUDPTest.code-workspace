@@ -24,6 +24,18 @@
                 "reverseDebugInstructionCount": 10000,
                 "codeCoverageEnabled": true
             },
+            "z88dkv2": [{
+                "path": "C:/Users/Hannu/AppData/Local/Temp/zcc00000F2CC1B46.lis",
+                    // "src/GameObject.c.lis",
+                    // "src/gfx.c.lis",
+                    // "src/main.c.lis",
+                    // "src/netcom.c.lis",
+                    // "src/uart2.c.lis"
+                
+                "srcDirs": [],
+                "mapFile": "build/test_cspect.map",
+                "excludeFiles": [ ]
+            }],
             "commandsAfterLaunch": [
                 //"-sprites",
                 //"-patterns"
@@ -33,6 +45,7 @@
                 "esxdosRst": true
             },
             "rootFolder": "${workspaceFolder}",
+            //"topOfStack": "REGISTER_SP",
             "load": "build/test.nex",
             "smallValuesMaximum": 513,
             "tmpDir": ".tmp"

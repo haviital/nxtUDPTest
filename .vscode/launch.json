@@ -12,19 +12,29 @@
             "cspect": {
                 "port": 11000
             },
-            "z88dkv2": [{
-                "path": "build/test.lis",
-                "srcDirs": [""],
-                "mapFile": "build/test.map",
-                "excludeFiles": [  ]
-            }],
+            "z88dkv2": 
+            [
+                { "path": "src/main.c.lis", "srcDirs": [""], "mapFile": "build/test_cspect.map","excludeFiles": [ ]},
+                { "path": "src/GameObject.c.lis", "srcDirs": [""], "mapFile": "build/test_cspect.map","excludeFiles": [ ]},
+                { "path": "src/netcom.c.lis", "srcDirs": [""], "mapFile": "build/test_cspect.map","excludeFiles": [ ]},
+                { "path": "src/uart2.c.lis", "srcDirs": [""], "mapFile": "build/test_cspect.map","excludeFiles": [ ]},
+                { "path": "build/test.lis", "srcDirs": [""], "mapFile": "build/test_cspect.map","excludeFiles": [ ]},
+                { "path": "src/gfx.c.lis", "srcDirs": [""], "mapFile": "build/test_cspect.map","excludeFiles": [ ]}
+            ],
+            // "z88dkv2": [
+            //     {"path": "src/main.c.lis", "srcDirs": [""],"mapFile": "build/test_cpect.map"}
+            //     //{"path": "src/GameObject.c.lis", "srcDirs": ["src"],"mapFile": "build/test_cpect.map"},
+            //     //{"path": "src/gfx.c.lis", "srcDirs": ["src"],"mapFile": "build/test_cpect.map"},
+            //     //{"path": "src/netcom.c.lis", "srcDirs": ["src"],"mapFile": "build/test_cpect.map"},
+            //     //{"path": "src/uart2.c.lis", "srcDirs": ["src"],"mapFile": "build/test_cpect.map"}
+            //   ],
             "commandsAfterLaunch": [],
             "history": {
                 "reverseDebugInstructionCount": 1000000,
                 "spotCount": 10,
                 "codeCoverageEnabled": false
             },
-            "startAutomatically": true,
+            "startAutomatically": false,
             "rootFolder": "${workspaceFolder}",
             "load": "build/test.nex",
             "preLaunchTask": "z88dk"
@@ -40,7 +50,7 @@
             "z88dkv2": [{
                 "path": "build/test.lis",
                 "srcDirs": [""],
-                "mapFile": "build/test.map",
+                "mapFile": "build/test_cspect.map",
                 "excludeFiles": [  ]
             }],
             "commandsAfterLaunch": [],

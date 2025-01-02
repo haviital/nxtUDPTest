@@ -125,6 +125,8 @@ uint8_t ReceiveMessage(uint8_t msgId, uint16_t* receivedPacketCount)
 
         //z80_delay_ms(1*8);   // 8x for 28MHz
     }
+
+    return 0;
 }
 
 uint8_t SendMessage(uint8_t msgId)
