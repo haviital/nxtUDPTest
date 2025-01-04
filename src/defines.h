@@ -2,10 +2,10 @@
 #define SCREEN_Y 192
 
 //#define NO_GFX // Do not draw UI gfx. It allows to see debug prints.
-// Choose one
-// // #define PRINT_TO_BUFFER2  // Either this or
-//#define UART_PRINT_TO_SCREEN2 // this one.
+//#define UART_PRINT_TO_SCREEN2 // this one. 
+//#define UART_SPECIAL_DEBUG_PRINT_ENABLED 1
 #define UART_SPECIAL_DEBUG_PRINT_ENABLED 0
+// // #define PRINT_TO_BUFFER2  // Either this or UART_PRINT_TO_SCREEN2
 //#define AT_ECHO_ON  // Set echo on.
 
 #define CLOUD_SPRITE_Y 40
@@ -27,7 +27,11 @@
 #define PROG_FAILED1(err) prog_failed(__FILE__, __LINE__, err)
 
 extern uint8_t numClonedPackets;
+extern uint8_t frameCount8Bit;
 
 void FlipBorderColor(bool reset);
+int16_t GetUsedStack(void);
+void prog_failed(char* sourceFile, int32_t lineNum, uint8_t err);
+bool CheckMemoryGuards(void);
 
 

@@ -25,6 +25,7 @@
 
 #pragma output CRT_ORG_CODE = 0x6164
 #pragma output REGISTER_SP = 0xC000
+#pragma output CRT_STACK_SIZE = 0x400
 #pragma output CLIB_MALLOC_HEAP_SIZE = 0
 #pragma output CLIB_MALLOC_HEAP_SIZE = 0
 #pragma output CLIB_STDIO_HEAP_SIZE = 0
@@ -146,6 +147,7 @@ static layer2_screen_t shadow_screen = {SHADOW_SCREEN};
 static GameObject incomingPacketGobs[INCOMING_PACKET_GOB_COUNT];
 #define OUTGOING_PACKET_GOB_COUNT 5
 static GameObject outgoingPacketGobs[OUTGOING_PACKET_GOB_COUNT];
+static uint8_t guardArr1[4];
 
 enum state
 {
@@ -394,6 +396,8 @@ void StartNewPacket(bool isIncoming)
     }
     else
     {
+        //printf("!!HV start new outgoing packet. frm=%u\n", frameCount8Bit);
+
         // Outgoing packet
         // Find first inactive (free) gob.
         int i=0;
@@ -404,6 +408,8 @@ void StartNewPacket(bool isIncoming)
         // If a free packet was found,  
         if(i<OUTGOING_PACKET_GOB_COUNT)
         {
+            //printf("!!HV free outgoing packet found!\n");
+
             GameObject* gobp = &outgoingPacketGobs[i];
             gobp->isActive = true;
             gobp->x = 40;
@@ -438,7 +444,7 @@ void DrawStatusTextAndPageFlip(char* text)
 
     DrawStatusText(text);
 
-    UpdateGameObjects();
+    //UpdateGameObjects();
     PageFlip();  
 
     DrawStatusText(text);
@@ -449,6 +455,8 @@ static void UpdateGameObjects(void)
     #ifdef NO_GFX
     return;
     #endif
+
+    if(!CheckMemoryGuards()) PROG_FAILED;
 
     for(int i=0; i<INCOMING_PACKET_GOB_COUNT; i++)
     {
@@ -483,12 +491,21 @@ static void UpdateGameObjects(void)
         GobDraw(gob);
     }
 
+    if(!CheckMemoryGuards()) PROG_FAILED;
+
     for(int i=0; i<OUTGOING_PACKET_GOB_COUNT; i++)
     {
         // Calculate next position of sprite.
         GameObject* gob = &outgoingPacketGobs[i];
         if(gob->isActive)
+        {
             GobUpdate(gob);
+        }
+        // Hide if inside clouds
+        if(gob->y < CLOUD_SPRITE_Y || gob->y > 164)
+            gob->isHidden = true;
+        else
+            gob->isHidden = false;       
 
         // Afer moved from the server up to cloud, start moving from cloud down to Next.
         if(gob->sy < 0 && gob->y < 40 )
@@ -506,55 +523,47 @@ static void UpdateGameObjects(void)
             //gob->isHidden = true;
         }
 
+        if(!CheckMemoryGuards()) PROG_FAILED;
+
         // Note: draw also an inactive gob so that the sprite is set to invisible.
+        //if(gob->spritePaletteOffset!=0)
+        {
+            //PROG_FAILED;
+            //zx_border(INK_BLUE);
+            //printf("!!HV: UpdateGameObjects outgoing. frm=%u\n", frameCount8Bit);
+            //zx_border(INK_GREEN);
+
+            //printf("!!HV: UpdateGameObjects outgoing x=%u, y=%u, hid=%u, act=%u, soff=%u, frm=%u\n", 
+            //        gob->x, gob->y,gob->isHidden , gob->isActive, gob->spritePaletteOffset,
+            //        frameCount8Bit);
+        }
+       
         GobDraw(gob);
+        //zx_border(INK_GREEN);
+ 
     }
 }
 
 void UpdateAndDrawAll(void)      
 {
-    FlipBorderColor(false);
+    // *** Update game objects
     UpdateGameObjects();
-    FlipBorderColor(false);
 
-    switch(gameState)
+    // *** Receive data from server.
+    uint16_t receivedPacketCount = 0;
+    uint8_t err =  ReceiveMessage(MSG_ID_TESTLOOPBACK, &receivedPacketCount);
+    if(receivedPacketCount>0)
     {
+        StartNewPacket(true);
+        gameState = STATE_CALL_NOP;  
+    }
 
-        case STATE_CALL_NOP:
-        {
-            uint16_t receivedPacketCount = 0;
-            //uint8_t err = SendOrReceiveData(MSG_ID_TESTLOOPBACK, &receivedPacketCount);
-            FlipBorderColor(false);
-
-            uint8_t err =  ReceiveMessage(MSG_ID_TESTLOOPBACK, &receivedPacketCount);
-
-            // Only send every 8th frame
-            if((frameCount8Bit & 0x7) == 0)
-            {
-                err =  SendMessage(MSG_ID_TESTLOOPBACK);
-                StartNewPacket(false);
-            }
-
-            // Advance sent packet counter.
-            //totalSendPacketCount++;
-            //sendPacketCountPerSecond++;
-
-            //gameState = STATE_NONE;
-
-            if(receivedPacketCount>0)
-            {
-                //totalReceivedPacketCount += receivedPacketCount;
-                //printf("uart_get_received_data(). OK\n");
-                FlipBorderColor(false);                
-                StartNewPacket(true);
-                FlipBorderColor(false);
-                gameState = STATE_CALL_NOP;  
-            }
-        }
-        break;
-
-        default:
-        break;
+    // *** Send data to server.
+    // Only send every 8th frame
+    if((frameCount8Bit & 0x7) == 0)
+    {
+        err =  SendMessage(MSG_ID_TESTLOOPBACK);
+        StartNewPacket(false);
     }
 }
 
@@ -573,8 +582,21 @@ int16_t GetUsedStack(void)
     return(0xc000   - (uint16_t)&stackEnd);
 }
 
+bool CheckMemoryGuards(void)
+{
+    return(
+        guardArr1[0]==0xfe && guardArr1[1]==0xfe && guardArr1[2]==0xfe && guardArr1[3]==0xfe
+    );
+}
+
 int main(void)
 {
+
+    //
+    guardArr1[0] = 0xfe;
+    guardArr1[1] = 0xfe;
+    guardArr1[2] = 0xfe;
+    guardArr1[3] = 0xfe;
 
     init_hardware();
     init_isr();
@@ -584,11 +606,10 @@ int main(void)
     // printf("Finished!");
     // for(;;); // forever
 
-    layer2_fill_rect(0, 0,  256, 192, 0xE3, &shadow_screen); // make a hole for the whole screen
-    // Swap the double buffered screen.
-    layer2_flip_main_shadow_screen();
-    layer2_fill_rect(0, 0,  256, 192, 0xE3, &shadow_screen); // make a hole
-    // Swap the double buffered screen.
+    // Make a hole to show the ULAs screen.
+    layer2_fill_rect(5, 5,  256-10, 192-10, 0xE3, &shadow_screen); 
+
+   // Swap the double buffered screen.
     layer2_flip_main_shadow_screen();
 
     create_sprites();
@@ -598,6 +619,10 @@ int main(void)
     DrawGameBackground();
     DrawGameBackground(); 
  
+    // Make a hole to show the ULAs screen.
+    layer2_fill_rect(5, 5,  256-10, 192-10, 0xE3, &shadow_screen); 
+    layer2_flip_main_shadow_screen();  // swap the double buffered screen.
+
     create_start_screen();
 
 
@@ -614,39 +639,8 @@ int main(void)
         else if (in_key_pressed(IN_KEY_SCANCODE_2))
             numClonedPackets = 3;
         else if (in_key_pressed(IN_KEY_SCANCODE_3))
-            numClonedPackets = 7;
-        
+            numClonedPackets = 7;      
 
-#if 0    
-        const int delay = 800;
-        // for(int i=0; i<delay; i++);
-        // FlipBorderColor(false);
-        // for(int i=0; i<delay; i++);
-        // FlipBorderColor(false);
-        // for(int i=0; i<delay; i++);
-        // FlipBorderColor(false);
-        // for(int i=0; i<delay; i++);
-        // FlipBorderColor(false);
-        // for(int i=0; i<delay; i++);
-        // FlipBorderColor(false);
-        // for(int i=0; i<delay; i++);
-        // FlipBorderColor(false);
-        // for(int i=0; i<delay; i++);
-        // FlipBorderColor(false);
-        // for(int i=0; i<delay; i++);
-        // FlipBorderColor(false);
-        // for(int i=0; i<delay; i++);
-        // FlipBorderColor(false);
-
-        // zx_border(INK_RED);
-        // z80_delay_ms(1*8);   // 8x for 28MHz        
-        // zx_border(INK_WHITE);
-        // z80_delay_ms(1*8);   // 8x for 28MHz        
-        // zx_border(INK_RED);
-        // z80_delay_ms(1*8);   // 8x for 28MHz        
-        // zx_border(INK_WHITE);
-
-#endif
         // Print on ULA screen.
         layer2_fill_rect(0, 0, 256, 8, 0xE3, &shadow_screen); // make a hole
         printAt(0, 0);
@@ -656,9 +650,11 @@ int main(void)
         UpdateAndDrawAll();
         FlipBorderColor(false);
 
+        zx_border(INK_YELLOW);
+
         frameCount8Bit++;
 
-        // Draw Frame count
+        // Calc frame and packet counts.
         if( frameCountForOneSecond++ >= 50)
         {
             sendPacketsPerSecondInterval =  sendPacketCountPerSecond;
@@ -673,6 +669,7 @@ int main(void)
 
         char text[128];
         text[0]=0;
+
         #ifndef NO_GFX
         layer2_fill_rect( 0, 192 - 8, 255, 8, 0x00, &shadow_screen); // Clear field.
         #endif
@@ -720,12 +717,12 @@ int main(void)
         #ifndef NO_GFX
         layer2_draw_text(23, 0, text, 0xc, &shadow_screen); 
         #else
-        // Draw a hole for the whole screen,
+        //Draw a hole for the whole screen,
         layer2_fill_rect(0, 0, 256, 192, 0xE3, &shadow_screen); // make a hole
-        printStrAt(23,0, text);
+        printStrAt(23,5, text);
         #endif
 
-        zx_border(INK_BLACK);
+        //zx_border(INK_BLACK);
 
         PageFlip();   
     }
@@ -737,15 +734,17 @@ int main(void)
 
 void prog_failed(char* sourceFile, int32_t lineNum, uint8_t err)
 {
+   zx_border(2);  // Set red border first!
+
    // Make L2 screen transparent.
    layer2_fill_rect(0, 0,  256, 192, 0xE3, &shadow_screen); // make a hole
    layer2_flip_main_shadow_screen();
 
    //printf("uart_failed()\n");
+   uint16_t stackUsage = GetUsedStack();
    char text[128];
    sprintf(text, "FAILED (err:%u) in file: %s (%lu)\n", err, sourceFile, lineNum);
    printf(text);
-   printf("Stack usage after error: 0x%X bytes\n", GetUsedStack());
-   zx_border(2);  // red border
+   printf("Stack usage after error: 0x%X bytes\n", stackUsage);
    for(;;);
 }

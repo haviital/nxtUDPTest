@@ -19,7 +19,7 @@
             "cspect": {
                 "port": 11000
             },
-            "startAutomatically": false,
+            "startAutomatically": true,
             "history": {
                 "reverseDebugInstructionCount": 10000,
                 "codeCoverageEnabled": true
@@ -33,7 +33,7 @@
                     // "src/uart2.c.lis"
                 
                 "srcDirs": [],
-                "mapFile": "build/test_cspect.map",
+                "mapFile": "build/test.map",
                 "excludeFiles": [ ]
             }],
             "commandsAfterLaunch": [
@@ -57,7 +57,10 @@
             "stdio.h": "c",
             "uart.h": "c",
             "esp.h": "c",
-            "uart2.h": "c"
+            "uart2.h": "c",
+            "string.h": "c",
+            "gameobject.h": "c",
+            "netcom.h": "c"
         }
     }
 }

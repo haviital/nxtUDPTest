@@ -14,12 +14,12 @@
             },
             "z88dkv2": 
             [
-                { "path": "src/main.c.lis", "srcDirs": [""], "mapFile": "build/test_cspect.map","excludeFiles": [ ]},
-                { "path": "src/GameObject.c.lis", "srcDirs": [""], "mapFile": "build/test_cspect.map","excludeFiles": [ ]},
-                { "path": "src/netcom.c.lis", "srcDirs": [""], "mapFile": "build/test_cspect.map","excludeFiles": [ ]},
-                { "path": "src/uart2.c.lis", "srcDirs": [""], "mapFile": "build/test_cspect.map","excludeFiles": [ ]},
-                { "path": "build/test.lis", "srcDirs": [""], "mapFile": "build/test_cspect.map","excludeFiles": [ ]},
-                { "path": "src/gfx.c.lis", "srcDirs": [""], "mapFile": "build/test_cspect.map","excludeFiles": [ ]}
+                { "path": "src/main.c.lis", "srcDirs": [""], "mapFile": "build/test.map","excludeFiles": [ ]},
+                { "path": "src/GameObject.c.lis", "srcDirs": [""], "mapFile": "build/test.map","excludeFiles": [ ]},
+                { "path": "src/netcom.c.lis", "srcDirs": [""], "mapFile": "build/test.map","excludeFiles": [ ]},
+                { "path": "src/uart2.c.lis", "srcDirs": [""], "mapFile": "build/test.map","excludeFiles": [ ]},
+                { "path": "build/test.lis", "srcDirs": [""], "mapFile": "build/test.map","excludeFiles": [ ]},
+                { "path": "src/gfx.c.lis", "srcDirs": [""], "mapFile": "build/test.map","excludeFiles": [ ]}
             ],
             // "z88dkv2": [
             //     {"path": "src/main.c.lis", "srcDirs": [""],"mapFile": "build/test_cpect.map"}
@@ -34,7 +34,7 @@
                 "spotCount": 10,
                 "codeCoverageEnabled": false
             },
-            "startAutomatically": false,
+            "startAutomatically": true,
             "rootFolder": "${workspaceFolder}",
             "load": "build/test.nex",
             "preLaunchTask": "z88dk"

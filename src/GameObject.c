@@ -1,6 +1,9 @@
+#include <stdio.h>
+
 #include "lib/zxn/zxnext_layer2.h"
 #include "lib/zxn/zxnext_sprite.h"
 
+#include "defines.h"
 #include "GameObject.h"
 
 void GobUpdate(GameObject* gob)
@@ -31,7 +34,18 @@ void GobUpdate(GameObject* gob)
 
 void GobDraw(GameObject* gob)
 {
-    // Update sprite position.
+    if(gob->spritePaletteOffset!=0 && gob->isActive && !gob->isHidden)
+    {
+        //PROG_FAILED;
+        //zx_border(INK_GREEN);
+
+        //printf("!!HV: GobDraw outgoing. \n");
+        //printf("!!HV: GobDraw: visible outgoing: x=%u, y=%u, frm=%u\n", 
+        //          gob->x, gob->y, frameCount8Bit);
+        //zx_border(INK_YELLOW);         
+    }
+
+     // Update sprite position.
     set_sprite_slot(gob->spriteIndex);
     set_sprite_attributes_ext(gob->spritePatternIndex, gob->x, gob->y,  
         gob->spritePaletteOffset, 0, !gob->isHidden && gob->isActive);

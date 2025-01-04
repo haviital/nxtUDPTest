@@ -89,7 +89,7 @@ uint8_t ReceiveMessage(uint8_t msgId, uint16_t* receivedPacketCount)
             {
                 // The request struct.
 
-                // Send packet to the server. The server sends it back 3 times.
+                // Receive a packet from the server
                 TestLoopBackResponse serverCommandsTestLoopBack;
                 uint8_t err = uart_receive_data_packet_if_any((char*)&serverCommandsTestLoopBack, 
                     MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE);
@@ -107,7 +107,7 @@ uint8_t ReceiveMessage(uint8_t msgId, uint16_t* receivedPacketCount)
                         PROG_FAILED;
                     }
 
-                    // Init the test data for verification when it comes back
+                    // Verify the test data.
                     for(uint8_t i=0; i<MSG_TESTLOOPBACK_RANDOM_DATA_SIZE; i++)
                         if(serverCommandsTestLoopBack.packetData[i] != i)
                             PROG_FAILED1(i);
@@ -131,9 +131,7 @@ uint8_t ReceiveMessage(uint8_t msgId, uint16_t* receivedPacketCount)
 
 uint8_t SendMessage(uint8_t msgId)
 {
-    // *** Check if there is data to receive.
-
-    // *** Now send the packet to the server via UART & UDP.
+    // *** Send the packet to the server via UART & UDP.
     switch(msgId)
     {
         case MSG_ID_NOP:
@@ -180,6 +178,7 @@ uint8_t SendMessage(uint8_t msgId)
     // Read send response (from UART?).
     // The response should be: "Recv 1 bytes\n\rSEND OK\n\r"
     // TODO: Can "+IPD" interfere before SEND OK?
+    // TODO: Is this slow to wait for the answer.
     uint8_t err = uart_read_expected2("SEND OK");
     if(err) PROG_FAILED; 
 
