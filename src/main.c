@@ -218,7 +218,7 @@ static void create_sprites(void)
     //set_sprite_slot(101);
     //set_sprite_pattern(cloudSpr);
     set_sprite_slot(101);
-    set_sprite_attributes_ext(CLOUD_SPRITE_PATTERN_SLOT, 216, 40, 0, 0, true);
+    set_sprite_attributes_ext(CLOUD_SPRITE_PATTERN_SLOT, 214, 40, 0, 0, true);
 
     // Server sprite 0
     set_sprite_slot(SERVER_SPRITE_0_PATTERN_SLOT);
@@ -264,12 +264,28 @@ static void create_sprites(void)
     set_sprite_slot(PACKET_SPRITE_PATTERN_SLOT);
     set_sprite_pattern(packet);
 
+    // Outgoing data packet gobs
+    GameObject defaultGob2 = {.x = 40, .y= 100, .sx=0, .sy=DATA_SPR_SPEED, .spriteIndex=0, .spritePaletteOffset=0, 
+        .spritePatternIndex = PACKET_SPRITE_PATTERN_SLOT, .isHidden=true, .isActive=false};
+    for(int i=0; i<OUTGOING_PACKET_GOB_COUNT; i++)
+    {
+        int sprIndex = i;
+        outgoingPacketGobs[i] = defaultGob2;
+        //incomingPacketGobs[i].y = i*32;
+        outgoingPacketGobs[i].spriteIndex = sprIndex;
+        outgoingPacketGobs[i].spritePaletteOffset = 1;
+        set_sprite_slot(sprIndex);
+        set_sprite_attributes_ext(outgoingPacketGobs[i].spritePatternIndex, 
+            outgoingPacketGobs[i].x, outgoingPacketGobs[i].y, outgoingPacketGobs[i].spritePaletteOffset, 
+            0, !outgoingPacketGobs[i].isHidden);
+    }
+
     // Incoming data packet gobs
     GameObject defaultGob = {.x = 30, .y= 88, .sx=0, .sy=DATA_SPR_SPEED, .spriteIndex=0, .spritePaletteOffset=0,
         .spritePatternIndex = PACKET_SPRITE_PATTERN_SLOT, .isHidden=true, .isActive=false};
     for(int i=0; i<INCOMING_PACKET_GOB_COUNT; i++)
     {
-        int sprIndex = i;
+        int sprIndex = i+OUTGOING_PACKET_GOB_COUNT;
         incomingPacketGobs[i] = defaultGob;
         incomingPacketGobs[i].y = i*32;
         incomingPacketGobs[i].spriteIndex = sprIndex;
@@ -281,23 +297,6 @@ static void create_sprites(void)
             incomingPacketGobs[i].x, incomingPacketGobs[i].y, incomingPacketGobs[i].spritePaletteOffset, 
             0, !incomingPacketGobs[i].isHidden);
     }
-
-    // Outgoing data packet gobs
-    GameObject defaultGob2 = {.x = 40, .y= 100, .sx=0, .sy=DATA_SPR_SPEED, .spriteIndex=0, .spritePaletteOffset=0, 
-        .spritePatternIndex = PACKET_SPRITE_PATTERN_SLOT, .isHidden=true, .isActive=false};
-    for(int i=0; i<OUTGOING_PACKET_GOB_COUNT; i++)
-    {
-        int sprIndex = i+INCOMING_PACKET_GOB_COUNT;
-        outgoingPacketGobs[i] = defaultGob2;
-        //incomingPacketGobs[i].y = i*32;
-        outgoingPacketGobs[i].spriteIndex = sprIndex;
-        outgoingPacketGobs[i].spritePaletteOffset = 1;
-        set_sprite_slot(sprIndex);
-        set_sprite_attributes_ext(outgoingPacketGobs[i].spritePatternIndex, 
-            outgoingPacketGobs[i].x, outgoingPacketGobs[i].y, outgoingPacketGobs[i].spritePaletteOffset, 
-            0, !outgoingPacketGobs[i].isHidden);
-    }
-
 }
 
 static void DrawCloudEdge(layer2_screen_t *screen)
@@ -365,11 +364,14 @@ void FlipBorderColor(bool reset)
     color++;
 }
 
+#define OUTGOING_PACKET_X1 32
 
 void StartNewPacket(bool isIncoming)
 {
     if(isIncoming)
     {
+        // *** Incoming packet
+
         // Find first inactive (free) gob.
         int i=0;
         for(; i<INCOMING_PACKET_GOB_COUNT; i++)
@@ -391,7 +393,8 @@ void StartNewPacket(bool isIncoming)
     {
         //printf("!!HV start new outgoing packet. frm=%u\n", frameCount8Bit);
 
-        // Outgoing packet
+        // *** Outgoing packet
+
         // Find first inactive (free) gob.
         int i=0;
         for(; i<OUTGOING_PACKET_GOB_COUNT; i++)
@@ -405,7 +408,7 @@ void StartNewPacket(bool isIncoming)
 
             GameObject* gobp = &outgoingPacketGobs[i];
             gobp->isActive = true;
-            gobp->x = 40;
+            gobp->x = OUTGOING_PACKET_X1;
             gobp->y = 154;
             gobp->sx = 0;
             gobp->sy = -DATA_SPR_SPEED;
@@ -442,6 +445,8 @@ void DrawStatusTextAndPageFlip(char* text)
 
     DrawStatusText(text);
 }
+
+#define OUTGOING_PACKET_X2 214
 
 static void UpdateGameObjects(void)
 {
@@ -505,13 +510,13 @@ static void UpdateGameObjects(void)
         // After moved from the server up to cloud, start moving from cloud down to Next.
         if(gob->sy < 0 && gob->y < 40 )
         {
-            gob->x = 206;
+            gob->x = OUTGOING_PACKET_X2;
             gob->sx = 0;
             gob->sy = DATA_SPR_SPEED;           
         }
 
         // When reached SpecNext => inactive
-        if( gob->x==206 && // Going down to Next
+        if( gob->x==OUTGOING_PACKET_X2 && // Going down to Next
             gob->y > 164) // Reached Server
         {
             gob->isActive = false;
@@ -522,22 +527,8 @@ static void UpdateGameObjects(void)
 
         if(!CheckMemoryGuards()) PROG_FAILED;
 
-        // Note: draw also an inactive gob so that the sprite is set to invisible.
-        //if(gob->spritePaletteOffset!=0)
-        {
-            //PROG_FAILED;
-            //zx_border(INK_BLUE);
-            //printf("!!HV: UpdateGameObjects outgoing. frm=%u\n", frameCount8Bit);
-            //zx_border(INK_GREEN);
-
-            //printf("!!HV: UpdateGameObjects outgoing x=%u, y=%u, hid=%u, act=%u, soff=%u, frm=%u\n", 
-            //        gob->x, gob->y,gob->isHidden , gob->isActive, gob->spritePaletteOffset,
-            //        frameCount8Bit);
-        }
-       
+        // Draw gob.
         GobDraw(gob);
-        //zx_border(INK_GREEN);
- 
     }
 }
 
@@ -546,9 +537,12 @@ void UpdateAndDrawAll(void)
     // *** Update game objects
     UpdateGameObjects();
 
+    zx_border(INK_BLUE);
+
     // *** Receive data from server.
     uint16_t receivedPacketCount = 0;
     uint8_t err =  ReceiveMessage(MSG_ID_TESTLOOPBACK, &receivedPacketCount);
+    zx_border(INK_BLACK);
     if(receivedPacketCount>0)
     {
         StartNewPacket(true);
@@ -562,6 +556,8 @@ void UpdateAndDrawAll(void)
         err =  SendMessage(MSG_ID_TESTLOOPBACK);
         StartNewPacket(false);
     }
+
+
 }
 
 void PageFlip(void)
@@ -620,9 +616,13 @@ int main(void)
             numClonedPackets = 7;      
 
         // Print on ULA screen.
-        layer2_fill_rect(0, 0, 256, 8, 0xE3, &shadow_screen); // make a hole
-        printAt(0, 0);
-        printf("Cloned packets: %u", numClonedPackets);
+        // layer2_fill_rect(0, 0, 256, 8, 0xE3, &shadow_screen); // make a hole
+        // printAt(0, 0);
+        // printf("Received packets: x %u", numClonedPackets);
+
+        #ifndef NO_GFX
+        layer2_draw_text(0, 3, " >>> UDP TEST PROGRAM <<<", 0x70, &shadow_screen); 
+        #endif
 
         UpdateAndDrawAll();
  
@@ -645,7 +645,7 @@ int main(void)
         text[0]=0;
 
         #ifndef NO_GFX
-        layer2_fill_rect( 0, 192 - 8, 255, 8, 0x00, &shadow_screen); // Clear field.
+        layer2_fill_rect( 0, 192 - 16, 256, 16, 0x00, &shadow_screen); // Clear field.
         #endif
     
         char tmpStr[64];
@@ -661,24 +661,36 @@ int main(void)
         //strcat(text, " snd/rcv:");
 
         
-        itoa(totalSeconds, tmpStr, 10);
-        strcat(text, tmpStr);
-        strcat(text, "s ");
+        // Print client and server send speed and send count.
+        #ifndef NO_GFX
+        strcpy(text, "Send: ");
+        itoa(totalSendPacketCount, tmpStr, 10);
+        strcat(text, tmpStr); 
+        strcat(text, " pkg");
+        layer2_draw_text(22, 0, text, 0x7F, &shadow_screen); 
 
-        itoa(sendPacketsPerSecondInterval, tmpStr, 10);
-        strcat(text, tmpStr);
-        strcat(text, "/");
-        itoa(recvPacketsPerSecondInterval, tmpStr, 10);
-        strcat(text, tmpStr);
-        strcat(text, " pkg/s ");
+        uint32_t sendBytesPerSecond = sendPacketsPerSecondInterval * MSG_TESTLOOPBACK_REQUEST_STRUCT_SIZE;
+        ltoa(sendBytesPerSecond, tmpStr, 10);
+        strcpy(text, tmpStr);
+        strcat(text, " b/s");
+        // itoa(sendPacketsPerSecondInterval, tmpStr, 10);
+        // strcat(text, tmpStr);
+        layer2_draw_text(22, 16, text, 0x7F, &shadow_screen); 
 
-        // Send and received packets
-        itoa(totalSendPacketCount,tmpStr,10);
+        strcpy(text, "Recv: ");
+        itoa(totalReceivedPacketCount, tmpStr, 10);
         strcat(text, tmpStr);
-        strcat(text, "/");
-        itoa(totalReceivedPacketCount,tmpStr,10);
-        strcat(text, tmpStr);
-        strcat(text, " pkg ");
+        strcat(text, " pkg");
+        layer2_draw_text(23, 0, text, 0x03, &shadow_screen); 
+
+        uint32_t recvBytesPerSecond = recvPacketsPerSecondInterval * MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE;
+        ltoa(recvBytesPerSecond, tmpStr, 10);
+        strcpy(text, tmpStr);
+        strcat(text, " b/s");
+        // itoa(recvPacketsPerSecondInterval, tmpStr, 10);
+        // strcat(text, tmpStr);
+        layer2_draw_text(23, 16, text, 0x03, &shadow_screen); 
+        #endif
 
         //!!HV 
         // printAt(8,0); 
@@ -686,15 +698,28 @@ int main(void)
         // printf("recvPacketCountPerSecond = %u\n", recvPacketCountPerSecond);
         // printf("frame                    = %u\n", frameCountForOneSecond);
         // printf("send/recv when frame=0: %u/%u\n", sendPacketsPerSecondInterval, recvPacketsPerSecondInterval);
-        FlipBorderColor(false);
 
         #ifndef NO_GFX
-        layer2_draw_text(23, 0, text, 0xc, &shadow_screen); 
-        #else
-        //Draw a hole for the whole screen,
-        layer2_fill_rect(0, 0, 256, 192, 0xE3, &shadow_screen); // make a hole
-        printStrAt(23,5, text);
+        // Print total seconds
+        itoa(totalSeconds, tmpStr, 10);
+        strcat(tmpStr, " s");
+        layer2_draw_text(22, 27, tmpStr, 0xff, &shadow_screen);
+
+        // Print total seconds
+        strcpy(text, "x");
+        itoa(numClonedPackets, tmpStr, 10);
+        strcat(text, tmpStr);
+        layer2_draw_text(23, 27, text, 0x03, &shadow_screen);
         #endif
+        // strcat(text, tmpStr);
+        // strcat(text, "s ");
+        // #ifndef NO_GFX
+        // layer2_draw_text(23, 0, text, 0xc, &shadow_screen); 
+        // #else
+        // //Draw a hole for the whole screen,
+        // layer2_fill_rect(0, 0, 256, 192, 0xE3, &shadow_screen); // make a hole
+        // printStrAt(23,5, text);
+        // #endif
 
         //zx_border(INK_BLACK);
 
