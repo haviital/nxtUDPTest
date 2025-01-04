@@ -54,7 +54,7 @@ void NetComInit(void)
     if(uart_read_expected_many2("OK", "ERROR") != 0)
         PROG_FAILED;
 
-    DrawStatusTextAndPageFlip("Create Server connection DONE");
+    DrawStatusTextAndPageFlip("");
 
     //printf("..NetComInit()\n"); //!!HV
  }
@@ -63,8 +63,6 @@ uint8_t ReceiveMessage(uint8_t msgId, uint16_t* receivedPacketCount)
 {
     if(uart_available_rx2()) 
     {
-        FlipBorderColor(false);
-
         switch(msgId)
         {
             case MSG_ID_NOP:
@@ -81,7 +79,12 @@ uint8_t ReceiveMessage(uint8_t msgId, uint16_t* receivedPacketCount)
                         PROG_FAILED;
                     if( resp.flags != 1 )
                         PROG_FAILED;
-                 }
+                }
+
+                // All good. Increase the received packet count.
+                (*receivedPacketCount)++;
+                totalReceivedPacketCount++;
+                recvPacketCountPerSecond++;
             }
             break;
             
@@ -111,6 +114,11 @@ uint8_t ReceiveMessage(uint8_t msgId, uint16_t* receivedPacketCount)
                     for(uint8_t i=0; i<MSG_TESTLOOPBACK_RANDOM_DATA_SIZE; i++)
                         if(serverCommandsTestLoopBack.packetData[i] != i)
                             PROG_FAILED1(i);
+
+                    // All good. Increase the received packet count.
+                    (*receivedPacketCount)++;
+                    totalReceivedPacketCount++;
+                    recvPacketCountPerSecond++;
                 }
             }
             break;
@@ -118,10 +126,6 @@ uint8_t ReceiveMessage(uint8_t msgId, uint16_t* receivedPacketCount)
             default:
                 PROG_FAILED;
         }
-
-        (*receivedPacketCount)++;
-        totalReceivedPacketCount++;
-        recvPacketCountPerSecond++;
 
         //z80_delay_ms(1*8);   // 8x for 28MHz
     }

@@ -37,13 +37,6 @@
 #include "gfx.h"
 #include "netcom.h"
 
-// #pragma output CRT_ORG_CODE = 0x6164
-// #pragma output REGISTER_SP = 0xC000
-// #pragma output CLIB_MALLOC_HEAP_SIZE = 0
-// #pragma output CLIB_STDIO_HEAP_SIZE = 0
-// #pragma output CLIB_FOPEN_MAX = -1
-// #pragma printf = "%c %s"
-
 /*
  * Define IDE_FRIENDLY in your C IDE to disable Z88DK C extensions and avoid
  * parser errors/warnings in the IDE. Do NOT define IDE_FRIENDLY when compiling
@@ -143,9 +136,9 @@ static layer2_screen_t shadow_screen = {SHADOW_SCREEN};
 
 //layer2_screen_t off_screen = {OFF_SCREEN, 0, 1, 3};
 
-#define INCOMING_PACKET_GOB_COUNT 30
+#define INCOMING_PACKET_GOB_COUNT 20
 static GameObject incomingPacketGobs[INCOMING_PACKET_GOB_COUNT];
-#define OUTGOING_PACKET_GOB_COUNT 5
+#define OUTGOING_PACKET_GOB_COUNT 8
 static GameObject outgoingPacketGobs[OUTGOING_PACKET_GOB_COUNT];
 static uint8_t guardArr1[4];
 
@@ -485,6 +478,8 @@ static void UpdateGameObjects(void)
         {
             gob->isActive = false;
             //gob->isHidden = true;
+            gob->y = 190;
+            gob->sy = 0;
         }
 
         // Note: draw also an inactive gob so that the sprite is set to invisible.
@@ -507,7 +502,7 @@ static void UpdateGameObjects(void)
         else
             gob->isHidden = false;       
 
-        // Afer moved from the server up to cloud, start moving from cloud down to Next.
+        // After moved from the server up to cloud, start moving from cloud down to Next.
         if(gob->sy < 0 && gob->y < 40 )
         {
             gob->x = 206;
@@ -520,6 +515,8 @@ static void UpdateGameObjects(void)
             gob->y > 164) // Reached Server
         {
             gob->isActive = false;
+            gob->y = 190;
+            gob->sy = 0;
             //gob->isHidden = true;
         }
 
@@ -601,17 +598,6 @@ int main(void)
     init_hardware();
     init_isr();
 
-    // printf("Started!");
-    // TEST_main();
-    // printf("Finished!");
-    // for(;;); // forever
-
-    // Make a hole to show the ULAs screen.
-    layer2_fill_rect(5, 5,  256-10, 192-10, 0xE3, &shadow_screen); 
-
-   // Swap the double buffered screen.
-    layer2_flip_main_shadow_screen();
-
     create_sprites();
         
     set_sprite_layers_system(true, false, LAYER_PRIORITIES_S_L_U, false);
@@ -619,21 +605,13 @@ int main(void)
     DrawGameBackground();
     DrawGameBackground(); 
  
-    // Make a hole to show the ULAs screen.
-    layer2_fill_rect(5, 5,  256-10, 192-10, 0xE3, &shadow_screen); 
-    layer2_flip_main_shadow_screen();  // swap the double buffered screen.
-
     create_start_screen();
-
 
     // Loop until the end of the game.
     uint8_t test=0;
     while (true)
     {   
-        FlipBorderColor(true);
-        //zx_border(INK_GREEN);
-
-        //
+        // Read a a key.
         if (in_key_pressed(IN_KEY_SCANCODE_1))
             numClonedPackets = 1;
         else if (in_key_pressed(IN_KEY_SCANCODE_2))
@@ -646,12 +624,8 @@ int main(void)
         printAt(0, 0);
         printf("Cloned packets: %u", numClonedPackets);
 
-        FlipBorderColor(false);
         UpdateAndDrawAll();
-        FlipBorderColor(false);
-
-        zx_border(INK_YELLOW);
-
+ 
         frameCount8Bit++;
 
         // Calc frame and packet counts.
