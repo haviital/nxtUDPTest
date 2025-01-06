@@ -2,24 +2,25 @@
 #define SCREEN_Y 192
 
 //#define NO_GFX // Do not draw UI gfx. It allows to see debug prints.
-//#define UART_PRINT_TO_SCREEN2 // this one. 
+//#define UART_PRINT_TO_SCREEN2 
 //#define UART_SPECIAL_DEBUG_PRINT_ENABLED 1
 #define UART_SPECIAL_DEBUG_PRINT_ENABLED 0
 // // #define PRINT_TO_BUFFER2  // Either this or UART_PRINT_TO_SCREEN2
-//#define AT_ECHO_ON  // Set echo on.
+//#define AT_ECHO_ON  // Set echo on.THIS TIMEOUTS FOR SOME REASON!
 
 #define CLOUD_SPRITE_Y 40
 
 #define UDP_SERVER_PORT "4444"
-#define UDP_SERVER_ADDRESS "192.168.100.135"
+#define UDP_SERVER_ADDRESS "192.168.100.133" 
 #define UDP_LOCAL_PORT "333"
 
 
 #define UART_TIMEOUT_MS 1000*5
 
-#define SERVER_IP_ADDRESS_2 "192.168.100.135"
-#define SERVER_PORT_2 "8000"
+//#define SERVER_IP_ADDRESS_2 "192.168.100.133"
+//#define SERVER_PORT_2 "8000"
 
+#define RESET_WIFI  // Reset the WIFI module before starting the connection.
 
 #define BUFFER_MAX_SIZE2 512
 

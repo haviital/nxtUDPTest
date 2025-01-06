@@ -18,6 +18,8 @@ void NetComInit(void)
 
     DrawStatusTextAndPageFlip("Connecting to Wifi");
 
+    char atcmd[256];
+ 
     // Disable echo
     #ifdef AT_ECHO_ON
     uart_tx2("ATE1\r\n");
@@ -27,8 +29,15 @@ void NetComInit(void)
     if(uart_read_expected2("OK") != 0)
         PROG_FAILED;
 
+    #ifdef RESET_WIFI
+    // Initialize the wifi module.
+    // sprintf(atcmd, "AT+CWINIT=1\r\n");
+    // uart_tx2(atcmd);
+    // if(uart_read_expected2("OK") != 0)
+    //     PROG_FAILED;
+    #endif
+
     // Connect to wifi AP.
-    char atcmd[256];
     sprintf(atcmd, "AT+CWJAP=\"%s\",\"%s\"\r\n", g_wifiSsid, g_wifiPassword);
     uart_tx2(atcmd);
     if(uart_read_expected2("OK") != 0)

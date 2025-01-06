@@ -621,7 +621,7 @@ int main(void)
         // printf("Received packets: x %u", numClonedPackets);
 
         #ifndef NO_GFX
-        layer2_draw_text(0, 3, " >>> UDP TEST PROGRAM <<<", 0x70, &shadow_screen); 
+        // layer2_draw_text(0, 3, " >>> UDP TEST PROGRAM <<<", 0x70, &shadow_screen); 
         #endif
 
         UpdateAndDrawAll();
@@ -645,7 +645,9 @@ int main(void)
         text[0]=0;
 
         #ifndef NO_GFX
-        layer2_fill_rect( 0, 192 - 16, 256, 16, 0x00, &shadow_screen); // Clear field.
+        // Clear botton area.
+        //!!HVlayer2_fill_rect( 0, 192 - 16, 256, 16, 0x00, &shadow_screen); 
+        layer2_fill_rect( 200, 192 - 16, 56, 16, 0x00, &shadow_screen); 
         #endif
     
         char tmpStr[64];
@@ -663,33 +665,33 @@ int main(void)
         
         // Print client and server send speed and send count.
         #ifndef NO_GFX
-        strcpy(text, "Send: ");
-        itoa(totalSendPacketCount, tmpStr, 10);
-        strcat(text, tmpStr); 
-        strcat(text, " pkg");
-        layer2_draw_text(22, 0, text, 0x7F, &shadow_screen); 
+        // strcpy(text, "Send: ");
+        // itoa(totalSendPacketCount, tmpStr, 10);
+        // strcat(text, tmpStr); 
+        // strcat(text, " pkg");
+        // layer2_draw_text(22, 0, text, 0x7F, &shadow_screen); 
 
-        uint32_t sendBytesPerSecond = sendPacketsPerSecondInterval * MSG_TESTLOOPBACK_REQUEST_STRUCT_SIZE;
-        ltoa(sendBytesPerSecond, tmpStr, 10);
-        strcpy(text, tmpStr);
-        strcat(text, " b/s");
-        // itoa(sendPacketsPerSecondInterval, tmpStr, 10);
+        // uint32_t sendBytesPerSecond = sendPacketsPerSecondInterval * MSG_TESTLOOPBACK_REQUEST_STRUCT_SIZE;
+        // ltoa(sendBytesPerSecond, tmpStr, 10);
+        // strcpy(text, tmpStr);
+        // strcat(text, " b/s");
+        // // itoa(sendPacketsPerSecondInterval, tmpStr, 10);
+        // // strcat(text, tmpStr);
+        // layer2_draw_text(22, 16, text, 0x7F, &shadow_screen); 
+
+        // strcpy(text, "Recv: ");
+        // itoa(totalReceivedPacketCount, tmpStr, 10);
         // strcat(text, tmpStr);
-        layer2_draw_text(22, 16, text, 0x7F, &shadow_screen); 
+        // strcat(text, " pkg");
+        // layer2_draw_text(23, 0, text, 0x03, &shadow_screen); 
 
-        strcpy(text, "Recv: ");
-        itoa(totalReceivedPacketCount, tmpStr, 10);
-        strcat(text, tmpStr);
-        strcat(text, " pkg");
-        layer2_draw_text(23, 0, text, 0x03, &shadow_screen); 
-
-        uint32_t recvBytesPerSecond = recvPacketsPerSecondInterval * MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE;
-        ltoa(recvBytesPerSecond, tmpStr, 10);
-        strcpy(text, tmpStr);
-        strcat(text, " b/s");
-        // itoa(recvPacketsPerSecondInterval, tmpStr, 10);
-        // strcat(text, tmpStr);
-        layer2_draw_text(23, 16, text, 0x03, &shadow_screen); 
+        // uint32_t recvBytesPerSecond = recvPacketsPerSecondInterval * MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE;
+        // ltoa(recvBytesPerSecond, tmpStr, 10);
+        // strcpy(text, tmpStr);
+        // strcat(text, " b/s");
+        // // itoa(recvPacketsPerSecondInterval, tmpStr, 10);
+        // // strcat(text, tmpStr);
+        // layer2_draw_text(23, 16, text, 0x03, &shadow_screen); 
         #endif
 
         //!!HV 
@@ -705,11 +707,11 @@ int main(void)
         strcat(tmpStr, " s");
         layer2_draw_text(22, 27, tmpStr, 0xff, &shadow_screen);
 
-        // Print total seconds
-        strcpy(text, "x");
-        itoa(numClonedPackets, tmpStr, 10);
-        strcat(text, tmpStr);
-        layer2_draw_text(23, 27, text, 0x03, &shadow_screen);
+        // Print cloned count
+        // strcpy(text, "x");
+        // itoa(numClonedPackets, tmpStr, 10);
+        // strcat(text, tmpStr);
+        // layer2_draw_text(23, 27, text, 0x03, &shadow_screen);
         #endif
         // strcat(text, tmpStr);
         // strcat(text, "s ");
