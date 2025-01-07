@@ -35,7 +35,11 @@ void TextTileMapPutc(uint16_t c)
     if (c < 32)
     {
             TextTileMapPutc('^');
-            c += '@';
+            c += '@' - 32;
+    }
+    else
+    {
+        c-=32;
     }
 
     tilemap[screeny*TEXTTILEMAP_SCREENWIDTH+screenx].tile = c;
@@ -76,7 +80,7 @@ void TextTileMapClearToEol(void)
         i--;
 
     while (i--) {
-        tilemap[(screeny*TEXTTILEMAP_SCREENWIDTH) + TEXTTILEMAP_SCREENWIDTH-i-1].tile = ' ';
+        tilemap[(screeny*TEXTTILEMAP_SCREENWIDTH) + TEXTTILEMAP_SCREENWIDTH-i-1].tile = (' ' -32);
     }
 
     TextTileMapGoto(screenx, screeny);
@@ -85,7 +89,7 @@ void TextTileMapClearToEol(void)
 void TextTileMapClear(void)
 {
     //memset(tilemap, 0, sizeof(tilemap));
-    memset(tilemap, 62, sizeof(tilemap));
+    memset(tilemap, 0, sizeof(tilemap));
     screenx = screeny = 0;
 }
 

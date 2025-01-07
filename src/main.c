@@ -241,8 +241,12 @@ void init_tilemap(void)
     //  bits 5-0 = MSB of address of tile definitions in Bank 5
     ZXN_NEXTREG(0x6f, 0x5C);                                    // base address 0x5c00 (vis.chars(32+) at 0x5D00)
 
-    for(int i=0; i<256; i++)
-        memcpy(&(tiles[i].bmp), LogoTile1, 8);
+    // Copy font data from ROM.
+    uint8_t* fontDataInRom = (void*)0x3D00;
+    // for(int i=0; i<256; i++)
+    //     memcpy(&(tiles[i].bmp), LogoTile1, 8);
+    for(int i=0; i<(256-32); i++)
+        memcpy(&(tiles[i].bmp), fontDataInRom+(8*i), 8);
 
     ZXN_NEXTREG(REG_GLOBAL_TRANSPARENCY_COLOR, 0xE3);
     ZXN_NEXTREG(REG_FALLBACK_COLOR, 0x00);
@@ -714,6 +718,20 @@ int main(void)
  
     create_start_screen();
 
+    #ifndef NO_GFX
+
+    // Print title.
+    layer2_draw_text(0, 3, " >>> UDP TEST PROGRAM <<<", 0x70, &shadow_screen); 
+
+    // Clear the botton area for status text.
+    layer2_fill_rect( 0, 192 - 16, 256, 16, 0x00, &shadow_screen); 
+    //layer2_fill_rect( 200, 192 - 16, 56, 16, 0x00, &shadow_screen); 
+
+    // Clear the text tilemap.
+    //TextTileMapClear();
+
+    #endif
+    
     // Loop until the end of the game.
     uint8_t test=0;
     while (true)
@@ -730,12 +748,6 @@ int main(void)
         // layer2_fill_rect(0, 0, 256, 8, 0xE3, &shadow_screen); // make a hole
         // printAt(0, 0);
         // printf("Received packets: x %u", numClonedPackets);
-
-        #ifndef NO_GFX
-        // layer2_draw_text(0, 3, " >>> UDP TEST PROGRAM <<<", 0x70, &shadow_screen); 
-        TextTileMapClear();
-        TextTileMapPutsPos(10, 10, "TESTAILLAAN !!!!");
-        #endif
 
         UpdateAndDrawAll();
  
@@ -757,12 +769,6 @@ int main(void)
         char text[128];
         text[0]=0;
 
-        #ifndef NO_GFX
-        // Clear botton area.
-        //!!HVlayer2_fill_rect( 0, 192 - 16, 256, 16, 0x00, &shadow_screen); 
-        layer2_fill_rect( 200, 192 - 16, 56, 16, 0x00, &shadow_screen); 
-        #endif
-    
         char tmpStr[64];
 
         // frame count
@@ -818,7 +824,8 @@ int main(void)
         // Print total seconds
         itoa(totalSeconds, tmpStr, 10);
         strcat(tmpStr, " s");
-        layer2_draw_text(22, 27, tmpStr, 0xff, &shadow_screen);
+        //layer2_draw_text(22, 27, tmpStr, 0xff, &shadow_screen);
+        TextTileMapPutsPos(27, 22, tmpStr);
 
         // Print cloned count
         // strcpy(text, "x");
