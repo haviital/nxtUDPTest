@@ -718,6 +718,17 @@ int main(void)
  
     create_start_screen();
 
+    #ifndef NO_GFX
+
+    // Draw title.
+    layer2_draw_text(0, 3, " >>> UDP TEST PROGRAM <<<", 0x70, &shadow_screen); 
+    layer2_flip_main_shadow_screen();     // Swap the double buffered screen.
+    layer2_draw_text(0, 3, " >>> UDP TEST PROGRAM <<<", 0x70, &shadow_screen); 
+
+    // Clear the text tilemap
+    TextTileMapClear();
+    #endif
+
     // Loop until the end of the game.
     uint8_t test=0;
     while (true)
@@ -734,12 +745,6 @@ int main(void)
         // layer2_fill_rect(0, 0, 256, 8, 0xE3, &shadow_screen); // make a hole
         // printAt(0, 0);
         // printf("Received packets: x %u", numClonedPackets);
-
-        #ifndef NO_GFX
-        // layer2_draw_text(0, 3, " >>> UDP TEST PROGRAM <<<", 0x70, &shadow_screen); 
-        TextTileMapClear();
-        TextTileMapPutsPos(10, 10, "TESTAILLAAN !!!!");
-        #endif
 
         UpdateAndDrawAll();
  
@@ -823,6 +828,8 @@ int main(void)
         itoa(totalSeconds, tmpStr, 10);
         strcat(tmpStr, " s");
         layer2_draw_text(22, 27, tmpStr, 0xff, &shadow_screen);
+
+        TextTileMapPutsPos(26, 31, tmpStr);
 
         // Print cloned count
         // strcpy(text, "x");

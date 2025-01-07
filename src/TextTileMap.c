@@ -20,10 +20,10 @@ struct __tiles* tiles = (struct __tiles*)0x5C00;
 uint16_t screenx = 0, screeny = 0;
 uint16_t screencolour = TEXTMODE_DEFAULT_COLOUR;
 
-void TextTileMapPutcPos(uint16_t x, uint16_t y, uint16_t c)
+void TextTileMapPutcPos(uint16_t row, uint16_t col, uint16_t c)
 {
-	screenx = x;
-	screeny = y;
+	screenx = col;
+	screeny = row;
     TextTileMapPutc(c);
 }
 
@@ -52,10 +52,10 @@ void TextTileMapPutc(uint16_t c)
     }
 }
 
-void TextTileMapPutsPos(uint16_t x, uint16_t y, const char* s)
+void TextTileMapPutsPos(uint16_t row, uint16_t col, const char* s)
 {
-	screenx = x;
-	screeny = y;
+	screenx = col;
+	screeny = row;
     TextTileMapPuts(s);
 }
 
@@ -83,7 +83,7 @@ void TextTileMapClearToEol(void)
         tilemap[(screeny*TEXTTILEMAP_SCREENWIDTH) + TEXTTILEMAP_SCREENWIDTH-i-1].tile = (' ' -32);
     }
 
-    TextTileMapGoto(screenx, screeny);
+    TextTileMapGoto(screeny, screenx);
 }
 
 void TextTileMapClear(void)
@@ -93,8 +93,8 @@ void TextTileMapClear(void)
     screenx = screeny = 0;
 }
 
-void TextTileMapGoto(uint16_t x, uint16_t y)
+void TextTileMapGoto(uint16_t row, uint16_t col)
 {
-	screenx = x;
-	screeny = y;
+	screenx = col;
+	screeny = row;
 }
