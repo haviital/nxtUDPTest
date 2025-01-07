@@ -241,12 +241,12 @@ void init_tilemap(void)
     //  bits 5-0 = MSB of address of tile definitions in Bank 5
     ZXN_NEXTREG(0x6f, 0x5C);                                    // base address 0x5c00 (vis.chars(32+) at 0x5D00)
 
-    // Copy font data from ROM.
+    // Copy font data from ROM to the tiledetails data.
     uint8_t* fontDataInRom = (void*)0x3D00;
-    for(int i=0; i<256; i++)
-         memcpy(&(tiles[i].bmp), LogoTile1, 8);
-    // for(int i=0; i<(256-32); i++)
-    //     memcpy(&(tiles[i].bmp), fontDataInRom+(8*i), 8);
+    // for(int i=0; i<256; i++)
+    //     memcpy(&(tiles[i].bmp), LogoTile1, 8);
+    for(int i=0; i<(256-32); i++)
+        memcpy(&(tiles[i].bmp), fontDataInRom+(8*i), 8);
 
     ZXN_NEXTREG(REG_GLOBAL_TRANSPARENCY_COLOR, 0xE3);
     ZXN_NEXTREG(REG_FALLBACK_COLOR, 0x00);
