@@ -257,7 +257,7 @@ void init_tilemap(void)
     ZXN_NEXTREGA(REG_PALETTE_INDEX, 27);                        // 0x40 (64) => Palette Index
     ZXN_NEXTREGA(REG_PALETTE_VALUE_8, 0xE3);                    // 0x41?
 
-    ZXN_NEXTREG(REG_PALETTE_CONTROL, 0x30);                     // 0x43 (67) => Palette Control
+    ZXN_NEXTREG(REG_PALETTE_CONTROL, 0x30);                     // 0x43 (67) => Palette Control, 0x30 it tilemap first palette.
     ZXN_NEXTREG(REG_PALETTE_INDEX, 0);                          // 0x40 (64) => Palette Index
     uint8_t i = 0;
     do {
@@ -651,7 +651,7 @@ void UpdateAndDrawAll(void)
     // *** Update game objects
     UpdateGameObjects();
 
-    zx_border(INK_BLUE);
+    zx_border(INK_CYAN);
 
     // *** Receive data from server.
     uint16_t receivedPacketCount = 0;
@@ -667,7 +667,9 @@ void UpdateAndDrawAll(void)
     // Only send every 8th frame
     if((frameCount8Bit & 0x7) == 0)
     {
+        zx_border(INK_BLUE);
         err =  SendMessage(MSG_ID_TESTLOOPBACK);
+        zx_border(INK_BLACK);
         StartNewPacket(false);
     }
 
@@ -730,12 +732,10 @@ int main(void)
     layer2_draw_text(0, 3, " >>> UDP TEST PROGRAM <<<", 0x70, &shadow_screen); 
      // Clear botton area for the other buffer.
     layer2_fill_rect( 0, 192 - 16, 256, 16, 0x00, &shadow_screen); 
-    // Swap the double buffered screen.
-
+ 
     // Clear the text tilemap
     TextTileMapClear();
 
-    //layer2_fill_rect( 200, 192 - 16, 56, 16, 0x00, &shadow_screen); 
     #endif
 
     // Loop until the end of the game.
@@ -749,11 +749,6 @@ int main(void)
             numClonedPackets = 3;
         else if (in_key_pressed(IN_KEY_SCANCODE_3))
             numClonedPackets = 7;      
-
-        // Print on ULA screen.
-        // layer2_fill_rect(0, 0, 256, 8, 0xE3, &shadow_screen); // make a hole
-        // printAt(0, 0);
-        // printf("Received packets: x %u", numClonedPackets);
 
         UpdateAndDrawAll();
  
@@ -791,67 +786,52 @@ int main(void)
         
         // Print client and server send speed and send count.
         #ifndef NO_GFX
-        // strcpy(text, "Send: ");
-        // itoa(totalSendPacketCount, tmpStr, 10);
-        // strcat(text, tmpStr); 
-        // strcat(text, " pkg");
-        // layer2_draw_text(22, 0, text, 0x7F, &shadow_screen); 
+        screencolour = 5;
+        strcpy(text, "Send: ");
+        itoa(totalSendPacketCount, tmpStr, 10);
+        strcat(text, tmpStr); 
+        strcat(text, " pkg");
+        //layer2_draw_text(22, 0, text, 0x7F, &shadow_screen); 
+        TextTileMapPutsPos(26, 0, text);
 
-        // uint32_t sendBytesPerSecond = sendPacketsPerSecondInterval * MSG_TESTLOOPBACK_REQUEST_STRUCT_SIZE;
-        // ltoa(sendBytesPerSecond, tmpStr, 10);
-        // strcpy(text, tmpStr);
-        // strcat(text, " b/s");
-        // // itoa(sendPacketsPerSecondInterval, tmpStr, 10);
-        // // strcat(text, tmpStr);
+        uint32_t sendBytesPerSecond = sendPacketsPerSecondInterval * MSG_TESTLOOPBACK_REQUEST_STRUCT_SIZE;
+        ltoa(sendBytesPerSecond, tmpStr, 10);
+        strcpy(text, tmpStr);
+        strcat(text, " b/s");
         // layer2_draw_text(22, 16, text, 0x7F, &shadow_screen); 
+        TextTileMapPutsPos(26, 16, text);
 
-        // strcpy(text, "Recv: ");
-        // itoa(totalReceivedPacketCount, tmpStr, 10);
-        // strcat(text, tmpStr);
-        // strcat(text, " pkg");
-        // layer2_draw_text(23, 0, text, 0x03, &shadow_screen); 
-
-        // uint32_t recvBytesPerSecond = recvPacketsPerSecondInterval * MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE;
-        // ltoa(recvBytesPerSecond, tmpStr, 10);
-        // strcpy(text, tmpStr);
-        // strcat(text, " b/s");
-        // // itoa(recvPacketsPerSecondInterval, tmpStr, 10);
-        // // strcat(text, tmpStr);
-        // layer2_draw_text(23, 16, text, 0x03, &shadow_screen); 
-        #endif
-
-        //!!HV 
-        // printAt(8,0); 
-        // printf("sendPacketCountPerSecond = %u\n", sendPacketCountPerSecond);
-        // printf("recvPacketCountPerSecond = %u\n", recvPacketCountPerSecond);
-        // printf("frame                    = %u\n", frameCountForOneSecond);
-        // printf("send/recv when frame=0: %u/%u\n", sendPacketsPerSecondInterval, recvPacketsPerSecondInterval);
-
-        #ifndef NO_GFX
-        // Print total seconds
+        // Print total seconds.
         itoa(totalSeconds, tmpStr, 10);
-        strcat(tmpStr, " s");
+        strcpy(text, tmpStr);
+        strcat(text, " s");
         //layer2_draw_text(22, 27, tmpStr, 0xff, &shadow_screen);
+        TextTileMapPutsPos(26, 31, text);
 
-        TextTileMapPutsPos(26, 31, tmpStr);
+        screencolour = 7;
+        strcpy(text, "Recv: ");
+        itoa(totalReceivedPacketCount, tmpStr, 10);
+        strcat(text, tmpStr);
+        strcat(text, " pkg");
+        //layer2_draw_text(23, 0, text, 0x03, &shadow_screen); 
+        TextTileMapPutsPos(27, 0, text);
 
-        // Print cloned count
-        // strcpy(text, "x");
-        // itoa(numClonedPackets, tmpStr, 10);
+        uint32_t recvBytesPerSecond = recvPacketsPerSecondInterval * MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE;
+        ltoa(recvBytesPerSecond, tmpStr, 10);
+        strcpy(text, tmpStr);
+        strcat(text, " b/s");
+        // itoa(recvPacketsPerSecondInterval, tmpStr, 10);
         // strcat(text, tmpStr);
-        // layer2_draw_text(23, 27, text, 0x03, &shadow_screen);
+        // layer2_draw_text(23, 16, text, 0x03, &shadow_screen); 
+        TextTileMapPutsPos(27, 16, text);
+
+        // Print cloned count.
+        strcpy(text, "x");
+        itoa(numClonedPackets, tmpStr, 10);
+        strcat(text, tmpStr);
+        //layer2_draw_text(23, 27, text, 0x03, &shadow_screen);
+        TextTileMapPutsPos(27, 31, text);
         #endif
-        // strcat(text, tmpStr);
-        // strcat(text, "s ");
-        // #ifndef NO_GFX
-        // layer2_draw_text(23, 0, text, 0xc, &shadow_screen); 
-        // #else
-        // //Draw a hole for the whole screen,
-        // layer2_fill_rect(0, 0, 256, 192, 0xE3, &shadow_screen); // make a hole
-        // printStrAt(23,5, text);
-        // #endif
-
-        //zx_border(INK_BLACK);
 
         PageFlip();   
     }
