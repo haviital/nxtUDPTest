@@ -25,13 +25,16 @@ $A79E - $ABE0
 	- _buf_256                        = $AAA1
 
 
+$B000 
+	
+
 $BE00 - $C000
 	STACK (size=$200)
 	- __register_sp                   = $C000
 
 ## Memory banks (16kb each)
-$0000 $3fff L2 buffer / rom
-$4000 $7fff code ($6164) (or ULA screen?)
-$8000 $bfff data($929f), stack ($c000), (free ram)
-$c000 $ffff ????
+$0000 $3fff L2 buffer / rom                        => rom bank / layer 2
+$4000 $7fff code ($6164) (or ULA screen?)          => bank 5
+$8000 $bfff data($929f), stack ($c000), (free ram) => bank 2
+$c000 $ffff ????	                               => bank 0
 

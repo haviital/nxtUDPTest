@@ -22,10 +22,13 @@
 #include "lib/zxn/zxnext_layer2.h"
 #include "lib/zxn/zxnext_sprite.h"
 #include "defines.h"
+#include "TextTileMap.h"
 
-#pragma output CRT_ORG_CODE = 0x6164
-#pragma output REGISTER_SP = 0xC000
-#pragma output CRT_STACK_SIZE = 0x400
+#pragma output CRT_ORG_CODE = 0x8184
+#pragma output REGISTER_SP = 0xFF58
+//#pragma output CRT_ORG_CODE = 0x6164  // Defautl is $8000
+//#pragma output REGISTER_SP = 0xC000
+//#pragma output CRT_STACK_SIZE = 0x400
 #pragma output CLIB_MALLOC_HEAP_SIZE = 0
 #pragma output CLIB_MALLOC_HEAP_SIZE = 0
 #pragma output CLIB_STDIO_HEAP_SIZE = 0
@@ -130,6 +133,23 @@ static void test_blit_transparent(layer2_screen_t *screen);
 
 // Local
 
+uint8_t tilemap_background[16] = {
+        0xE3,0x01,     // Transparent
+        0xA0,0x00,     // Red
+        0x14,0x00,     // Green
+        0xAC,0x00,     // Yellow
+        0x02,0x01,     // Blue
+        0xA2,0x01,     // Magenta
+        0x16,0x01,     // Cyan
+        0xB6,0x01      // White
+};
+
+uint8_t tilemap_foreground[32] = {            // 0xE3 = 277
+//      TRANS,     Red,       Green,     Yellow,    Blue,      Magenta,   Cyan,      White,
+        0xE3,0x01, 0xA0,0x00, 0x14,0x00, 0xAC,0x00, 0x02,0x01, 0xA2,0x01, 0x16,0x01, 0xB6,0x01, // (normal)
+        0x6D,0x01, 0xED,0x01, 0x7D,0x01, 0xFD,0x01, 0x77,0x01, 0xEE,0x01, 0x7F,0x01, 0xFF,0x01  // (bright)
+};
+
 static uint8_t test_number = 0;
 
 static layer2_screen_t shadow_screen = {SHADOW_SCREEN};
@@ -186,20 +206,110 @@ static void init_hardware(void)
     layer2_set_shadow_screen_ram_bank(11);
 }
 
+uint8_t LogoTile1[8] = {
+        0b00000000,
+        0b00000000,
+        0b00000000,
+        0b00000000,
+        0b00000000,
+        0b00000011,
+        0b00001111,
+        0b00111111,
+};
+uint8_t LogoTile2[8] = {
+        0b00000000,
+        0b00000011,
+        0b00001111,
+        0b00111111,
+        0b11111111,
+        0b11111111,
+        0b11111111,
+        0b11111111,
+};
+
+
+void init_tilemap(void)
+{
+    #if 1
+    // 0x6E (110) R/W =>  Tilemap Base Address
+    //  bits 7-6 = Read back as zero, write values ignored
+    //  bits 5-0 = MSB of address of the tilemap in Bank 5
+    ZXN_NEXTREG(0x6e, 0x6C);                                    // tilemap base address is 0x6C00
+
+    // 0x6F (111) R/W => Tile Definitions Base Address
+    //  bits 7-6 = Read back as zero, write values ignored
+    //  bits 5-0 = MSB of address of tile definitions in Bank 5
+    ZXN_NEXTREG(0x6f, 0x5C);                                    // base address 0x5c00 (vis.chars(32+) at 0x5D00)
+
+    for(int i=0; i<256; i++)
+        memcpy(&(tiles[i].bmp), LogoTile1, 8);
+
+    ZXN_NEXTREG(REG_GLOBAL_TRANSPARENCY_COLOR, 0xE3);
+    ZXN_NEXTREG(REG_FALLBACK_COLOR, 0x00);
+
+    // Select ULA palette
+    ZXN_NEXTREG(0x43, 0x00);                                    // 0x43 (67) => Palette Control, 00 is ULA
+    // Set Magenta back to proper E3
+    ZXN_NEXTREGA(REG_PALETTE_INDEX, 27);                        // 0x40 (64) => Palette Index
+    ZXN_NEXTREGA(REG_PALETTE_VALUE_8, 0xE3);                    // 0x41?
+
+    ZXN_NEXTREG(REG_PALETTE_CONTROL, 0x30);                     // 0x43 (67) => Palette Control
+    ZXN_NEXTREG(REG_PALETTE_INDEX, 0);                          // 0x40 (64) => Palette Index
+    uint8_t i = 0;
+    do {
+//BG
+        ZXN_NEXTREGA(0x44, tilemap_background[2*(i/32)]);       // 0x44 (68) => 9 bit colour) autoinc after TWO writes
+        ZXN_NEXTREGA(0x44, tilemap_background[2*(i/32)+1]);     // 0x44 (68) => 9 bit colour) autoinc after TWO writes
+//FG
+        ZXN_NEXTREGA(0x44, tilemap_foreground[(i%32)]);         // 0x44 (68) => 9 bit colour) autoinc after TWO writes
+        ZXN_NEXTREGA(0x44, tilemap_foreground[(i%32)+1]);       // 0x44 (68) => 9 bit colour) autoinc after TWO writes
+    } while ((i = i + 2) != 0);
+
+    /*
+     * 0x6B (107) => Tilemap Control
+     * (R/W)
+     *   bit 7 = 1 Enable the tilemap (soft reset = 0)
+     *   bit 6 = 0 for 40x32, 1 for 80x32 (soft reset = 0)
+     *   bit 5 = Eliminate the attribute entry in the tilemap (soft reset = 0)
+     *   bit 4 = Palette select (soft reset = 0)
+     *   bit 3 = Select textmode (soft reset = 0)
+     *   bit 2 = Reserved, must be 0
+     *   bit 1 = Activate 512 tile mode (soft reset = 0)
+     *   bit 0 = Force tilemap on top of ULA (soft reset = 0)
+     */
+    //ZXN_NEXTREG(0x6b, /*0b11001000*/ 0xC8);                     // enable tilemap, 80x32 mode, 1bit palette
+    ZXN_NEXTREG(0x6b, /*0b10001000*/ 0x88);                     // enable tilemap, 40x32 mode, 1bit palette
+
+    // bit 7    = 1 to disable ULA output
+    // bit 6    = 0 to select the ULA colour for blending in SLU modes 6 & 7
+    //          = 1 to select the ULA/tilemap mix for blending in SLU modes 6 & 7
+    // bits 5-1 = Reserved must be 0
+    // bit 0    = 1 to enable stencil mode when both the ULA and tilemap are enabled
+    //             (if either are transparent the result is transparent otherwise the
+    //              result is a logical AND of both colours)
+    ZXN_NEXTREG(/*REG_ULA_CONTROL*/0x68, 0x80);  // Disable ULA screen. Use only the tilemap on U layer  
+    #endif
+}
+
 static void init_isr(void)
 {
     // Set up IM2 interrupt service routine:
     // Put Z80 in IM2 mode with a 257-byte interrupt vector table located
     // at 0x8000 (before CRT_ORG_CODE) filled with 0x81 bytes. Install an
     // empty interrupt service routine at the interrupt service routine
-    // entry at address 0x8181.
+    // entry at address 0x8181 .
 
     intrinsic_di();
-    im2_init((void *) 0x6000);
-    memset((void *) 0x6000, 0x61, 257);
-    z80_bpoke(0x6161, 0xFB);
-    z80_bpoke(0x6162, 0xED);
-    z80_bpoke(0x6163, 0x4D);
+    // im2_init((void *) 0x6000);
+    // memset((void *) 0x6000, 0x61, 257);
+    // z80_bpoke(0x6161, 0xFB);
+    // z80_bpoke(0x6162, 0xED);
+    // z80_bpoke(0x6163, 0x4D);
+    im2_init((void *) 0x8000);
+    memset((void *) 0x8000, 0x81, 257);
+    z80_bpoke(0x8181, 0xFB);
+    z80_bpoke(0x8182, 0xED);
+    z80_bpoke(0x8183, 0x4D);
     intrinsic_ei();
 }
 
@@ -572,7 +682,7 @@ void PageFlip(void)
 int16_t GetUsedStack(void)
 {
     uint8_t stackEnd = 0;
-    return(0xc000   - (uint16_t)&stackEnd);
+    return(0xFF58 - (uint16_t)&stackEnd);
 }
 
 bool CheckMemoryGuards(void)
@@ -592,11 +702,12 @@ int main(void)
     guardArr1[3] = 0xfe;
 
     init_hardware();
+    init_tilemap();
     init_isr();
 
     create_sprites();
         
-    set_sprite_layers_system(true, false, LAYER_PRIORITIES_S_L_U, false);
+    set_sprite_layers_system(true, false, LAYER_PRIORITIES_S_U_L, false);
 
     DrawGameBackground();
     DrawGameBackground(); 
@@ -622,6 +733,8 @@ int main(void)
 
         #ifndef NO_GFX
         // layer2_draw_text(0, 3, " >>> UDP TEST PROGRAM <<<", 0x70, &shadow_screen); 
+        TextTileMapClear();
+        TextTileMapPutsPos(10, 10, "TESTAILLAAN !!!!");
         #endif
 
         UpdateAndDrawAll();
