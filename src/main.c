@@ -720,13 +720,22 @@ int main(void)
 
     #ifndef NO_GFX
 
-    // Draw title.
+    
     layer2_draw_text(0, 3, " >>> UDP TEST PROGRAM <<<", 0x70, &shadow_screen); 
-    layer2_flip_main_shadow_screen();     // Swap the double buffered screen.
+     // Clear botton area.
+    layer2_fill_rect( 0, 192 - 16, 256, 16, 0x00, &shadow_screen); 
+    // Swap the double buffered screen.
+    layer2_flip_main_shadow_screen();    
+    // Draw title for the other buffer. 
     layer2_draw_text(0, 3, " >>> UDP TEST PROGRAM <<<", 0x70, &shadow_screen); 
+     // Clear botton area for the other buffer.
+    layer2_fill_rect( 0, 192 - 16, 256, 16, 0x00, &shadow_screen); 
+    // Swap the double buffered screen.
 
     // Clear the text tilemap
     TextTileMapClear();
+
+    //layer2_fill_rect( 200, 192 - 16, 56, 16, 0x00, &shadow_screen); 
     #endif
 
     // Loop until the end of the game.
@@ -766,11 +775,6 @@ int main(void)
         char text[128];
         text[0]=0;
 
-        #ifndef NO_GFX
-        // Clear botton area.
-        //!!HVlayer2_fill_rect( 0, 192 - 16, 256, 16, 0x00, &shadow_screen); 
-        layer2_fill_rect( 200, 192 - 16, 56, 16, 0x00, &shadow_screen); 
-        #endif
     
         char tmpStr[64];
 
@@ -827,7 +831,7 @@ int main(void)
         // Print total seconds
         itoa(totalSeconds, tmpStr, 10);
         strcat(tmpStr, " s");
-        layer2_draw_text(22, 27, tmpStr, 0xff, &shadow_screen);
+        //layer2_draw_text(22, 27, tmpStr, 0xff, &shadow_screen);
 
         TextTileMapPutsPos(26, 31, tmpStr);
 
