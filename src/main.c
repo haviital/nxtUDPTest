@@ -291,7 +291,7 @@ void init_tilemap(void)
     // bit 0    = 1 to enable stencil mode when both the ULA and tilemap are enabled
     //             (if either are transparent the result is transparent otherwise the
     //              result is a logical AND of both colours)
-    //ZXN_NEXTREG(/*REG_ULA_CONTROL*/0x68, 0x80);  // Disable ULA screen. Use only the tilemap on U layer  
+    ZXN_NEXTREG(/*REG_ULA_CONTROL*/0x68, 0x80);  // Disable ULA screen. Use only the tilemap on U layer  
     #endif
 }
 
