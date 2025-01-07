@@ -243,10 +243,10 @@ void init_tilemap(void)
 
     // Copy font data from ROM.
     uint8_t* fontDataInRom = (void*)0x3D00;
-    // for(int i=0; i<256; i++)
-    //     memcpy(&(tiles[i].bmp), LogoTile1, 8);
-    for(int i=0; i<(256-32); i++)
-        memcpy(&(tiles[i].bmp), fontDataInRom+(8*i), 8);
+    for(int i=0; i<256; i++)
+         memcpy(&(tiles[i].bmp), LogoTile1, 8);
+    // for(int i=0; i<(256-32); i++)
+    //     memcpy(&(tiles[i].bmp), fontDataInRom+(8*i), 8);
 
     ZXN_NEXTREG(REG_GLOBAL_TRANSPARENCY_COLOR, 0xE3);
     ZXN_NEXTREG(REG_FALLBACK_COLOR, 0x00);
@@ -291,7 +291,7 @@ void init_tilemap(void)
     // bit 0    = 1 to enable stencil mode when both the ULA and tilemap are enabled
     //             (if either are transparent the result is transparent otherwise the
     //              result is a logical AND of both colours)
-    ZXN_NEXTREG(/*REG_ULA_CONTROL*/0x68, 0x80);  // Disable ULA screen. Use only the tilemap on U layer  
+    //ZXN_NEXTREG(/*REG_ULA_CONTROL*/0x68, 0x80);  // Disable ULA screen. Use only the tilemap on U layer  
     #endif
 }
 
