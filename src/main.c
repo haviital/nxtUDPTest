@@ -120,7 +120,7 @@ static void test_blit_transparent(layer2_screen_t *screen);
 #include "..\..\mycredentials.h"
 
 // Defines
-#define DATA_SPR_SPEED 5
+#define DATA_SPR_SPEED 3
 #define PACKET_SPRITE_PATTERN_SLOT 0
 #define CLOUD_SPRITE_PATTERN_SLOT 1
 #define SERVER_SPRITE_0_PATTERN_SLOT 2
@@ -130,6 +130,10 @@ static void test_blit_transparent(layer2_screen_t *screen);
 #define SPECNEXT_SPRITE_0_PATTERN_SLOT 6
 #define SPECNEXT_SPRITE_1_PATTERN_SLOT 7
 
+#define OUTGOING_PACKET_X1 34
+#define INCOMING_PACKET_X1 219
+#define OUTGOING_PACKET_X2 214
+#define INCOMING_PACKET_X2 29
 
 // Local
 
@@ -206,28 +210,6 @@ static void init_hardware(void)
     layer2_set_shadow_screen_ram_bank(11);
 }
 
-uint8_t LogoTile1[8] = {
-        0b00000000,
-        0b00000000,
-        0b00000000,
-        0b00000000,
-        0b00000000,
-        0b00000011,
-        0b00001111,
-        0b00111111,
-};
-uint8_t LogoTile2[8] = {
-        0b00000000,
-        0b00000011,
-        0b00001111,
-        0b00111111,
-        0b11111111,
-        0b11111111,
-        0b11111111,
-        0b11111111,
-};
-
-
 void init_tilemap(void)
 {
     #if 1
@@ -243,8 +225,6 @@ void init_tilemap(void)
 
     // Copy font data from ROM to the tiledetails data.
     uint8_t* fontDataInRom = (void*)0x3D00;
-    // for(int i=0; i<256; i++)
-    //     memcpy(&(tiles[i].bmp), LogoTile1, 8);
     for(int i=0; i<(256-32); i++)
         memcpy(&(tiles[i].bmp), fontDataInRom+(8*i), 8);
 
@@ -261,10 +241,10 @@ void init_tilemap(void)
     ZXN_NEXTREG(REG_PALETTE_INDEX, 0);                          // 0x40 (64) => Palette Index
     uint8_t i = 0;
     do {
-//BG
+        //BG
         ZXN_NEXTREGA(0x44, tilemap_background[2*(i/32)]);       // 0x44 (68) => 9 bit colour) autoinc after TWO writes
         ZXN_NEXTREGA(0x44, tilemap_background[2*(i/32)+1]);     // 0x44 (68) => 9 bit colour) autoinc after TWO writes
-//FG
+        //FG
         ZXN_NEXTREGA(0x44, tilemap_foreground[(i%32)]);         // 0x44 (68) => 9 bit colour) autoinc after TWO writes
         ZXN_NEXTREGA(0x44, tilemap_foreground[(i%32)+1]);       // 0x44 (68) => 9 bit colour) autoinc after TWO writes
     } while ((i = i + 2) != 0);
@@ -338,25 +318,25 @@ static void create_sprites(void)
     set_sprite_slot(SERVER_SPRITE_0_PATTERN_SLOT);
     set_sprite_pattern(serverSpr0);
     set_sprite_slot(102);
-    set_sprite_attributes_ext(SERVER_SPRITE_0_PATTERN_SLOT, 208, 154, 0, 0, true);
+    set_sprite_attributes_ext(SERVER_SPRITE_0_PATTERN_SLOT, 210, 154, 0, 0, true);
 
     // Server sprite 1
     set_sprite_slot(SERVER_SPRITE_1_PATTERN_SLOT);
     set_sprite_pattern(serverSpr1);
     set_sprite_slot(103);
-    set_sprite_attributes_ext(SERVER_SPRITE_1_PATTERN_SLOT, (int)(208+16), 154, 0, 0, true);
+    set_sprite_attributes_ext(SERVER_SPRITE_1_PATTERN_SLOT, (int)(210+16), 154, 0, 0, true);
 
     // Server sprite 2
     set_sprite_slot(SERVER_SPRITE_2_PATTERN_SLOT);
     set_sprite_pattern(serverSpr2);
     set_sprite_slot(104);
-    set_sprite_attributes_ext(SERVER_SPRITE_2_PATTERN_SLOT, 208, (int)(154+16), 0, 0, true);
+    set_sprite_attributes_ext(SERVER_SPRITE_2_PATTERN_SLOT, 210, (int)(154+16), 0, 0, true);
 
     // Server sprite 3
     set_sprite_slot(SERVER_SPRITE_3_PATTERN_SLOT);
     set_sprite_pattern(serverSpr3);
     set_sprite_slot(105);
-    set_sprite_attributes_ext(SERVER_SPRITE_3_PATTERN_SLOT, (int)(208+16), (int)(154+16), 0, 0, true);
+    set_sprite_attributes_ext(SERVER_SPRITE_3_PATTERN_SLOT, (int)(210+16), (int)(154+16), 0, 0, true);
 
     // SpecNext sprite 0
     set_sprite_slot(SPECNEXT_SPRITE_0_PATTERN_SLOT);
@@ -478,8 +458,6 @@ void FlipBorderColor(bool reset)
     color++;
 }
 
-#define OUTGOING_PACKET_X1 32
-
 void StartNewPacket(bool isIncoming)
 {
     if(isIncoming)
@@ -497,7 +475,7 @@ void StartNewPacket(bool isIncoming)
         {
             GameObject* gobp = &incomingPacketGobs[i];
             gobp->isActive = true;
-            gobp->x = 216;
+            gobp->x = INCOMING_PACKET_X1;
             gobp->y = 154;
             gobp->sx = 0;
             gobp->sy = -DATA_SPR_SPEED;
@@ -560,7 +538,6 @@ void DrawStatusTextAndPageFlip(char* text)
     DrawStatusText(text);
 }
 
-#define OUTGOING_PACKET_X2 214
 
 static void UpdateGameObjects(void)
 {
@@ -586,13 +563,13 @@ static void UpdateGameObjects(void)
         // Afer moved from the server up to cloud, start moving from cloud down to Next.
         if(gob->sy < 0 && gob->y < 40 )
         {
-            gob->x = 30;
+            gob->x = INCOMING_PACKET_X2;
             gob->sx = 0;
             gob->sy = DATA_SPR_SPEED;           
         }
 
         // When reached SpecNext => inactive
-        if( gob->x==30 && // Going down to Next
+        if( gob->x==INCOMING_PACKET_X2 && // Going down to Next
             gob->y > 164) // Reached Next
         {
             gob->isActive = false;
@@ -806,60 +783,56 @@ int main(void)
         // Print client and server send speed and send count.
         #ifndef NO_GFX
 
-        // screencolour = 3;  // red
-        // itoa(debugTextColor, tmpStr, 10);
-        // strcat(tmpStr, " = color");        
-        // TextTileMapPutsPos(7, 4, tmpStr);
+        if((frameCount8Bit & 0x1f) == 0x1f ) // Every 32nd frame
+        {
+            screencolour = 12;  // cyan
+            strcpy(text, "Send: ");
+            itoa(totalSendPacketCount, tmpStr, 10);
+            strcat(text, tmpStr); 
+            strcat(text, " pkg");
+            TextTileMapPutsPos(26, 4, text);
 
-        //screencolour = 3;  // red
-        screencolour = 12;  // cyan
-        //screencolour = debugTextColor;  //      
-        strcpy(text, "Send: ");
-        itoa(totalSendPacketCount, tmpStr, 10);
-        strcat(text, tmpStr); 
-        strcat(text, " pkg");
-        //layer2_draw_text(22, 0, text, 0x7F, &shadow_screen); 
-        TextTileMapPutsPos(26, 4, text);
+            uint32_t sendBytesPerSecond = sendPacketsPerSecondInterval * MSG_TESTLOOPBACK_REQUEST_STRUCT_SIZE;
+            ltoa(sendBytesPerSecond, tmpStr, 10);
+            strcpy(text, tmpStr);
+            strcat(text, " b/s");
+            TextTileMapPutsPos(26, 20, text);
 
-        uint32_t sendBytesPerSecond = sendPacketsPerSecondInterval * MSG_TESTLOOPBACK_REQUEST_STRUCT_SIZE;
-        ltoa(sendBytesPerSecond, tmpStr, 10);
-        strcpy(text, tmpStr);
-        strcat(text, " b/s");
-        // layer2_draw_text(22, 16, text, 0x7F, &shadow_screen); 
-        TextTileMapPutsPos(26, 20, text);
+            // Print total seconds.
+            itoa(totalSeconds, tmpStr, 10);
+            strcpy(text, tmpStr);
+            strcat(text, " s");
+            //layer2_draw_text(22, 27, tmpStr, 0xff, &shadow_screen);
+            TextTileMapPutsPos(26, 31, text);
+        }
 
-        // Print total seconds.
-        itoa(totalSeconds, tmpStr, 10);
-        strcpy(text, tmpStr);
-        strcat(text, " s");
-        //layer2_draw_text(22, 27, tmpStr, 0xff, &shadow_screen);
-        TextTileMapPutsPos(26, 31, text);
+        if(((frameCount8Bit + 16) & 0x1f) == 0x1f ) // Every 32nd frame, starting from frame 16.
+        {
+            screencolour = 8; // blue
+            strcpy(text, "Recv: ");
+            itoa(totalReceivedPacketCount, tmpStr, 10);
+            strcat(text, tmpStr);
+            strcat(text, " pkg");
+            //layer2_draw_text(23, 0, text, 0x03, &shadow_screen); 
+            TextTileMapPutsPos(27, 4, text);
 
-        //screencolour = 5; // green
-        screencolour = 8; // blue
-        //screencolour = debugTextColor + 1;  // 
-        strcpy(text, "Recv: ");
-        itoa(totalReceivedPacketCount, tmpStr, 10);
-        strcat(text, tmpStr);
-        strcat(text, " pkg");
-        //layer2_draw_text(23, 0, text, 0x03, &shadow_screen); 
-        TextTileMapPutsPos(27, 4, text);
+            uint32_t recvBytesPerSecond = recvPacketsPerSecondInterval * MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE;
+            ltoa(recvBytesPerSecond, tmpStr, 10);
+            strcpy(text, tmpStr);
+            strcat(text, " b/s");
+            // itoa(recvPacketsPerSecondInterval, tmpStr, 10);
+            // strcat(text, tmpStr);
+            // layer2_draw_text(23, 16, text, 0x03, &shadow_screen); 
+            TextTileMapPutsPos(27, 20, text);
 
-        uint32_t recvBytesPerSecond = recvPacketsPerSecondInterval * MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE;
-        ltoa(recvBytesPerSecond, tmpStr, 10);
-        strcpy(text, tmpStr);
-        strcat(text, " b/s");
-        // itoa(recvPacketsPerSecondInterval, tmpStr, 10);
-        // strcat(text, tmpStr);
-        // layer2_draw_text(23, 16, text, 0x03, &shadow_screen); 
-        TextTileMapPutsPos(27, 20, text);
+            // Print cloned count.
+            strcpy(text, "x");
+            itoa(numClonedPackets, tmpStr, 10);
+            strcat(text, tmpStr);
+            //layer2_draw_text(23, 27, text, 0x03, &shadow_screen);
+            TextTileMapPutsPos(27, 31, text);
+        }
 
-        // Print cloned count.
-        strcpy(text, "x");
-        itoa(numClonedPackets, tmpStr, 10);
-        strcat(text, tmpStr);
-        //layer2_draw_text(23, 27, text, 0x03, &shadow_screen);
-        TextTileMapPutsPos(27, 31, text);
         #endif
 
         PageFlip();   
