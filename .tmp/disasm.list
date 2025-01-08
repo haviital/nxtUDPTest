@@ -1,101 +1,67 @@
-6164.11 F3           di
-6165.11 FD E5        push iy
-6167.11 D9           exx
-6168.11 E5           push hl
-6169.11 ED 73 4F AC  ld (0AC4Fh),sp
-616D.11 31 00 C0     ld sp,0C000h
-6170.11 21 BF A6     ld hl,0A6BFh
-6173.11 34           inc (hl)
-6174.11 34           inc (hl)
-6175.11 21 4E A9     ld hl,0A94Eh
-6178.11 36 00        ld (hl),00h
-617A.11 CD DE 7F     call SUB_7FDE
+8184.4 F3           di
+8185.4 FD E5        push iy
+8187.4 D9           exx
+8188.4 E5           push hl
+8189.4 ED 73 58 D1  ld (0D158h),sp
+818D.4 31 58 FF     ld sp,0FF58h
+8190.4 21 C3 CB     ld hl,0CBC3h
+8193.4 34           inc (hl)
+8194.4 34           inc (hl)
+8195.4 21 57 CE     ld hl,0CE57h
+8198.4 36 00        ld (hl),00h
 
-617D.11 E5           push hl
-617E.11 C1           pop bc
-617F.11 ED 7B 4F AC  ld sp,(0AC4Fh)
-6183.11 D9           exx
-6184.11 E1           pop hl
-6185.11 D9           exx
-6186.11 FD E1        pop iy
-6188.11 ED 56        im 1
-618A.11 FB           ei
-618B.11 C9           ret
+; Note: The address 0A278h is in a different bank.
+819A.4 CD 78 A2     call 0A278h
 
-6E44.11 SUB_6E44:
-6E44.11 7C           ld a,h
-6E45.11 ED 47        ld i,a
-6E47.11 ED 5E        im 2
-6E49.11 C9           ret
+819D.4 E5           push hl
+819E.4 C1           pop bc
+819F.4 ED 7B 58 D1  ld sp,(0D158h)
+81A3.4 D9           exx
+81A4.4 E1           pop hl
+81A5.4 D9           exx
+81A6.4 FD E1        pop iy
+81A8.4 ED 56        im 1
+81AA.4 FB           ei
+81AB.4 C9           ret
 
-7879.11 SUB_7879:
-7879.11 ED 91 07 03  nextreg REG_TURBO_MODE,RTM_28MHZ
-787D.11 2E 08        ld l,08h
-787F.11 01 3B 24     ld bc,243Bh
-7882.11 ED 69        out (c),l
-7884.11 04           inc b
-7885.11 ED 68        in l,(c)
-7887.11 CB F5        set 6,l
-7889.11 7D           ld a,l
-788A.11 ED 92 08     nextreg REG_PERIPHERAL_3,a
-788D.11 3E 08        ld a,08h
-788F.11 F5           push af
-7890.11 33           inc sp
+A236.5 C3 98 B3     jp SUB_B398
 
-; Note: The address 8DC3h is in a different bank.
-7891.11 CD C3 8D     call 8DC3h
+B398.5 SUB_B398:
+B398.5 3E 12        ld a,12h
+B39A.5 01 3B 24     ld bc,243Bh
+B39D.5 ED 79        out (c),a
+B39F.5 3E 25        ld a,25h
+B3A1.5 DB 3B        in a,(003Bh)
+B3A3.5 4F           ld c,a
+B3A4.5 3E 13        ld a,13h
+B3A6.5 C5           push bc
+B3A7.5 01 3B 24     ld bc,243Bh
+B3AA.5 ED 79        out (c),a
+B3AC.5 C1           pop bc
+B3AD.5 3E 25        ld a,25h
+B3AF.5 DB 3B        in a,(003Bh)
+B3B1.5 47           ld b,a
+B3B2.5 3E 12        ld a,12h
+B3B4.5 C5           push bc
+B3B5.5 01 3B 24     ld bc,243Bh
+B3B8.5 ED 79        out (c),a
+B3BA.5 C1           pop bc
+B3BB.5 78           ld a,b
+B3BC.5 C5           push bc
+B3BD.5 01 3B 25     ld bc,253Bh
+B3C0.5 ED 79        out (c),a
+B3C2.5 C1           pop bc
+B3C3.5 3E 13        ld a,13h
+B3C5.5 C5           push bc
+B3C6.5 01 3B 24     ld bc,243Bh
+B3C9.5 ED 79        out (c),a
+B3CB.5 C1           pop bc
+B3CC.5 79           ld a,c
+B3CD.5 C5           push bc
+B3CE.5 01 3B 25     ld bc,253Bh
+B3D1.5 ED 79        out (c),a
+B3D3.5 C1           pop bc
+B3D4.5 C9           ret
 
-7894.11 33           inc sp
-7895.11 3E 0B        ld a,0Bh
-7897.11 F5           push af
-7898.11 33           inc sp
-
-; Note: The address 8DDDh is in a different bank.
-7899.11 CD DD 8D     call 8DDDh
-
-789C.11 33           inc sp
-789D.11 C9           ret
-
-789E.11 SUB_789E:
-789E.11 F3           di
-789F.11 21 00 60     ld hl,6000h.11
-78A2.11 CD 44 6E     call SUB_6E44
-
-78A5.11 21 00 60     ld hl,6000h.11
-78A8.11 36 61        ld (hl),61h
-78AA.11 5D           ld e,l
-78AB.11 54           ld d,h
-78AC.11 13           inc de
-78AD.11 01 00 01     ld bc,0100h
-78B0.11 ED B0        ldir
-78B2.11 21 61 61     ld hl,6161h.11
-78B5.11 36 FB        ld (hl),0FBh
-78B7.11 2E 62        ld l,62h
-78B9.11 36 ED        ld (hl),0EDh
-78BB.11 2E 63        ld l,63h
-78BD.11 36 4D        ld (hl),4Dh
-78BF.11 FB           ei
-78C0.11 C9           ret
-
-7FDE.11 SUB_7FDE:
-7FDE.11 DD E5        push ix
-7FE0.11 21 40 FF     ld hl,0FF40h
-7FE3.11 39           add hl,sp
-7FE4.11 F9           ld sp,hl
-7FE5.11 21 4A A9     ld hl,0A94Ah
-7FE8.11 36 FE        ld (hl),0FEh
-7FEA.11 23           inc hl
-7FEB.11 36 FE        ld (hl),0FEh
-7FED.11 21 4C A9     ld hl,0A94Ch
-7FF0.11 36 FE        ld (hl),0FEh
-7FF2.11 21 4D A9     ld hl,0A94Dh
-7FF5.11 36 FE        ld (hl),0FEh
-7FF7.11 CD 79 78     call SUB_7879
-
-7FFA.11 CD 9E 78     call SUB_789E
-
-; Note: The address 8000h is in a different bank.
-7FFD.11 21 DE A7     ld hl,0A7DEh
-
-AC4F.5 00 00 FF...  DEFB 00 00 FF FF FF FF FF FF ; ASCII: ????????
-C000.0 00 00 00...  DEFB 00 00 00 00 00 00 00 00 ; ASCII: ????????
+D158.0 54 FF FF...  DEFB 54 FF FF FF FF FF FF FF ; ASCII: T???????
+FF58.1 FF FF FF...  DEFB FF FF FF FF FF FF FF FF ; ASCII: ????????

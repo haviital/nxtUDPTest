@@ -120,7 +120,7 @@ static void test_blit_transparent(layer2_screen_t *screen);
 #include "..\..\mycredentials.h"
 
 // Defines
-#define DATA_SPR_SPEED 3
+#define DATA_SPR_SPEED 5
 #define PACKET_SPRITE_PATTERN_SLOT 0
 #define CLOUD_SPRITE_PATTERN_SLOT 1
 #define SERVER_SPRITE_0_PATTERN_SLOT 2
@@ -184,7 +184,11 @@ uint16_t sendPacketCountPerSecond = 0;
 uint16_t recvPacketCountPerSecond = 0;
 uint8_t numClonedPackets = 3;
 uint16_t totalSeconds = 0;
- 
+int32_t recvRasterLineDur = 0;
+uint8_t recvRasterLineFrames = 0;
+int32_t sendRasterLineDur = 0;
+uint8_t sendRasterLineFrames = 0;
+
 void StartNewPacket(bool isIncoming);
 void PageFlip(void);
 
@@ -263,6 +267,7 @@ void init_tilemap(void)
      */
     //ZXN_NEXTREG(0x6b, /*0b11001000*/ 0xC8);                     // enable tilemap, 80x32 mode, 1bit palette
     ZXN_NEXTREG(0x6b, /*0b10001000*/ 0x88);                     // enable tilemap, 40x32 mode, 1bit palette
+    //ZXN_NEXTREG(0x6b, /*0b10001000*/ 0x08);                     // Disable tilemap, 40x32 mode, 1bit palette
 
     // bit 7    = 1 to disable ULA output
     // bit 6    = 0 to select the ULA colour for blending in SLU modes 6 & 7
@@ -272,6 +277,19 @@ void init_tilemap(void)
     //             (if either are transparent the result is transparent otherwise the
     //              result is a logical AND of both colours)
     ZXN_NEXTREG(/*REG_ULA_CONTROL*/0x68, 0x80);  // Disable ULA screen. Use only the tilemap on U layer  
+
+    // (R/W) 0x1B (27) => Clip Window Tilemap
+    //   bits 7-0 = Coord. of the clip window
+    //   1st write = X1 position (multiplied by 2)
+    //   2nd write = X2 position (multiplied by 2)
+    //   3rd write = Y1 position
+    //   4rd write = Y2 position
+    //   The values are 0,159,0,255 after a Reset
+    //ZXN_NEXTREG(/*Clip Window Tilemap*/0x1B, 16);  // left x (multiplied by 2)  
+    //ZXN_NEXTREG(/*Clip Window Tilemap*/0x1B, 128); // right x (multiplied by 2)  
+    //ZXN_NEXTREG(/*Clip Window Tilemap*/0x1B, 16);  // top y (multiplied by 2)  
+    //ZXN_NEXTREG(/*Clip Window Tilemap*/0x1B, 192); // bottom y (multiplied by 2)  
+
     #endif
 }
 
@@ -629,11 +647,29 @@ void UpdateAndDrawAll(void)
     UpdateGameObjects();
 
     zx_border(INK_CYAN);
+    uint8_t rasterLineNumMsb =  ZXN_READ_REG(0x001E /* Active Video Line MSB Register */);
+    uint8_t rasterLineNumLsb =  ZXN_READ_REG(0x001F /* Active Video Line LSB Register */);
+    int32_t rasterLineNumBefore = (rasterLineNumMsb << 8) | rasterLineNumLsb;
+    if(rasterLineNumBefore>256)
+        rasterLineNumBefore -= 320;
 
     // *** Receive data from server.
     uint16_t receivedPacketCount = 0;
     uint8_t err =  ReceiveMessage(MSG_ID_TESTLOOPBACK, &receivedPacketCount);
+    
     zx_border(INK_BLACK);
+    rasterLineNumMsb =  ZXN_READ_REG(0x001E /* Active Video Line MSB Register */);
+    rasterLineNumLsb =  ZXN_READ_REG(0x001F /* Active Video Line LSB Register */);
+    int32_t rasterLineNumAfter = (rasterLineNumMsb << 8) | rasterLineNumLsb;
+    if(rasterLineNumAfter>256)
+        rasterLineNumAfter -= 320;
+
+    // Check if duration more thatn a frame.
+    if(rasterLineNumAfter < rasterLineNumBefore)
+        recvRasterLineDur = 320; // max raster lines
+    recvRasterLineDur += (rasterLineNumAfter - rasterLineNumBefore);
+    recvRasterLineFrames += receivedPacketCount;
+
     if(receivedPacketCount>0)
     {
         StartNewPacket(true);
@@ -645,8 +681,23 @@ void UpdateAndDrawAll(void)
     if((frameCount8Bit & 0x7) == 0)
     {
         zx_border(INK_BLUE);
+        rasterLineNumMsb =  ZXN_READ_REG(0x001E /* Active Video Line MSB Register */);
+        rasterLineNumLsb =  ZXN_READ_REG(0x001F /* Active Video Line LSB Register */);
+        rasterLineNumBefore = (rasterLineNumMsb << 8) | rasterLineNumLsb;
+
         err =  SendMessage(MSG_ID_TESTLOOPBACK);
+
         zx_border(INK_BLACK);
+
+        
+        {
+            rasterLineNumMsb =  ZXN_READ_REG(0x001E /* Active Video Line MSB Register */);
+            rasterLineNumLsb =  ZXN_READ_REG(0x001F /* Active Video Line LSB Register */);
+            rasterLineNumAfter = (rasterLineNumMsb << 8) | rasterLineNumLsb;
+            sendRasterLineDur += rasterLineNumAfter - rasterLineNumBefore;
+            sendRasterLineFrames++;
+        }
+       
         StartNewPacket(false);
     }
 
@@ -757,7 +808,7 @@ int main(void)
 
             frameCountForOneSecond = 0;
             sendPacketCountPerSecond = 0;
-            recvPacketCountPerSecond = 0;
+            recvPacketCountPerSecond = 0;            
 
             totalSeconds++;
         }
@@ -790,13 +841,23 @@ int main(void)
             itoa(totalSendPacketCount, tmpStr, 10);
             strcat(text, tmpStr); 
             strcat(text, " pkg");
-            TextTileMapPutsPos(26, 4, text);
+            TextTileMapPutsPos(26, 0, text);
 
-            uint32_t sendBytesPerSecond = sendPacketsPerSecondInterval * MSG_TESTLOOPBACK_REQUEST_STRUCT_SIZE;
-            ltoa(sendBytesPerSecond, tmpStr, 10);
+            // uint32_t sendBytesPerSecond = sendPacketsPerSecondInterval * MSG_TESTLOOPBACK_REQUEST_STRUCT_SIZE;
+            // ltoa(sendBytesPerSecond, tmpStr, 10);
+            // strcpy(text, tmpStr);
+            // strcat(text, " b/s");
+            // TextTileMapPutsPos(26, 20, text);
+
+            int32_t sendRasterTimePerFrame = 0;
+            if(sendRasterLineFrames>0) 
+                sendRasterTimePerFrame = sendRasterLineDur / sendRasterLineFrames;
+            sendRasterLineFrames = 0;
+            sendRasterLineDur = 0;
+            ltoa(sendRasterTimePerFrame, tmpStr, 10);
             strcpy(text, tmpStr);
-            strcat(text, " b/s");
-            TextTileMapPutsPos(26, 20, text);
+            strcat(text, " rst");
+            TextTileMapPutsPos(26, 20, text);           
 
             // Print total seconds.
             itoa(totalSeconds, tmpStr, 10);
@@ -814,16 +875,23 @@ int main(void)
             strcat(text, tmpStr);
             strcat(text, " pkg");
             //layer2_draw_text(23, 0, text, 0x03, &shadow_screen); 
-            TextTileMapPutsPos(27, 4, text);
+            TextTileMapPutsPos(27, 0, text);
 
-            uint32_t recvBytesPerSecond = recvPacketsPerSecondInterval * MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE;
-            ltoa(recvBytesPerSecond, tmpStr, 10);
+            // uint32_t recvBytesPerSecond = recvPacketsPerSecondInterval * MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE;
+            // ltoa(recvBytesPerSecond, tmpStr, 10);
+            // strcpy(text, tmpStr);
+            // strcat(text, " b/s");
+            // TextTileMapPutsPos(27, 20, text);
+
+            int32_t recvRasterTimePerFrame = 0;
+            if(recvRasterLineFrames)
+                recvRasterTimePerFrame = recvRasterLineDur / recvRasterLineFrames;
+            recvRasterLineFrames = 0;
+            recvRasterLineDur = 0;
+            ltoa(recvRasterTimePerFrame, tmpStr, 10);
             strcpy(text, tmpStr);
-            strcat(text, " b/s");
-            // itoa(recvPacketsPerSecondInterval, tmpStr, 10);
-            // strcat(text, tmpStr);
-            // layer2_draw_text(23, 16, text, 0x03, &shadow_screen); 
-            TextTileMapPutsPos(27, 20, text);
+            strcat(text, " rst");
+            TextTileMapPutsPos(27, 20, text);           
 
             // Print cloned count.
             strcpy(text, "x");
@@ -845,11 +913,28 @@ int main(void)
 
 void prog_failed(char* sourceFile, int32_t lineNum, uint8_t err)
 {
+    // Enable ULA screen.
+    //
+    // bit 7    = 1 to disable ULA output
+    // bit 6    = 0 to select the ULA colour for blending in SLU modes 6 & 7
+    //          = 1 to select the ULA/tilemap mix for blending in SLU modes 6 & 7
+    // bits 5-1 = Reserved must be 0
+    // bit 0    = 1 to enable stencil mode when both the ULA and tilemap are enabled
+    //             (if either are transparent the result is transparent otherwise the
+    //              result is a logical AND of both colours)
+    ZXN_NEXTREG(/*REG_ULA_CONTROL*/0x68, 0x00);  // Enable ULA screen. 
+
+    //Disable tilemap
+    ZXN_NEXTREG(0x6b, /*0b10001000*/ 0x08); 
+
+    // Set ULA the topmost layer
+    set_sprite_layers_system(true, false, LAYER_PRIORITIES_U_S_L, false);
+
    zx_border(2);  // Set red border first!
 
    // Make L2 screen transparent.
-   layer2_fill_rect(0, 0,  256, 192, 0xE3, &shadow_screen); // make a hole
-   layer2_flip_main_shadow_screen();
+   //layer2_fill_rect(0, 0,  256, 192, 0xE3, &shadow_screen); // make a hole
+   //layer2_flip_main_shadow_screen();
 
    //printf("uart_failed()\n");
    uint16_t stackUsage = GetUsedStack();
