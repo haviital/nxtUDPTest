@@ -649,9 +649,7 @@ void UpdateAndDrawAll(void)
     zx_border(INK_CYAN);
     uint8_t rasterLineNumMsb =  ZXN_READ_REG(0x001E /* Active Video Line MSB Register */);
     uint8_t rasterLineNumLsb =  ZXN_READ_REG(0x001F /* Active Video Line LSB Register */);
-    int32_t rasterLineNumBefore = (rasterLineNumMsb << 8) | rasterLineNumLsb;
-    if(rasterLineNumBefore>256)
-        rasterLineNumBefore -= 320;
+    uint16_t rasterLineNumBefore = (rasterLineNumMsb << 8) | rasterLineNumLsb;
 
     // *** Receive data from server.
     uint16_t receivedPacketCount = 0;
@@ -660,14 +658,8 @@ void UpdateAndDrawAll(void)
     zx_border(INK_BLACK);
     rasterLineNumMsb =  ZXN_READ_REG(0x001E /* Active Video Line MSB Register */);
     rasterLineNumLsb =  ZXN_READ_REG(0x001F /* Active Video Line LSB Register */);
-    int32_t rasterLineNumAfter = (rasterLineNumMsb << 8) | rasterLineNumLsb;
-    if(rasterLineNumAfter>256)
-        rasterLineNumAfter -= 320;
-
-    // Check if duration more thatn a frame.
-    if(rasterLineNumAfter < rasterLineNumBefore)
-        recvRasterLineDur = 320; // max raster lines
-    recvRasterLineDur += (rasterLineNumAfter - rasterLineNumBefore);
+    uint16_t rasterLineNumAfter = (rasterLineNumMsb << 8) | rasterLineNumLsb;
+    recvRasterLineDur += rasterLineNumAfter - rasterLineNumBefore;
     recvRasterLineFrames += receivedPacketCount;
 
     if(receivedPacketCount>0)
