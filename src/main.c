@@ -740,6 +740,8 @@ int main(void)
 
     // Loop until the end of the game.
     uint8_t test=0;
+    bool keyReleased_C = true;
+    uint8_t debugTextColor = 1;
     while (true)
     {   
         // Read a a key.
@@ -749,6 +751,22 @@ int main(void)
             numClonedPackets = 3;
         else if (in_key_pressed(IN_KEY_SCANCODE_3))
             numClonedPackets = 7;      
+        else if (in_key_pressed(IN_KEY_SCANCODE_c | 0x8000) && keyReleased_C)
+        {
+            --debugTextColor;      
+            keyReleased_C = false;
+        }
+        else if (in_key_pressed(IN_KEY_SCANCODE_c) && keyReleased_C)
+        {
+            ++debugTextColor;      
+            keyReleased_C = false;
+        }
+        else 
+        {    
+            // The C key has been released 
+            keyReleased_C = true;
+        }
+
 
         UpdateAndDrawAll();
  
@@ -783,23 +801,32 @@ int main(void)
          // Packets per second
         //strcat(text, " snd/rcv:");
 
+
         
         // Print client and server send speed and send count.
         #ifndef NO_GFX
-        screencolour = 5;
+
+        // screencolour = 3;  // red
+        // itoa(debugTextColor, tmpStr, 10);
+        // strcat(tmpStr, " = color");        
+        // TextTileMapPutsPos(7, 4, tmpStr);
+
+        //screencolour = 3;  // red
+        screencolour = 12;  // cyan
+        //screencolour = debugTextColor;  //      
         strcpy(text, "Send: ");
         itoa(totalSendPacketCount, tmpStr, 10);
         strcat(text, tmpStr); 
         strcat(text, " pkg");
         //layer2_draw_text(22, 0, text, 0x7F, &shadow_screen); 
-        TextTileMapPutsPos(26, 0, text);
+        TextTileMapPutsPos(26, 4, text);
 
         uint32_t sendBytesPerSecond = sendPacketsPerSecondInterval * MSG_TESTLOOPBACK_REQUEST_STRUCT_SIZE;
         ltoa(sendBytesPerSecond, tmpStr, 10);
         strcpy(text, tmpStr);
         strcat(text, " b/s");
         // layer2_draw_text(22, 16, text, 0x7F, &shadow_screen); 
-        TextTileMapPutsPos(26, 16, text);
+        TextTileMapPutsPos(26, 20, text);
 
         // Print total seconds.
         itoa(totalSeconds, tmpStr, 10);
@@ -808,13 +835,15 @@ int main(void)
         //layer2_draw_text(22, 27, tmpStr, 0xff, &shadow_screen);
         TextTileMapPutsPos(26, 31, text);
 
-        screencolour = 7;
+        //screencolour = 5; // green
+        screencolour = 8; // blue
+        //screencolour = debugTextColor + 1;  // 
         strcpy(text, "Recv: ");
         itoa(totalReceivedPacketCount, tmpStr, 10);
         strcat(text, tmpStr);
         strcat(text, " pkg");
         //layer2_draw_text(23, 0, text, 0x03, &shadow_screen); 
-        TextTileMapPutsPos(27, 0, text);
+        TextTileMapPutsPos(27, 4, text);
 
         uint32_t recvBytesPerSecond = recvPacketsPerSecondInterval * MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE;
         ltoa(recvBytesPerSecond, tmpStr, 10);
@@ -823,7 +852,7 @@ int main(void)
         // itoa(recvPacketsPerSecondInterval, tmpStr, 10);
         // strcat(text, tmpStr);
         // layer2_draw_text(23, 16, text, 0x03, &shadow_screen); 
-        TextTileMapPutsPos(27, 16, text);
+        TextTileMapPutsPos(27, 20, text);
 
         // Print cloned count.
         strcpy(text, "x");
