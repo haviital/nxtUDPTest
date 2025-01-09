@@ -27,6 +27,18 @@
 #define PROG_FAILED prog_failed(__FILE__, __LINE__, 0)
 #define PROG_FAILED1(err) prog_failed(__FILE__, __LINE__, err)
 
+#define CSPECT_BREAK() \
+   __asm\
+   defb 0xfd, 0x00\
+   __endasm;
+
+#define CSPECT_BREAK_IF(cond) \
+if(cond) {\
+   __asm\
+   defb 0xfd, 0x00\
+   __endasm;\
+}
+
 extern uint8_t numClonedPackets;
 extern uint8_t frameCount8Bit;
 

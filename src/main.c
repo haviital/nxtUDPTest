@@ -19,6 +19,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <im2.h>           // im2 macros and functions
+
 #include "lib/zxn/zxnext_layer2.h"
 #include "lib/zxn/zxnext_sprite.h"
 #include "defines.h"
@@ -184,10 +186,13 @@ uint16_t sendPacketCountPerSecond = 0;
 uint16_t recvPacketCountPerSecond = 0;
 uint8_t numClonedPackets = 3;
 uint16_t totalSeconds = 0;
-int32_t recvRasterLineDur = 0;
+uint32_t recvRasterLineDur = 0;
 uint8_t recvRasterLineFrames = 0;
-int32_t sendRasterLineDur = 0;
+uint32_t sendRasterLineDur = 0;
 uint8_t sendRasterLineFrames = 0;
+
+// Frame counter by an interrupt function.
+uint16_t frames16t;
 
 void StartNewPacket(bool isIncoming);
 void PageFlip(void);
@@ -293,6 +298,23 @@ void init_tilemap(void)
     #endif
 }
 
+// There are a lot of ways to define an interrupt service routine
+// This one is being done with a macro.  What makes a regular function
+// different from an ISR is that the ISR must preserve cpu registers
+// it is using and enable interrupts before returning with the special
+// instruction "reti".  This macro creates a function called "isr" that
+// does these things.  The 8080 in its name indicates it only saves
+// the main registers af,bc,de,hl.  If you have code in there that modifies
+// other registers (including c library code) you can use the IM2_DEFINE_ISR
+// macro instead as that will save all of the z80's registers.  This
+// is also a place where you can put ay music, etc.
+
+IM2_DEFINE_ISR_8080(isr)
+{
+   // Update the 16 bit frame counter.
+   ++frames16t;
+}
+
 static void init_isr(void)
 {
     // Set up IM2 interrupt service routine:
@@ -302,16 +324,12 @@ static void init_isr(void)
     // entry at address 0x8181 .
 
     intrinsic_di();
-    // im2_init((void *) 0x6000);
-    // memset((void *) 0x6000, 0x61, 257);
-    // z80_bpoke(0x6161, 0xFB);
-    // z80_bpoke(0x6162, 0xED);
-    // z80_bpoke(0x6163, 0x4D);
     im2_init((void *) 0x8000);
     memset((void *) 0x8000, 0x81, 257);
-    z80_bpoke(0x8181, 0xFB);
-    z80_bpoke(0x8182, 0xED);
-    z80_bpoke(0x8183, 0x4D);
+
+    z80_bpoke(0x8181, 0xc3);                // z80 JP instruction
+    z80_wpoke(0x8182, (unsigned int)isr);   // to the isr routine
+
     intrinsic_ei();
 }
 
@@ -644,18 +662,23 @@ static void UpdateGameObjects(void)
 
 void UpdateAndDrawAll(void)      
 {
+    static uint16_t test1 = 0; //!!HV
+    static uint16_t test2 = 0; //!!HV
+
     // *** Update game objects
     UpdateGameObjects();
 
     zx_border(INK_CYAN);
 
-    uint16_t rasterBottomScreenLinesCount1 = 0;
+    bool isRasterNumNegative1 = false;
     uint16_t rasterLineNum1 = 
         (( (uint8_t)ZXN_READ_REG(0x001E) & 0x1) << 8)  | (uint8_t)ZXN_READ_REG(0x001F);
-    if(rasterLineNum1>255)
+    test1 = rasterLineNum1; //!!HV
+    const uint8_t vblankStart = 192;
+    if(rasterLineNum1 >= vblankStart)
     {
         rasterLineNum1 = 320 - rasterLineNum1;
-        rasterLineNum1 = 0;
+        isRasterNumNegative1 = true;
     }
 
     // *** Receive data from server.
@@ -664,19 +687,28 @@ void UpdateAndDrawAll(void)
     
     zx_border(INK_BLACK); 
 
+    bool isRasterNumNegative2 = false;
     uint16_t rasterBottomScreenLinesCount2 = 0;
     uint16_t rasterLineNum2 = 
         (( (uint8_t)ZXN_READ_REG(0x001E) & 0x1) << 8)  | (uint8_t)ZXN_READ_REG(0x001F);
-    if(rasterLineNum2>255)
+    test2 = rasterLineNum2; //!!HV
+    if(rasterLineNum2 > vblankStart)
     {
-        rasterBottomScreenLinesCount2 = 320 - rasterLineNum2;
-        rasterLineNum2 = 0;
+        rasterLineNum2 = 320 - rasterLineNum2;
+        isRasterNumNegative2 = true;
     }
     // Check if duration more than a frame.
-    // if(rasterLineNumAfter < rasterLineNumBefore)
-    //     recvRasterLineDur += 320; // max raster lines
-    recvRasterLineDur += (rasterLineNum2 - rasterLineNum1) + ();
+    uint32_t recvRasterLineDiff = (rasterLineNum2 - rasterLineNum1);
+    if(isRasterNumNegative1 && isRasterNumNegative2)
+        recvRasterLineDiff = (rasterLineNum1 - rasterLineNum2);
+    else if(isRasterNumNegative1)
+        recvRasterLineDiff = (rasterLineNum2 + rasterLineNum1);
+    else if( isRasterNumNegative2 )
+        recvRasterLineDiff = 320;  // Takes more than one frame. Use the max.
+    recvRasterLineDur += recvRasterLineDiff;
     recvRasterLineFrames += receivedPacketCount;
+
+    //CSPECT_BREAK_IF(recvRasterLineDiff>100);
 
     if(receivedPacketCount>0)
     {
@@ -691,7 +723,7 @@ void UpdateAndDrawAll(void)
         zx_border(INK_BLUE);
         uint8_t rasterLineNumMsb =  ZXN_READ_REG(0x001E /* Active Video Line MSB Register */);
         uint8_t rasterLineNumLsb =  ZXN_READ_REG(0x001F /* Active Video Line LSB Register */);
-        rasterLineNumBefore = (rasterLineNumMsb << 8) | rasterLineNumLsb;
+        uint16_t rasterLineNumBefore = (rasterLineNumMsb << 8) | rasterLineNumLsb;
 
         err =  SendMessage(MSG_ID_TESTLOOPBACK);
 
@@ -701,7 +733,7 @@ void UpdateAndDrawAll(void)
         {
             rasterLineNumMsb =  ZXN_READ_REG(0x001E /* Active Video Line MSB Register */);
             rasterLineNumLsb =  ZXN_READ_REG(0x001F /* Active Video Line LSB Register */);
-            rasterLineNumAfter = (rasterLineNumMsb << 8) | rasterLineNumLsb;
+            uint16_t rasterLineNumAfter = (rasterLineNumMsb << 8) | rasterLineNumLsb;
             sendRasterLineDur += rasterLineNumAfter - rasterLineNumBefore;
             sendRasterLineFrames++;
         }
@@ -857,7 +889,7 @@ int main(void)
             // strcat(text, " b/s");
             // TextTileMapPutsPos(26, 20, text);
 
-            int32_t sendRasterTimePerFrame = 0;
+            uint32_t sendRasterTimePerFrame = 0;
             if(sendRasterLineFrames>0) 
                 sendRasterTimePerFrame = sendRasterLineDur / sendRasterLineFrames;
             sendRasterLineFrames = 0;
@@ -867,10 +899,10 @@ int main(void)
             strcat(text, " rst");
             TextTileMapPutsPos(26, 20, text);           
 
-            // Print total seconds.
-            itoa(totalSeconds, tmpStr, 10);
+            // Print frames.
+            ltoa(frames16t, tmpStr, 10);
             strcpy(text, tmpStr);
-            strcat(text, " s");
+            strcat(text, " f");
             //layer2_draw_text(22, 27, tmpStr, 0xff, &shadow_screen);
             TextTileMapPutsPos(26, 31, text);
         }
@@ -891,7 +923,7 @@ int main(void)
             // strcat(text, " b/s");
             // TextTileMapPutsPos(27, 20, text);
 
-            int32_t recvRasterTimePerFrame = 0;
+            uint32_t recvRasterTimePerFrame = 0;
             if(recvRasterLineFrames)
                 recvRasterTimePerFrame = recvRasterLineDur / recvRasterLineFrames;
             recvRasterLineFrames = 0;
@@ -912,6 +944,13 @@ int main(void)
         #endif
 
         PageFlip();   
+
+        // !!TEST Print the scanline number right after the page flip.
+        screencolour = 4; // ?
+        uint16_t rasterLineNum = 
+            (( (uint8_t)ZXN_READ_REG(0x001E) & 0x1) << 8)  | (uint8_t)ZXN_READ_REG(0x001F);
+        ltoa(rasterLineNum, tmpStr, 10);
+        TextTileMapPutsPos(10, 10, tmpStr);    
     }
 
     // Trig a soft reset. The Next hardware registers and I/O ports will be reset by NextZXOS after a soft reset.

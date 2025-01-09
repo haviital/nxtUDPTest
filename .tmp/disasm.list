@@ -2,66 +2,479 @@
 8185.4 FD E5        push iy
 8187.4 D9           exx
 8188.4 E5           push hl
-8189.4 ED 73 58 D1  ld (0D158h),sp
+8189.4 ED 73 36 D2  ld (0D236h),sp
 818D.4 31 58 FF     ld sp,0FF58h
-8190.4 21 C3 CB     ld hl,0CBC3h
+8190.4 21 9C CC     ld hl,0CC9Ch
 8193.4 34           inc (hl)
 8194.4 34           inc (hl)
-8195.4 21 57 CE     ld hl,0CE57h
-8198.4 36 00        ld (hl),00h
+8195.4 AF           xor a
+8196.4 21 32 CF     ld hl,0CF32h
+8199.4 77           ld (hl),a
+819A.4 23           inc hl
+819B.4 77           ld (hl),a
+819C.4 AF           xor a
+819D.4 21 34 CF     ld hl,0CF34h
+81A0.4 77           ld (hl),a
+81A1.4 23           inc hl
+81A2.4 77           ld (hl),a
 
-; Note: The address 0A278h is in a different bank.
-819A.4 CD 78 A2     call 0A278h
+; Note: The address 0A328h is in a different bank.
+81A3.4 CD 28 A3     call 0A328h
 
-819D.4 E5           push hl
-819E.4 C1           pop bc
-819F.4 ED 7B 58 D1  ld sp,(0D158h)
-81A3.4 D9           exx
-81A4.4 E1           pop hl
-81A5.4 D9           exx
-81A6.4 FD E1        pop iy
-81A8.4 ED 56        im 1
-81AA.4 FB           ei
-81AB.4 C9           ret
+81A6.4 E5           push hl
+81A7.4 C1           pop bc
+81A8.4 ED 7B 36 D2  ld sp,(0D236h)
+81AC.4 D9           exx
+81AD.4 E1           pop hl
+81AE.4 D9           exx
+81AF.4 FD E1        pop iy
+81B1.4 ED 56        im 1
+81B3.4 FB           ei
+81B4.4 C9           ret
 
-A236.5 C3 98 B3     jp SUB_B398
+A25B.5 DD 7E F9     ld a,(ix-7)
+A25E.5 DD B6 F8     or (ix-8)
+A261.5 28 0D        jr z,LBL_A270
 
-B398.5 SUB_B398:
-B398.5 3E 12        ld a,12h
-B39A.5 01 3B 24     ld bc,243Bh
-B39D.5 ED 79        out (c),a
-B39F.5 3E 25        ld a,25h
-B3A1.5 DB 3B        in a,(003Bh)
-B3A3.5 4F           ld c,a
-B3A4.5 3E 13        ld a,13h
-B3A6.5 C5           push bc
-B3A7.5 01 3B 24     ld bc,243Bh
-B3AA.5 ED 79        out (c),a
-B3AC.5 C1           pop bc
-B3AD.5 3E 25        ld a,25h
-B3AF.5 DB 3B        in a,(003Bh)
-B3B1.5 47           ld b,a
-B3B2.5 3E 12        ld a,12h
-B3B4.5 C5           push bc
-B3B5.5 01 3B 24     ld bc,243Bh
-B3B8.5 ED 79        out (c),a
-B3BA.5 C1           pop bc
-B3BB.5 78           ld a,b
-B3BC.5 C5           push bc
-B3BD.5 01 3B 25     ld bc,253Bh
-B3C0.5 ED 79        out (c),a
-B3C2.5 C1           pop bc
-B3C3.5 3E 13        ld a,13h
-B3C5.5 C5           push bc
-B3C6.5 01 3B 24     ld bc,243Bh
-B3C9.5 ED 79        out (c),a
-B3CB.5 C1           pop bc
-B3CC.5 79           ld a,c
-B3CD.5 C5           push bc
-B3CE.5 01 3B 25     ld bc,253Bh
-B3D1.5 ED 79        out (c),a
-B3D3.5 C1           pop bc
-B3D4.5 C9           ret
+A263.5 3E 01        ld a,01h
+A265.5 F5           push af
+A266.5 33           inc sp
 
-D158.0 54 FF FF...  DEFB 54 FF FF FF FF FF FF FF ; ASCII: T???????
+; Note: The address 9E22h is in a different bank.
+A267.5 CD 22 9E     call 9E22h
+
+A26A.5 33           inc sp
+A26B.5 21 F0 CD     ld hl,0CDF0h
+A26E.5 36 01        ld (hl),01h
+
+A270.5 LBL_A270:
+A270.5 21 F2 CD     ld hl,0CDF2h
+A273.5 7E           ld a,(hl)
+A274.5 E6 07        and 07h
+A276.5 20 68        jr nz,LBL_A2E0
+
+A278.5 2E 01        ld l,01h
+
+; Note: The address 81F6h is in a different bank.
+A27A.5 CD F6 81     call 81F6h
+
+A27D.5 2E 1E        ld l,1Eh
+A27F.5 01 3B 24     ld bc,243Bh
+A282.5 ED 69        out (c),l
+A284.5 04           inc b
+A285.5 ED 68        in l,(c)
+A287.5 5D           ld e,l
+A288.5 2E 1F        ld l,1Fh
+A28A.5 01 3B 24     ld bc,243Bh
+A28D.5 ED 69        out (c),l
+A28F.5 04           inc b
+A290.5 ED 68        in l,(c)
+A292.5 53           ld d,e
+A293.5 AF           xor a
+A294.5 5D           ld e,l
+A295.5 D5           push de
+A296.5 3E 12        ld a,12h
+A298.5 F5           push af
+A299.5 33           inc sp
+A29A.5 CD 2D AB     call SUB_AB2D
+
+A29D.5 33           inc sp
+A29E.5 D1           pop de
+A29F.5 2E 00        ld l,00h
+
+; Note: The address 81F6h is in a different bank.
+A2A1.5 CD F6 81     call 81F6h
+
+A2A4.5 2E 1E        ld l,1Eh
+A2A6.5 01 3B 24     ld bc,243Bh
+A2A9.5 ED 69        out (c),l
+A2AB.5 04           inc b
+A2AC.5 ED 68        in l,(c)
+A2AE.5 4D           ld c,l
+A2AF.5 C5           push bc
+A2B0.5 2E 1F        ld l,1Fh
+A2B2.5 01 3B 24     ld bc,243Bh
+A2B5.5 ED 69        out (c),l
+A2B7.5 04           inc b
+A2B8.5 ED 68        in l,(c)
+A2BA.5 C1           pop bc
+A2BB.5 61           ld h,c
+A2BC.5 BF           cp a
+A2BD.5 ED 52        sbc hl,de
+A2BF.5 EB           ex de,hl
+A2C0.5 01 00 00     ld bc,0000h
+A2C3.5 21 07 CE     ld hl,0CE07h
+A2C6.5 7E           ld a,(hl)
+A2C7.5 83           add a,e
+A2C8.5 77           ld (hl),a
+A2C9.5 23           inc hl
+A2CA.5 7E           ld a,(hl)
+A2CB.5 8A           adc a,d
+A2CC.5 77           ld (hl),a
+A2CD.5 23           inc hl
+A2CE.5 7E           ld a,(hl)
+A2CF.5 89           adc a,c
+A2D0.5 77           ld (hl),a
+A2D1.5 23           inc hl
+A2D2.5 7E           ld a,(hl)
+A2D3.5 88           adc a,b
+A2D4.5 77           ld (hl),a
+A2D5.5 21 0B CE     ld hl,0CE0Bh
+A2D8.5 34           inc (hl)
+A2D9.5 AF           xor a
+A2DA.5 F5           push af
+A2DB.5 33           inc sp
+
+; Note: The address 9E22h is in a different bank.
+A2DC.5 CD 22 9E     call 9E22h
+
+A2DF.5 33           inc sp
+
+A2E0.5 LBL_A2E0:
+A2E0.5 DD F9        ld sp,ix
+A2E2.5 DD E1        pop ix
+A2E4.5 C9           ret
+
+A2E9.5 SUB_A2E9:
+A2E9.5 DD E5        push ix
+A2EB.5 DD 21 00 00  ld ix,0000h
+A2EF.5 DD 39        add ix,sp
+A2F1.5 3B           dec sp
+A2F2.5 DD 36 FF 00  ld (ix-1),00h
+A2F6.5 21 00 00     ld hl,0000h
+A2F9.5 39           add hl,sp
+A2FA.5 EB           ex de,hl
+A2FB.5 21 58 FF     ld hl,0FF58h
+A2FE.5 BF           cp a
+A2FF.5 ED 52        sbc hl,de
+A301.5 33           inc sp
+A302.5 DD E1        pop ix
+A304.5 C9           ret
+
+A729.5 SUB_A729:
+A729.5 DD E5        push ix
+A72B.5 DD 21 00 00  ld ix,0000h
+A72F.5 DD 39        add ix,sp
+A731.5 21 80 FF     ld hl,0FF80h
+A734.5 39           add hl,sp
+A735.5 F9           ld sp,hl
+A736.5 ED 91 68 00  nextreg 68h,00h
+A73A.5 ED 91 6B 08  nextreg 6Bh,08h
+A73E.5 AF           xor a
+A73F.5 57           ld d,a
+A740.5 1E 04        ld e,04h
+A742.5 D5           push de
+A743.5 AF           xor a
+A744.5 57           ld d,a
+A745.5 1E 01        ld e,01h
+A747.5 D5           push de
+A748.5 CD 25 BF     call SUB_BF25
+
+A74B.5 F1           pop af
+A74C.5 F1           pop af
+A74D.5 2E 02        ld l,02h
+
+; Note: The address 81F6h is in a different bank.
+A74F.5 CD F6 81     call 81F6h
+
+A752.5 CD E9 A2     call SUB_A2E9
+
+A755.5 EB           ex de,hl
+A756.5 DD 4E 0A     ld c,(ix+10)
+A759.5 06 00        ld b,00h
+A75B.5 D5           push de
+A75C.5 DD 6E 08     ld l,(ix+8)
+A75F.5 DD 66 09     ld h,(ix+9)
+A762.5 E5           push hl
+A763.5 DD 6E 06     ld l,(ix+6)
+A766.5 DD 66 07     ld h,(ix+7)
+A769.5 E5           push hl
+A76A.5 DD 6E 04     ld l,(ix+4)
+A76D.5 DD 66 05     ld h,(ix+5)
+A770.5 E5           push hl
+A771.5 C5           push bc
+A772.5 21 B6 C0     ld hl,0C0B6h
+A775.5 E5           push hl
+A776.5 21 0C 00     ld hl,000Ch
+A779.5 39           add hl,sp
+A77A.5 E5           push hl
+
+; Note: The address 91E0h is in a different bank.
+A77B.5 CD E0 91     call 91E0h
+
+A77E.5 21 0C 00     ld hl,000Ch
+A781.5 39           add hl,sp
+A782.5 F9           ld sp,hl
+A783.5 21 02 00     ld hl,0002h
+A786.5 39           add hl,sp
+A787.5 E5           push hl
+
+; Note: The address 91D8h is in a different bank.
+A788.5 CD D8 91     call 91D8h
+
+A78B.5 21 D9 C0     ld hl,0C0D9h
+A78E.5 E3           ex (sp),hl
+
+; Note: The address 91D8h is in a different bank.
+A78F.5 CD D8 91     call 91D8h
+
+A792.5 F1           pop af
+A793.5 F1           pop af
+
+A794.5 .LOOP:
+A794.5 18 FE        jr .LOOP
+
+AB2D.5 SUB_AB2D:
+AB2D.5 DD E5        push ix
+AB2F.5 DD 21 00 00  ld ix,0000h
+AB33.5 DD 39        add ix,sp
+AB35.5 21 DD FF     ld hl,0FFDDh
+AB38.5 39           add hl,sp
+AB39.5 F9           ld sp,hl
+AB3A.5 DD 7E 04     ld a,(ix+4)
+AB3D.5 B7           or a
+AB3E.5 28 0A        jr z,.L1
+
+AB40.5 DD 7E 04     ld a,(ix+4)
+AB43.5 D6 12        sub 12h
+AB45.5 28 32        jr z,.L2
+
+AB47.5 C3 43 AC     jp .L4
+
+AB4A.5 .L1:
+AB4A.5 DD 36 FF 00  ld (ix-1),00h
+AB4E.5 3E 01        ld a,01h
+AB50.5 F5           push af
+AB51.5 33           inc sp
+AB52.5 21 23 00     ld hl,0023h
+AB55.5 39           add hl,sp
+AB56.5 E5           push hl
+AB57.5 CD 7E B1     call _uart_send_data_packet2
+
+AB5A.5 F1           pop af
+AB5B.5 33           inc sp
+AB5C.5 7D           ld a,l
+AB5D.5 47           ld b,a
+AB5E.5 B7           or a
+AB5F.5 CA 58 AC     jp z,.L5
+
+AB62.5 C5           push bc
+AB63.5 33           inc sp
+AB64.5 21 00 00     ld hl,0000h
+AB67.5 E5           push hl
+AB68.5 2E 9C        ld l,9Ch
+AB6A.5 E5           push hl
+AB6B.5 21 84 CB     ld hl,0CB84h
+AB6E.5 E5           push hl
+AB6F.5 CD 29 A7     call SUB_A729
+
+AB72.5 F1           pop af
+AB73.5 F1           pop af
+AB74.5 F1           pop af
+AB75.5 33           inc sp
+AB76.5 C3 58 AC     jp .L5
+
+AB79.5 .L2:
+AB79.5 DD 36 DD 12  ld (ix-35),12h
+AB7D.5 DD 36 DE B6  ld (ix-34),0B6h
+AB81.5 DD 36 DF 79  ld (ix-33),79h
+AB85.5 DD 36 E0 C9  ld (ix-32),0C9h
+AB89.5 DD 36 E1 80  ld (ix-31),80h
+AB8D.5 DD 36 E2 0A  ld (ix-30),0Ah
+AB91.5 DD 36 E3 2F  ld (ix-29),2Fh
+AB95.5 DD 36 E4 4C  ld (ix-28),4Ch
+AB99.5 DD 36 E5 71  ld (ix-27),71h
+AB9D.5 DD 36 E6 A0  ld (ix-26),0A0h
+ABA1.5 DD 36 E7 CF  ld (ix-25),0CFh
+ABA5.5 DD 36 E8 FE  ld (ix-24),0FEh
+ABA9.5 DD 36 E9 9D  ld (ix-23),9Dh
+ABAD.5 DD 36 EA CF  ld (ix-22),0CFh
+ABB1.5 DD 36 EB EF  ld (ix-21),0EFh
+ABB5.5 DD 36 EC 3A  ld (ix-20),3Ah
+ABB9.5 DD 36 ED 17  ld (ix-19),17h
+ABBD.5 3A FF CD     ld a,(0CDFFh)
+ABC0.5 DD 77 EE     ld (ix-18),a
+ABC3.5 DD 36 EF 10  ld (ix-17),10h
+ABC7.5 DD 36 F0 00  ld (ix-16),00h
+ABCB.5 DD 36 F1 00  ld (ix-15),00h
+ABCF.5 DD 36 F2 00  ld (ix-14),00h
+ABD3.5 DD 36 F3 00  ld (ix-13),00h
+ABD7.5 DD 36 F4 00  ld (ix-12),00h
+ABDB.5 DD 36 F5 00  ld (ix-11),00h
+ABDF.5 DD 36 F6 00  ld (ix-10),00h
+ABE3.5 DD 36 F7 00  ld (ix-9),00h
+ABE7.5 DD 36 F8 00  ld (ix-8),00h
+ABEB.5 DD 36 F9 00  ld (ix-7),00h
+ABEF.5 DD 36 FA 00  ld (ix-6),00h
+ABF3.5 DD 36 FB 00  ld (ix-5),00h
+ABF7.5 DD 36 FC 00  ld (ix-4),00h
+ABFB.5 DD 36 FD 00  ld (ix-3),00h
+ABFF.5 DD 36 FE 00  ld (ix-2),00h
+AC03.5 DD 36 FF 00  ld (ix-1),00h
+AC07.5 0E 00        ld c,00h
+
+AC09.5 .LOOP:
+AC09.5 79           ld a,c
+AC0A.5 D6 10        sub 10h
+AC0C.5 30 0C        jr nc,.L3
+
+AC0E.5 59           ld e,c
+AC0F.5 16 00        ld d,00h
+AC11.5 21 13 00     ld hl,0013h
+AC14.5 39           add hl,sp
+AC15.5 19           add hl,de
+AC16.5 71           ld (hl),c
+AC17.5 0C           inc c
+AC18.5 18 EF        jr .LOOP
+
+AC1A.5 .L3:
+AC1A.5 3E 23        ld a,23h
+AC1C.5 F5           push af
+AC1D.5 33           inc sp
+AC1E.5 21 01 00     ld hl,0001h
+AC21.5 39           add hl,sp
+AC22.5 E5           push hl
+AC23.5 CD 7E B1     call _uart_send_data_packet2
+
+AC26.5 F1           pop af
+AC27.5 33           inc sp
+AC28.5 7D           ld a,l
+AC29.5 47           ld b,a
+AC2A.5 B7           or a
+AC2B.5 28 2B        jr z,.L5
+
+AC2D.5 C5           push bc
+AC2E.5 33           inc sp
+AC2F.5 21 00 00     ld hl,0000h
+AC32.5 E5           push hl
+AC33.5 2E B7        ld l,0B7h
+AC35.5 E5           push hl
+AC36.5 21 84 CB     ld hl,0CB84h
+AC39.5 E5           push hl
+AC3A.5 CD 29 A7     call SUB_A729
+
+AC3D.5 F1           pop af
+AC3E.5 F1           pop af
+AC3F.5 F1           pop af
+AC40.5 33           inc sp
+AC41.5 18 15        jr .L5
+
+AC43.5 .L4:
+AC43.5 AF           xor a
+AC44.5 F5           push af
+AC45.5 33           inc sp
+AC46.5 21 00 00     ld hl,0000h
+AC49.5 E5           push hl
+AC4A.5 2E BC        ld l,0BCh
+AC4C.5 E5           push hl
+AC4D.5 21 84 CB     ld hl,0CB84h
+AC50.5 E5           push hl
+AC51.5 CD 29 A7     call SUB_A729
+
+AC54.5 F1           pop af
+AC55.5 F1           pop af
+AC56.5 F1           pop af
+AC57.5 33           inc sp
+
+AC58.5 .L5:
+AC58.5 21 7C CB     ld hl,0CB7Ch
+AC5B.5 E5           push hl
+AC5C.5 CD DB AF     call _uart_read_expected2
+
+AC5F.5 F1           pop af
+AC60.5 7D           ld a,l
+AC61.5 B7           or a
+AC62.5 28 15        jr z,.L6
+
+AC64.5 AF           xor a
+AC65.5 F5           push af
+AC66.5 33           inc sp
+AC67.5 21 00 00     ld hl,0000h
+AC6A.5 E5           push hl
+AC6B.5 2E C4        ld l,0C4h
+AC6D.5 E5           push hl
+AC6E.5 21 84 CB     ld hl,0CB84h
+AC71.5 E5           push hl
+AC72.5 CD 29 A7     call SUB_A729
+
+AC75.5 F1           pop af
+AC76.5 F1           pop af
+AC77.5 F1           pop af
+AC78.5 33           inc sp
+
+AC79.5 .L6:
+AC79.5 2A F3 CD     ld hl,(0CDF3h)
+AC7C.5 23           inc hl
+AC7D.5 22 F3 CD     ld (0CDF3h),hl
+AC80.5 2A FB CD     ld hl,(0CDFBh)
+AC83.5 23           inc hl
+AC84.5 22 FB CD     ld (0CDFBh),hl
+AC87.5 2E 00        ld l,00h
+AC89.5 DD F9        ld sp,ix
+AC8B.5 DD E1        pop ix
+AC8D.5 C9           ret
+
+B1DA.5 _uart_send_data_packet2.L1:
+B1DA.5 DD 4E 06     ld c,(ix+6)
+B1DD.5 06 00        ld b,00h
+B1DF.5 C5           push bc
+B1E0.5 DD 6E 04     ld l,(ix+4)
+B1E3.5 DD 66 05     ld h,(ix+5)
+B1E6.5 E5           push hl
+B1E7.5 CD 54 AD     call _uart_raw_tx2
+
+B1EA.5 F1           pop af
+B1EB.5 F1           pop af
+B1EC.5 7D           ld a,l
+B1ED.5 B7           or a
+B1EE.5 28 05        jr z,l_uart_send_data_packet2_00106
+
+B1F0.5 C6 0A        add a,0Ah
+B1F2.5 6F           ld l,a
+B1F3.5 18 02        jr .L2
+
+BF25.5 SUB_BF25:
+BF25.5 DD E5        push ix
+BF27.5 DD 21 00 00  ld ix,0000h
+BF2B.5 DD 39        add ix,sp
+BF2D.5 DD 7E 06     ld a,(ix+6)
+BF30.5 E6 07        and 07h
+BF32.5 87           add a,a
+BF33.5 87           add a,a
+BF34.5 4F           ld c,a
+BF35.5 DD CB 04 46  bit 0,(ix+4)
+BF39.5 28 02        jr z,.L1
+
+BF3B.5 CB C1        set 0,c
+
+BF3D.5 .L1:
+BF3D.5 DD CB 05 46  bit 0,(ix+5)
+BF41.5 28 02        jr z,.L2
+
+BF43.5 CB C9        set 1,c
+
+BF45.5 .L2:
+BF45.5 DD CB 07 46  bit 0,(ix+7)
+BF49.5 28 02        jr z,.L3
+
+BF4B.5 CB F9        set 7,c
+
+BF4D.5 .L3:
+BF4D.5 3E 15        ld a,15h
+BF4F.5 C5           push bc
+BF50.5 01 3B 24     ld bc,243Bh
+BF53.5 ED 79        out (c),a
+BF55.5 C1           pop bc
+BF56.5 79           ld a,c
+BF57.5 C5           push bc
+BF58.5 01 3B 25     ld bc,253Bh
+BF5B.5 ED 79        out (c),a
+BF5D.5 C1           pop bc
+BF5E.5 DD E1        pop ix
+BF60.5 C9           ret
+
+CDF3.0 00 00 00...  DEFB 00 00 00 00 00 00 00 00 ; ASCII: ????????
+CDFB.0 00 00 00 00  DEFB 00 00 00 00 ; ASCII: ????
+CDFF.0 03 00 00...  DEFB 03 00 00 DB 00 00 00 00 ; ASCII: ????????
+D236.0 54 FF FF...  DEFB 54 FF FF FF FF FF FF FF ; ASCII: T???????
 FF58.1 FF FF FF...  DEFB FF FF FF FF FF FF FF FF ; ASCII: ????????
