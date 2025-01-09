@@ -40,7 +40,7 @@ void TextTileMapPutcPos(uint16_t row, uint16_t col, uint16_t c);
 void TextTileMapPutc(uint16_t c);
 void TextTileMapGoto(uint16_t row, uint16_t col);
 
-#define TEXTTILEMAP_SCREENWIDTH 40
+#define TEXTTILEMAP_SCREENWIDTH 80
 #define TEXTTILEMAP_SCREENHEIGHT 32
 
 

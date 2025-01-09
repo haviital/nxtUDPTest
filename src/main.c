@@ -176,8 +176,7 @@ enum state
 };
 
 uint8_t gameState = STATE_NONE;
-uint8_t frameCountForOneSecond = 0;
-uint8_t frameCount8Bit = 0;
+uint16_t engineFrameCount16t = 0;
 uint16_t totalSendPacketCount = 0;
 uint16_t totalReceivedPacketCount = 0;
 uint16_t sendPacketsPerSecondInterval = 0;
@@ -190,6 +189,7 @@ uint32_t recvRasterLineDur = 0;
 uint8_t recvRasterLineFrames = 0;
 uint32_t sendRasterLineDur = 0;
 uint8_t sendRasterLineFrames = 0;
+uint16_t oneSecondPassedAtFrame = 0;
 
 // Frame counter by an interrupt function.
 uint16_t frames16t;
@@ -270,8 +270,8 @@ void init_tilemap(void)
      *   bit 1 = Activate 512 tile mode (soft reset = 0)
      *   bit 0 = Force tilemap on top of ULA (soft reset = 0)
      */
-    //ZXN_NEXTREG(0x6b, /*0b11001000*/ 0xC8);                     // enable tilemap, 80x32 mode, 1bit palette
-    ZXN_NEXTREG(0x6b, /*0b10001000*/ 0x88);                     // enable tilemap, 40x32 mode, 1bit palette
+    ZXN_NEXTREG(0x6b, /*0b11001000*/ 0xC8);                     // enable tilemap, 80x32 mode, 1bit palette
+    //ZXN_NEXTREG(0x6b,   /*0b10001000*/ 0x88);                     // enable tilemap, 40x32 mode, 1bit palette
     //ZXN_NEXTREG(0x6b, /*0b10001000*/ 0x08);                     // Disable tilemap, 40x32 mode, 1bit palette
 
     // bit 7    = 1 to disable ULA output
@@ -520,8 +520,6 @@ void StartNewPacket(bool isIncoming)
     }
     else
     {
-        //printf("!!HV start new outgoing packet. frm=%u\n", frameCount8Bit);
-
         // *** Outgoing packet
 
         // Find first inactive (free) gob.
@@ -718,7 +716,7 @@ void UpdateAndDrawAll(void)
 
     // *** Send data to server.
     // Only send every 8th frame
-    if((frameCount8Bit & 0x7) == 0)
+    if((frames16t & 0x7) == 0)
     {
         zx_border(INK_BLUE);
         uint8_t rasterLineNumMsb =  ZXN_READ_REG(0x001E /* Active Video Line MSB Register */);
@@ -810,6 +808,7 @@ int main(void)
     uint8_t test=0;
     bool keyReleased_C = true;
     uint8_t debugTextColor = 1;
+    uint16_t skippedFramesCount = 0;
     while (true)
     {   
         // Read a a key.
@@ -835,47 +834,39 @@ int main(void)
             keyReleased_C = true;
         }
 
-
         UpdateAndDrawAll();
  
-        frameCount8Bit++;
-
         // Calc frame and packet counts.
-        if( frameCountForOneSecond++ >= 50)
+        if( frames16t == oneSecondPassedAtFrame)
         {
             sendPacketsPerSecondInterval =  sendPacketCountPerSecond;
             recvPacketsPerSecondInterval =  recvPacketCountPerSecond;
+        }
 
-            frameCountForOneSecond = 0;
+        if(frames16t >= oneSecondPassedAtFrame)
+        {
+
             sendPacketCountPerSecond = 0;
             recvPacketCountPerSecond = 0;            
 
             totalSeconds++;
+
+            // Set next update = 
+            oneSecondPassedAtFrame = frames16t + VIDEO_SCREEN_REFRESH_RATE;
         }
 
         char text[128];
         text[0]=0;
-
-    
         char tmpStr[64];
-
-        // frame count
-        // strcpy(text, "frame:");
-        // itoa(frameCountForOneSecond, tmpStr, 10);
-        // strcat(text, tmpStr);
-
-        //layer2_draw_text(23, 0, text, 0xc, &shadow_screen); 
-
-         // Packets per second
-        //strcat(text, " snd/rcv:");
-
-
-        
+ 
         // Print client and server send speed and send count.
         #ifndef NO_GFX
 
-        if((frameCount8Bit & 0x1f) == 0x1f ) // Every 32nd frame
+        if((frames16t & 0x1f) == 0x1f ) // Every 32nd frame
         {
+            // **** SEND INFO
+
+            // Packet count
             screencolour = 12;  // cyan
             strcpy(text, "Send: ");
             itoa(totalSendPacketCount, tmpStr, 10);
@@ -883,74 +874,102 @@ int main(void)
             strcat(text, " pkg");
             TextTileMapPutsPos(26, 0, text);
 
-            // uint32_t sendBytesPerSecond = sendPacketsPerSecondInterval * MSG_TESTLOOPBACK_REQUEST_STRUCT_SIZE;
-            // ltoa(sendBytesPerSecond, tmpStr, 10);
-            // strcpy(text, tmpStr);
-            // strcat(text, " b/s");
-            // TextTileMapPutsPos(26, 20, text);
-
-            uint32_t sendRasterTimePerFrame = 0;
-            if(sendRasterLineFrames>0) 
-                sendRasterTimePerFrame = sendRasterLineDur / sendRasterLineFrames;
-            sendRasterLineFrames = 0;
-            sendRasterLineDur = 0;
-            ltoa(sendRasterTimePerFrame, tmpStr, 10);
+            // Packets per second
+            uint32_t sendPacketsPerSecond = sendPacketsPerSecondInterval;
+            ltoa(sendPacketsPerSecond, tmpStr, 10);
             strcpy(text, tmpStr);
-            strcat(text, " rst");
-            TextTileMapPutsPos(26, 20, text);           
+            strcat(text, " pkg/s");
+            TextTileMapPutsPos(26, 30, text);
+
+            // Bytes per second
+            uint32_t sendBytesPerSecond = sendPacketsPerSecondInterval * MSG_TESTLOOPBACK_REQUEST_STRUCT_SIZE;
+            ltoa(sendBytesPerSecond, tmpStr, 10);
+            strcpy(text, tmpStr);
+            strcat(text, " B/s");
+            TextTileMapPutsPos(26, 60, text);
+
+            // uint32_t sendRasterTimePerFrame = 0;
+            // if(sendRasterLineFrames>0) 
+            //     sendRasterTimePerFrame = sendRasterLineDur / sendRasterLineFrames;
+            // sendRasterLineFrames = 0;
+            // sendRasterLineDur = 0;
+            // ltoa(sendRasterTimePerFrame, tmpStr, 10);
+            // strcpy(text, tmpStr);
+            // strcat(text, " rst");
+            // TextTileMapPutsPos(26, 20, text);           
 
             // Print frames.
-            ltoa(frames16t, tmpStr, 10);
-            strcpy(text, tmpStr);
-            strcat(text, " f");
-            //layer2_draw_text(22, 27, tmpStr, 0xff, &shadow_screen);
-            TextTileMapPutsPos(26, 31, text);
+            // ltoa(frames16t, tmpStr, 10);
+            // strcpy(text, tmpStr);
+            // strcat(text, " frames");
+            // TextTileMapPutsPos(26, 31, text);
         }
 
-        if(((frameCount8Bit + 16) & 0x1f) == 0x1f ) // Every 32nd frame, starting from frame 16.
+        if(((frames16t + 16) & 0x1f) == 0x1f ) // Every 32nd frame, starting from frame 16.
         {
+            // **** RECEIVE INFO
+
+            // Packet count
             screencolour = 8; // blue
             strcpy(text, "Recv: ");
             itoa(totalReceivedPacketCount, tmpStr, 10);
             strcat(text, tmpStr);
             strcat(text, " pkg");
-            //layer2_draw_text(23, 0, text, 0x03, &shadow_screen); 
             TextTileMapPutsPos(27, 0, text);
 
-            // uint32_t recvBytesPerSecond = recvPacketsPerSecondInterval * MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE;
-            // ltoa(recvBytesPerSecond, tmpStr, 10);
-            // strcpy(text, tmpStr);
-            // strcat(text, " b/s");
-            // TextTileMapPutsPos(27, 20, text);
-
-            uint32_t recvRasterTimePerFrame = 0;
-            if(recvRasterLineFrames)
-                recvRasterTimePerFrame = recvRasterLineDur / recvRasterLineFrames;
-            recvRasterLineFrames = 0;
-            recvRasterLineDur = 0;
-            ltoa(recvRasterTimePerFrame, tmpStr, 10);
+            // Packets per second
+            uint32_t recvPacketsPerSecond = recvPacketsPerSecondInterval;
+            ltoa(recvPacketsPerSecond, tmpStr, 10);
             strcpy(text, tmpStr);
-            strcat(text, " rst");
-            TextTileMapPutsPos(27, 20, text);           
+            strcat(text, " pkg/s");
+            TextTileMapPutsPos(27, 30, text);
+
+            // Bytes per second
+            uint32_t recvBytesPerSecond = recvPacketsPerSecondInterval * MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE;
+            ltoa(recvBytesPerSecond, tmpStr, 10);
+            strcpy(text, tmpStr);
+            strcat(text, " B/s");
+            TextTileMapPutsPos(27, 60, text);
+
+            // uint32_t recvRasterTimePerFrame = 0;
+            // if(recvRasterLineFrames)
+            //     recvRasterTimePerFrame = recvRasterLineDur / recvRasterLineFrames;
+            // recvRasterLineFrames = 0;
+            // recvRasterLineDur = 0;
+            // ltoa(recvRasterTimePerFrame, tmpStr, 10);
+            // strcpy(text, tmpStr);
+            // strcat(text, " rst");
+            // TextTileMapPutsPos(27, 20, text);           
 
             // Print cloned count.
             strcpy(text, "x");
             itoa(numClonedPackets, tmpStr, 10);
             strcat(text, tmpStr);
             //layer2_draw_text(23, 27, text, 0x03, &shadow_screen);
-            TextTileMapPutsPos(27, 31, text);
+            TextTileMapPutsPos(27, 75, text);
+
+            // screencolour = 6; // magenta
+            // uint16_t skippedFrames = frames16t - engineFrameCount16t;
+            // strcpy(text, "skip:");
+            // ltoa(skippedFrames, tmpStr, 10);
+            // strcat(text, tmpStr);
+            // TextTileMapPutsPos(10, 20, tmpStr);  
         }
 
         #endif
 
+        engineFrameCount16t++;
+
         PageFlip();   
 
         // !!TEST Print the scanline number right after the page flip.
-        screencolour = 4; // ?
-        uint16_t rasterLineNum = 
-            (( (uint8_t)ZXN_READ_REG(0x001E) & 0x1) << 8)  | (uint8_t)ZXN_READ_REG(0x001F);
-        ltoa(rasterLineNum, tmpStr, 10);
-        TextTileMapPutsPos(10, 10, tmpStr);    
+        // screencolour = 4; // green
+        // screencolour = 6; // magenta
+        // uint16_t rasterLineNum = 
+        //     (( (uint8_t)ZXN_READ_REG(0x001E) & 0x1) << 8)  | (uint8_t)ZXN_READ_REG(0x001F);
+        // ltoa(rasterLineNum, tmpStr, 10);
+        // TextTileMapPutsPos(10, 10, tmpStr);  
+
     }
 
     // Trig a soft reset. The Next hardware registers and I/O ports will be reset by NextZXOS after a soft reset.

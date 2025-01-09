@@ -24,6 +24,8 @@
 
 #define BUFFER_MAX_SIZE2 512
 
+#define VIDEO_SCREEN_REFRESH_RATE 50 // support only 50 hz refresh rate for now.
+
 #define PROG_FAILED prog_failed(__FILE__, __LINE__, 0)
 #define PROG_FAILED1(err) prog_failed(__FILE__, __LINE__, err)
 
