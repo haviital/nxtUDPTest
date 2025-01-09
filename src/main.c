@@ -468,12 +468,13 @@ static void create_start_screen(void)
 
 void FlipBorderColor(bool reset)
 {
-    return;
-
+    reset;
+/*
     static uint8_t color = 0;
     if(reset) color=0;
     zx_border(color);
     color++;
+*/    
 }
 
 void StartNewPacket(bool isIncoming)
@@ -647,19 +648,34 @@ void UpdateAndDrawAll(void)
     UpdateGameObjects();
 
     zx_border(INK_CYAN);
-    uint8_t rasterLineNumMsb =  ZXN_READ_REG(0x001E /* Active Video Line MSB Register */);
-    uint8_t rasterLineNumLsb =  ZXN_READ_REG(0x001F /* Active Video Line LSB Register */);
-    uint16_t rasterLineNumBefore = (rasterLineNumMsb << 8) | rasterLineNumLsb;
+
+    uint16_t rasterBottomScreenLinesCount1 = 0;
+    uint16_t rasterLineNum1 = 
+        (( (uint8_t)ZXN_READ_REG(0x001E) & 0x1) << 8)  | (uint8_t)ZXN_READ_REG(0x001F);
+    if(rasterLineNum1>255)
+    {
+        rasterLineNum1 = 320 - rasterLineNum1;
+        rasterLineNum1 = 0;
+    }
 
     // *** Receive data from server.
     uint16_t receivedPacketCount = 0;
     uint8_t err =  ReceiveMessage(MSG_ID_TESTLOOPBACK, &receivedPacketCount);
     
-    zx_border(INK_BLACK);
-    rasterLineNumMsb =  ZXN_READ_REG(0x001E /* Active Video Line MSB Register */);
-    rasterLineNumLsb =  ZXN_READ_REG(0x001F /* Active Video Line LSB Register */);
-    uint16_t rasterLineNumAfter = (rasterLineNumMsb << 8) | rasterLineNumLsb;
-    recvRasterLineDur += rasterLineNumAfter - rasterLineNumBefore;
+    zx_border(INK_BLACK); 
+
+    uint16_t rasterBottomScreenLinesCount2 = 0;
+    uint16_t rasterLineNum2 = 
+        (( (uint8_t)ZXN_READ_REG(0x001E) & 0x1) << 8)  | (uint8_t)ZXN_READ_REG(0x001F);
+    if(rasterLineNum2>255)
+    {
+        rasterBottomScreenLinesCount2 = 320 - rasterLineNum2;
+        rasterLineNum2 = 0;
+    }
+    // Check if duration more than a frame.
+    // if(rasterLineNumAfter < rasterLineNumBefore)
+    //     recvRasterLineDur += 320; // max raster lines
+    recvRasterLineDur += (rasterLineNum2 - rasterLineNum1) + ();
     recvRasterLineFrames += receivedPacketCount;
 
     if(receivedPacketCount>0)
@@ -673,8 +689,8 @@ void UpdateAndDrawAll(void)
     if((frameCount8Bit & 0x7) == 0)
     {
         zx_border(INK_BLUE);
-        rasterLineNumMsb =  ZXN_READ_REG(0x001E /* Active Video Line MSB Register */);
-        rasterLineNumLsb =  ZXN_READ_REG(0x001F /* Active Video Line LSB Register */);
+        uint8_t rasterLineNumMsb =  ZXN_READ_REG(0x001E /* Active Video Line MSB Register */);
+        uint8_t rasterLineNumLsb =  ZXN_READ_REG(0x001F /* Active Video Line LSB Register */);
         rasterLineNumBefore = (rasterLineNumMsb << 8) | rasterLineNumLsb;
 
         err =  SendMessage(MSG_ID_TESTLOOPBACK);
@@ -745,13 +761,13 @@ int main(void)
     
     layer2_draw_text(0, 3, " >>> UDP TEST PROGRAM <<<", 0x70, &shadow_screen); 
      // Clear botton area.
-    layer2_fill_rect( 0, 192 - 16, 256, 16, 0x00, &shadow_screen); 
+    layer2_fill_rect( 0, (uint8_t)(192 - 16), 256, 16, 0x00, &shadow_screen); 
     // Swap the double buffered screen.
     layer2_flip_main_shadow_screen();    
     // Draw title for the other buffer. 
     layer2_draw_text(0, 3, " >>> UDP TEST PROGRAM <<<", 0x70, &shadow_screen); 
      // Clear botton area for the other buffer.
-    layer2_fill_rect( 0, 192 - 16, 256, 16, 0x00, &shadow_screen); 
+    layer2_fill_rect( 0, (uint8_t)(192 - 16), 256, 16, 0x00, &shadow_screen); 
  
     // Clear the text tilemap
     TextTileMapClear();

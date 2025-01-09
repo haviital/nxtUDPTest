@@ -42,7 +42,9 @@ char* replaceCrAndLn2(char* str, char* newStr)
 
 void uart_tx2(unsigned char *s)
 {
-   if(UART_SPECIAL_DEBUG_PRINT_ENABLED) printf("uart_tx2: %s\n", s);
+   #if UART_SPECIAL_DEBUG_PRINT_ENABLED
+   printf("uart_tx2: %s\n", s);
+   #endif
    uint16_t timeout_ms = UART_TIMEOUT_MS;
    while (*s)
    {
@@ -382,7 +384,9 @@ uint8_t uart_send_data_packet2(unsigned char *data, uint8_t len)
    strcpy(atcmd, "AT+CIPSEND=");
    itoa(len, &(atcmd[11]), 10);
    strcat(atcmd, "\r\n");
-   if(UART_SPECIAL_DEBUG_PRINT_ENABLED) printf("call: %s\n", atcmd);
+   #if UART_SPECIAL_DEBUG_PRINT_ENABLED
+   printf("call: %s\n", atcmd);
+   #endif
    uart_tx2(atcmd);
    //*buffer = 0;
 
