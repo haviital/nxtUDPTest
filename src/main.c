@@ -789,13 +789,13 @@ int main(void)
     #ifndef NO_GFX
 
     
-    layer2_draw_text(0, 3, " >>> UDP TEST PROGRAM <<<", 0x70, &shadow_screen); 
+    layer2_draw_text(0, 0, " >>> UDP TEST PROGRAM v1.0 <<<", 0x70, &shadow_screen); 
      // Clear botton area.
     layer2_fill_rect( 0, (uint8_t)(192 - 16), 256, 16, 0x00, &shadow_screen); 
     // Swap the double buffered screen.
     layer2_flip_main_shadow_screen();    
     // Draw title for the other buffer. 
-    layer2_draw_text(0, 3, " >>> UDP TEST PROGRAM <<<", 0x70, &shadow_screen); 
+    layer2_draw_text(0, 0, " >>> UDP TEST PROGRAM v1.0 <<<", 0x70, &shadow_screen); 
      // Clear botton area for the other buffer.
     layer2_fill_rect( 0, (uint8_t)(192 - 16), 256, 16, 0x00, &shadow_screen); 
  
@@ -878,7 +878,7 @@ int main(void)
             uint32_t sendPacketsPerSecond = sendPacketsPerSecondInterval;
             ltoa(sendPacketsPerSecond, tmpStr, 10);
             strcpy(text, tmpStr);
-            strcat(text, " pkg/s");
+            strcat(text, " pkg/s ");
             TextTileMapPutsPos(26, 30, text);
 
             // Bytes per second
@@ -921,7 +921,7 @@ int main(void)
             uint32_t recvPacketsPerSecond = recvPacketsPerSecondInterval;
             ltoa(recvPacketsPerSecond, tmpStr, 10);
             strcpy(text, tmpStr);
-            strcat(text, " pkg/s");
+            strcat(text, " pkg/s ");
             TextTileMapPutsPos(27, 30, text);
 
             // Bytes per second

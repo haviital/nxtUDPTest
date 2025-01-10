@@ -1,6 +1,34 @@
-# UDP test program
+# (WIP! ) UDP test program
 
-## Visible memory map (64k address space)
+## A short explanation of what the program does
+
+The program sends UDP packets to the UDP server (hosted in my PC). The packet is a special test packet which server understands and it sends the actual payload data back as many times as requested in the packet header data. This mimics the situation where there are several clients. The packets are send every 8th frame (about 6 times a second at 50 hz frame refresh). One UDP packet is received on every frame.
+
+The graphics in the program are partly informing about the real usege and partly only for viewing pleasure. E.g. for receiving, the (blue) packet sprite animation *is lauched* from the server to client each time the real UDP packet is received. The animation duration has nothing to do with the UDP communication thought. The same is true with outgoing (to the server) data packets. 
+
+So this progam is not made to measure the peak performance of the UDP communication. It purpose is to find out if it is technically possible to make a complex game over client-server UDP based, online multiplayer system. 
+
+## Usage
+
+There are 3 keys that affect to functionality:
+- "1": The program sends one paket and the server sends it back
+- "2": The program sends one paket and the server sends 3 packets back
+- "3": The program sends one paket and the server sends 7 packets back
+
+The numeric data in the bottom of the screen is as follows. 
+The first row:
+- The total UDP packets send to the server.
+- The packets sent per second
+- The bytes sent per second (each packet has a 19 byte header and a 32 byte payload data). 
+
+The second row:
+- The total UDP packets received from the server.
+- The packets received per second
+- The bytes received per second (each packet has a 2 byte header and a 32 byte payload data).  
+- The number of packets the server sends back for each received packet (meaning how many psuedo clients there are in addition to my client)
+
+
+## TODO, NOT UP-TO_DATE! Visible memory map (64k address space)
 
 $6164 CODE
 		- driver_terminal_input, driver_terminal_output, stdio
@@ -42,15 +70,20 @@ $c000 $ffff ????	                               => bank 0
 This is my first Spectrum or Spectrum Next program ever, so obiously there has been really *a lot* to learn.
 Here are the list of new things I have learned as I remember:
 
-- The development environment: Z88DK, VCCode, CSpect with integrated debugger (Z88DKSPECT.EXE for converting the map file for the debugger).
-- ESP8266 dongle in PC for CSpect to enable networking. AT commands was a new to me also. TeraTerm was used to study AT commands before implementing them in the program.
-- NextSync for transfering program to Next HW for testing.
-- I used zxnext_Layer2 and zxnext_sprite libraries for gfx in the program.
-- The text tilemap for printing text efficiently.
-- Making sprite texture data using Gimp and ???
+1) The development environment: Z88DK, VCCode, CSpect with integrated debugger (Z88DKSPECT.EXE for converting the map file for the debugger).
+2) ESP8266 dongle in PC for CSpect to enable networking. AT commands was a new to me also. TeraTerm was used to study AT commands before implementing them in the program.
+3) NextSync for transfering program to Next HW for testing.
+4) I used zxnext_Layer2 and zxnext_sprite libraries for gfx in the program.
+5) Created a text tilemap layer for printing text efficiently over the L2 layer.
+6) Making sprite texture data using Gimp, gfx2next.exe and my custom python script for converting *.nxi to C array.
+7) Segmented memory, banks, stack and program start addresses, etc. This is still in process as I do not need much memory for this UPD test program, but in the future I will. 
 
 And, of course, the beautiful Spectrum Next device itself, which I was lucky enough to be able to purchase for Christmas 2024! There is so much to learn still in many aspects of the device and the system SW. Also, I have only scratched the surface of the game gallery of Next and the original Spectrum :-) 
 
-- Z88DK environment for developing C programs. In addition to the Z88DK the evironmant consists of the VSCode editor, CSpect emulator and debugger. It took a lot of time to setup and fine tune, but now it works very well! The CSpect emulator is just marvellous. The emulator is accurate enough that my program worked almost exactly the same on HW. The integrated debugger is very usable also, after I started to use Z88SPECT.EXE for converting the map file.  
-- I used zxnext_Layer2 and zxnext_sprite libraries for graphics. That makes it easier to start making first programs.
-- 
+In the learning process, the Specturm Next discord community has been a priceless help. There are very professional, helpful and enthusiastic people, and without them this would have taken much much more that a month, from zero to a working program ! 
+
+# Next steps
+
+The UDP test program v1 is ready but I plan to do more:
+- Add and check the sequence numbers so that packets are not lost. 
+- Measure the time (raster lines) the UDP comminication takes. This gives a hist how much is left for the game. 
