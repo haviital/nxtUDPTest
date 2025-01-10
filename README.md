@@ -4,9 +4,9 @@
 
 The program sends UDP packets to the UDP server (hosted in my PC). The packet is a special test packet which server understands and it sends the actual payload data back as many times as requested in the packet header data. This mimics the situation where there are several clients. The packets are send every 8th frame (about 6 times a second at 50 hz frame refresh). One UDP packet is received on every frame.
 
-The graphics in the program are partly informing about the real usege and partly only for viewing pleasure. E.g. for receiving, the (blue) packet sprite animation *is lauched* from the server to client each time the real UDP packet is received. The animation duration has nothing to do with the UDP communication thought. The same is true with outgoing (to the server) data packets. 
+The graphics in the program are partly informing about the real usege and partly only for the viewing pleasure. E.g. for receiving, the (blue) packet sprite animation *is lauched* each time the real UDP packet is received (supposing there is a free sprite to do that). The animation duration has nothing to do with the UDP communication thought. The same is true with outgoing (to the server) data packets. 
 
-So this progam is not made to measure the peak performance of the UDP communication. It purpose is to find out if it is technically possible to make a complex game over client-server UDP based, online multiplayer system. 
+So this program is not made to measure the peak performance of the UDP communication. It purpose is to find out if it would be technically possible to make a complex game over client-server UDP based, online multiplayer system. 
 
 ## Usage
 
@@ -25,7 +25,7 @@ The second row:
 - The total UDP packets received from the server.
 - The packets received per second
 - The bytes received per second (each packet has a 2 byte header and a 32 byte payload data).  
-- The number of packets the server sends back for each received packet (meaning how many psuedo clients there are in addition to my client)
+- The number of packets the server sends back for each received packet (meaning how many pseudo clients there are in addition to my client)
 
 
 ## TODO, NOT UP-TO_DATE! Visible memory map (64k address space)
@@ -80,7 +80,7 @@ Here are the list of new things I have learned as I remember:
 
 And, of course, the beautiful Spectrum Next device itself, which I was lucky enough to be able to purchase for Christmas 2024! There is so much to learn still in many aspects of the device and the system SW. Also, I have only scratched the surface of the game gallery of Next and the original Spectrum :-) 
 
-In the learning process, the Specturm Next discord community has been a priceless help. There are very professional, helpful and enthusiastic people, and without them this would have taken much much more that a month, from zero to a working program ! 
+In the learning process, the Specturm Next discord community has been a priceless help. There are very professional, helpful and enthusiastic people, and without them this would have taken much much more than a month, from zero to a working program ! 
 
 # Next steps
 
