@@ -8,6 +8,8 @@ The graphics in the program are partly informing about the real usege and partly
 
 So this program is not made to measure the peak performance of the UDP communication. It purpose is to find out if it would be technically possible to make a complex game over client-server UDP based, online multiplayer system. 
 
+Note: Unfortunately this is not something you can try, as it requires the special UDP server to exist. I plan to release the server codes also in public later.
+
 ## Usage
 
 There are 3 keys that affect to functionality:
