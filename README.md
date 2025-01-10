@@ -2,9 +2,9 @@
 
 ## A short explanation of what the program does
 
-The program sends UDP packets to the UDP server (hosted in my PC). The packet is a special test packet which server understands and it sends the actual payload data back as many times as requested in the packet header data. This mimics the situation where there are several clients. The packets are send every 8th frame (about 6 times a second at 50 hz frame refresh). One UDP packet is received on every frame.
+The program sends UDP packets to the UDP server (hosted in my PC). The packet is a special test packet which my UDP server understands and it sends the actual payload data back as many times as requested in the packet header data. This mimics the situation where there are several clients. The packets are send every 8th frame (about 6 times a second at 50 hz frame refresh). One UDP packet is received on every frame.
 
-The graphics in the program are partly informing about the real usege and partly only for the viewing pleasure. E.g. for receiving, the (blue) packet sprite animation *is lauched* each time the real UDP packet is received (supposing there is a free sprite to do that). The animation duration has nothing to do with the UDP communication thought. The same is true with outgoing (to the server) data packets. 
+The graphics in the program are partly informing about the real usage and partly only for the viewing pleasure. E.g. for receiving, the (blue) packet sprite animation *is lauched* each time the real UDP packet is received (supposing there is a free sprite to do that). The animation duration has nothing to do with the UDP communication thought. The same is true with outgoing (to the server) data packets. 
 
 So this program is not made to measure the peak performance of the UDP communication. It purpose is to find out if it would be technically possible to make a complex game over client-server UDP based, online multiplayer system. 
 
@@ -69,11 +69,11 @@ $8000 $bfff data($929f), stack ($c000), (free ram) => bank 2
 $c000 $ffff ????	                               => bank 0
 
 # Lessons learned
-This is my first Spectrum or Spectrum Next program ever, so obiously there has been really *a lot* to learn.
+This is my first Spectrum or Spectrum Next program ever, so obiously there has been *really a lot* to learn.
 Here are the list of new things I have learned as I remember:
 
-1) The development environment: Z88DK, VCCode, CSpect with integrated debugger (Z88DKSPECT.EXE for converting the map file for the debugger).
-2) ESP8266 dongle in PC for CSpect to enable networking. AT commands was a new to me also. TeraTerm was used to study AT commands before implementing them in the program.
+1) Setup the development environment: Z88DK, VCCode, CSpect with integrated debugger (Z88DKSPECT.EXE for converting the map file for the debugger).
+2) Using the ESP8266 dongle in PC for CSpect to enable networking. AT commands was a new to me also. TeraTerm was used to study AT commands before implementing them in the program.
 3) NextSync for transfering program to Next HW for testing.
 4) I used zxnext_Layer2 and zxnext_sprite libraries for gfx in the program.
 5) Created a text tilemap layer for printing text efficiently over the L2 layer.
@@ -87,5 +87,5 @@ In the learning process, the Specturm Next discord community has been a priceles
 # Next steps
 
 The UDP test program v1 is ready but I plan to do more:
-- Add and check the sequence numbers so that packets are not lost. 
-- Measure the time (raster lines) the UDP comminication takes. This gives a hist how much is left for the game. 
+- Add and check the sequence numbers so that it can be checked that packets are not lost. 
+- Measure the time (raster lines) the UDP comminication takes. This gives a hint how many cycles are left for the game. 
