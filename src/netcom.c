@@ -160,7 +160,7 @@ uint8_t SendMessage(uint8_t msgId)
         case MSG_ID_TESTLOOPBACK:
         {
             // The request struct.
-                TestLoopBackRequest serverCommandsTestLoopBack = 
+            TestLoopBackRequest serverCommandsTestLoopBack = 
             {
                 .cmd = MSG_ID_TESTLOOPBACK,
                 // Server TESTLOOPBACKGUID: b679c980-0a2f-4c71-a0cf-fe9dcfef3a17

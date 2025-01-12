@@ -13,9 +13,9 @@ Note: Unfortunately this is not something you can try, as it requires the specia
 ## Usage
 
 There are 3 keys that affect to functionality:
-- "1": The program sends one paket and the server sends it back
-- "2": The program sends one paket and the server sends 3 packets back
-- "3": The program sends one paket and the server sends 7 packets back
+- "1": The program sends one packet and the server sends it back
+- "2": The program sends one packet and the server sends 3 packets back
+- "3": The program sends one packet and the server sends 7 packets back
 
 The numeric data in the bottom of the screen is as follows. 
 The first row:
