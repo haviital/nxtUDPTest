@@ -38,10 +38,11 @@ void NetComInit(void)
     #endif
 
     // Connect to wifi AP.
-    sprintf(atcmd, "AT+CWJAP=\"%s\",\"%s\"\r\n", g_wifiSsid, g_wifiPassword);
-    uart_tx2(atcmd);
-    if(uart_read_expected2("OK") != 0)
-        PROG_FAILED;
+    // Note: commented out as wifi AP connect should be done outside this program.
+    // sprintf(atcmd, "AT+CWJAP=\"%s\",\"%s\"\r\n", g_wifiSsid, g_wifiPassword);
+    // uart_tx2(atcmd);
+    // if(uart_read_expected2("OK") != 0)
+    //     PROG_FAILED;
 
     DrawStatusTextAndPageFlip("Connected to Wifi");
 
@@ -58,7 +59,7 @@ void NetComInit(void)
     // AT+CIPSTART="UDP","<remote_ip>",<remote_port>,<local_port>,0
     // Could also come: "ALREADY CONNECTED\r\nERROR\n\r"
     sprintf(atcmd, "AT+CIPSTART=\"UDP\",\"%s\",%s,%s,0\r\n", 
-        UDP_SERVER_ADDRESS, UDP_SERVER_PORT,UDP_LOCAL_PORT );
+        serverAddress, serverPort, UDP_LOCAL_PORT );
     uart_tx2(atcmd);
     if(uart_read_expected_many2("OK", "ERROR") != 0)
         PROG_FAILED;

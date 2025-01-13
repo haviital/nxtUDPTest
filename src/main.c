@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Stefan Bylund 2017
  *
- * A layer 2 drawing demo program for ZX Spectrum Next.
+ * A program for testing UDP communication with a server.
  *
- * zcc +zxn -subtype=nex -vn -SO3 -startup=30 -clib=sdcc_iy
- *   --max-allocs-per-node200000 -L<zxnext_layer2>/lib/sdcc_iy -lzxnext_layer2
- *   -I<zxnext_layer2>/include zxnext_draw_demo.c -o zxnext_draw_demo -create-app
- ******************************************************************************/
+ * Hannu Viitala, 2025
+ * 
+ * License : MIT License (attached)
+ *
+  ******************************************************************************/
 
 #include <arch/zxn.h>
 #include <input.h>
@@ -28,15 +28,10 @@
 
 #pragma output CRT_ORG_CODE = 0x8184
 #pragma output REGISTER_SP = 0xFF58
-//#pragma output CRT_ORG_CODE = 0x6164  // Defautl is $8000
-//#pragma output REGISTER_SP = 0xC000
-//#pragma output CRT_STACK_SIZE = 0x400
-#pragma output CLIB_MALLOC_HEAP_SIZE = 0
 #pragma output CLIB_MALLOC_HEAP_SIZE = 0
 #pragma output CLIB_STDIO_HEAP_SIZE = 0
 #pragma output CLIB_FOPEN_MAX = -1
 
-// #include "esp.h"
 #include "uart2.h"
 #include "GameObject.h"
 #include "gfx.h"
@@ -72,7 +67,12 @@ typedef struct sprite_info {
     int8_t dy; // Vertical displacement in pixels
 } sprite_info_t;
 
-extern int TEST_main(void);
+enum state
+{
+    STATE_NONE = 0,
+    STATE_CALL_NOP = 1,
+    STATE_WAIT_FOR_NOP = 2
+};
 
 /*******************************************************************************
  * Function Prototypes
@@ -113,14 +113,6 @@ static void test_blit_transparent(layer2_screen_t *screen);
  * Variables
  ******************************************************************************/
 
-// Global
-
-// NOTE: YOU NEED DEFINE THESE IN A SEPARATE HEADER: "mycredentials.h" !!!
-//       THAT SHOULD BE NOT STORED TO GITHUB.
-//char g_wifiSsid[64] = "myssid"; 
-//char g_wifiPassword[128] = "mypassword";
-#include "..\..\mycredentials.h"
-
 // Defines
 #define DATA_SPR_SPEED 5
 #define PACKET_SPRITE_PATTERN_SLOT 0
@@ -136,8 +128,6 @@ static void test_blit_transparent(layer2_screen_t *screen);
 #define INCOMING_PACKET_X1 219
 #define OUTGOING_PACKET_X2 214
 #define INCOMING_PACKET_X2 29
-
-// Local
 
 uint8_t tilemap_background[16] = {
         0xE3,0x01,     // Transparent
@@ -167,14 +157,8 @@ static GameObject incomingPacketGobs[INCOMING_PACKET_GOB_COUNT];
 #define OUTGOING_PACKET_GOB_COUNT 8
 static GameObject outgoingPacketGobs[OUTGOING_PACKET_GOB_COUNT];
 static uint8_t guardArr1[4];
-
-enum state
-{
-    STATE_NONE = 0,
-    STATE_CALL_NOP = 1,
-    STATE_WAIT_FOR_NOP = 2
-};
-
+char serverAddress[16];  // aaa.bbb.ccc.ddd
+char serverPort[8];  // 1234567
 uint8_t gameState = STATE_NONE;
 uint16_t engineFrameCount16t = 0;
 uint16_t totalSendPacketCount = 0;
@@ -764,8 +748,25 @@ bool CheckMemoryGuards(void)
     );
 }
 
-int main(void)
+void main(int argc, const char* argv[])
 {
+    // Copy the default values.
+    strcpy(serverAddress, UDP_SERVER_ADDRESS);
+    strcpy(serverPort, UDP_SERVER_PORT);
+
+    // Read the parameters if any.
+	if(argc>1) 
+    {
+        if( strlen(argv[1]) >= 16 )
+            printf("Error: Invalid server ip address.");
+	    strcpy(serverAddress, argv[1]);
+	}
+	if(argc>2) 
+    {
+        if( strlen(argv[2]) >= 8 )
+            printf("Error: Invalid port number.");
+	    strcpy(serverPort, argv[2]);
+	}
 
     //
     guardArr1[0] = 0xfe;

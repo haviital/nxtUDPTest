@@ -43,6 +43,8 @@ if(cond) {\
 
 extern uint8_t numClonedPackets;
 extern uint8_t frameCount8Bit;
+extern char serverAddress[16];  // aaa.bbb.ccc.ddd
+extern char serverPort[8];  // 1234567
 
 void FlipBorderColor(bool reset);
 int16_t GetUsedStack(void);

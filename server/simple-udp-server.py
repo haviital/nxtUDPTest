@@ -33,7 +33,7 @@ def receive_udp_packet(sock, testLoopBackGuidBytes):
     recvData, address = sock.recvfrom(4096)
     print(f"Received {len(recvData)} bytes from {address}")
     recvDataList = list(recvData)
-    print(f"bytes array: {recvDataList}")
+    # print(f"bytes array: {recvDataList}")
 
     # Handle the command from the client.
     
@@ -56,12 +56,10 @@ def receive_udp_packet(sock, testLoopBackGuidBytes):
     #print(list(testLoopBackGuidBytes))
     #print(list(clientGuidBytes))
     if(clientGuidBytes != testLoopBackGuidBytes):
-        print("Invalid client guid")
-        cmd = -1
+        print("Invalid client guid or corrupted packet")
+        cmd = b'\xff'
     len_ = len(packetData)
-    print(f"cmd={cmd}, loopPacketCount={loopPacketCount}, packetSize={packetSize}, data size={len_}, address={address}")
-
-    print(f"cmd={cmd}, loopPacketCount={loopPacketCount}, packetSize={packetSize}, data size={len_}, address={address}")
+    #print(f"cmd={cmd}, loopPacketCount={loopPacketCount}, packetSize={packetSize}, data size={len_}, address={address}")
 
     return cmd, clientGuidBytes, loopPacketCount, packetSize, packetData, address
 
@@ -76,15 +74,15 @@ def send_udp_packets( sock, address, cmd, packetSize, packetData, loopPacketCoun
     #     uint8_t packetData[MSG_TESTLOOPBACK_RANDOM_DATA_SIZE];
     # } 
 
-    print(f"send_udp_packets")
+    # print(f"send_udp_packets")
 
     sendDataBytes = cmd + packetSize + packetData
 
     count = int.from_bytes(loopPacketCount, byteorder='big')
-    print(f"loopback count={count}")
+    #print(f"loopback count={count}")
     sendDataList = list(sendDataBytes)
     sendDataLen = len(sendDataBytes)
-    print(f"bytes array: size={sendDataLen}, data={sendDataList}")
+    #print(f"bytes array: size={sendDataLen}, data={sendDataList}")
     for i in range(0, count):
         sent = sock.sendto(sendDataBytes, address)
         print(f"Sent {sent} bytes back to {address}")
@@ -110,7 +108,7 @@ def udp_server(host, port):
         # Receive a data packet.
         cmd, clientGuidBytes, loopPacketCount, packetSize, packetData, address = receive_udp_packet(
             sock, testLoopBackGuidBytes )
-        if cmd == -1:
+        if cmd == b'\xff':
             exit
 
         # Send data packets
