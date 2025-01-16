@@ -10,8 +10,6 @@
 
 #define CLOUD_SPRITE_Y 40
 
-#define UDP_SERVER_PORT "4444"
-#define UDP_SERVER_ADDRESS "192.168.100.133" 
 #define UDP_LOCAL_PORT "333"
 
 
@@ -45,7 +43,7 @@ extern uint8_t numClonedPackets;
 extern uint8_t frameCount8Bit;
 extern char serverAddress[16];  // aaa.bbb.ccc.ddd
 extern char serverPort[8];  // 1234567
-
+extern char packetToken[5];  // 1234
 void FlipBorderColor(bool reset);
 int16_t GetUsedStack(void);
 void prog_failed(char* sourceFile, int32_t lineNum, uint8_t err);

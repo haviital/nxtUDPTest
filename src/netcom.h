@@ -12,12 +12,12 @@ typedef struct NopResponse_
 
 #define MSG_ID_TESTLOOPBACK 18
 #define MSG_TESTLOOPBACK_RANDOM_DATA_SIZE 32
-#define MSG_TESTLOOPBACK_REQUEST_STRUCT_SIZE (19+MSG_TESTLOOPBACK_RANDOM_DATA_SIZE)
-#define MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE (2+MSG_TESTLOOPBACK_RANDOM_DATA_SIZE)
+#define MSG_TESTLOOPBACK_REQUEST_STRUCT_SIZE (7+MSG_TESTLOOPBACK_RANDOM_DATA_SIZE)
+#define MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE (6+MSG_TESTLOOPBACK_RANDOM_DATA_SIZE)
 typedef struct TestLoopBackRequest_ 
 {
     uint8_t cmd;
-    uint8_t testGuid[16];
+    uint8_t token[4];
     uint8_t loopPacketCount;
     uint8_t packetSize;
     uint8_t packetData[MSG_TESTLOOPBACK_RANDOM_DATA_SIZE];
@@ -26,12 +26,10 @@ typedef struct TestLoopBackRequest_
 typedef struct TestLoopBackResponse_ 
 {
     uint8_t cmd;
+    uint8_t token[4];
     uint8_t packetSize;
     uint8_t packetData[MSG_TESTLOOPBACK_RANDOM_DATA_SIZE];
 } TestLoopBackResponse;
-
-extern char g_wifiSsid[64];
-extern char g_wifiPassword[128];
 
 extern uint16_t totalSendPacketCount;
 extern uint16_t totalReceivedPacketCount;

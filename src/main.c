@@ -21,6 +21,11 @@
 
 #include <im2.h>           // im2 macros and functions
 
+#ifdef ZXNEXT_EMULATOR_MODE_INCLUDES
+// For server ip address and port, and packet token
+#include "..\..\mycredentials.h"
+#endif
+
 #include "lib/zxn/zxnext_layer2.h"
 #include "lib/zxn/zxnext_sprite.h"
 #include "defines.h"
@@ -159,6 +164,7 @@ static GameObject outgoingPacketGobs[OUTGOING_PACKET_GOB_COUNT];
 static uint8_t guardArr1[4];
 char serverAddress[16];  // aaa.bbb.ccc.ddd
 char serverPort[8];  // 1234567
+char packetToken[5];  // 1234
 uint8_t gameState = STATE_NONE;
 uint16_t engineFrameCount16t = 0;
 uint16_t totalSendPacketCount = 0;
@@ -750,23 +756,50 @@ bool CheckMemoryGuards(void)
 
 void main(int argc, const char* argv[])
 {
+    #ifdef ZXNEXT_EMULATOR_MODE_INCLUDES
     // Copy the default values.
     strcpy(serverAddress, UDP_SERVER_ADDRESS);
     strcpy(serverPort, UDP_SERVER_PORT);
+    strcpy(packetToken, PACKET_TOKEN);
+    #endif
 
     // Read the parameters if any.
-	if(argc>1) 
+	if(argc!=3) 
     {
-        if( strlen(argv[1]) >= 16 )
-            printf("Error: Invalid server ip address.");
-	    strcpy(serverAddress, argv[1]);
-	}
-	if(argc>2) 
+        printf("This is a UDP client-server test program.");
+        printf("For more info: https\:\/\/github.com\/haviital\/nxtUDPTest");
+        printf("Usage: ZxnUdpTest <token> <server ip> <server port>\n");
+        printf("- <token> is a user given four character string that is added in each sent or received packet.\n");
+        printf("          Use the same token in the Next device and the server in PC.\n");
+        printf("- <server ip> is an IP address of the server in PC.\n");
+        printf("- <server port> is an IP port of the server in PC.\n\n");
+        printf("Example: ZxnUdpTest 1234 123.456.789.123 4444\n");
+        exit(1);
+    }
+
+    // Token
+    if( strlen(argv[1]) != 4 )
     {
-        if( strlen(argv[2]) >= 8 )
-            printf("Error: Invalid port number.");
-	    strcpy(serverPort, argv[2]);
-	}
+        printf("Error: Invalid token. Use exactly four characters (e.g. 1234)\n");
+        exit(1);
+    }
+    strcpy(packetToken, argv[1]);
+	
+    // Server ip address
+    if( strlen(argv[2]) >= 16 )
+    {
+        printf("Error: Invalid server ip address.");
+        exit(1);
+    }
+    strcpy(serverAddress, argv[2]);
+
+    // server ip port.
+    if( strlen(argv[3]) >= 8 )
+    {
+        printf("Error: Invalid port number.");
+        exit(1);
+    }
+    strcpy(serverPort, argv[3]);
 
     //
     guardArr1[0] = 0xfe;
