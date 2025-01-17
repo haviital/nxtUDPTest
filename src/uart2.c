@@ -10,12 +10,13 @@
 char testBuffer2[2048];
 #endif
 
+// Work buffer.
 static char buffer2[BUFFER_MAX_SIZE2];
 
 // USER BREAK
-
 unsigned char err_break[] = "D BREAK - no repea" "\xf4";
 
+// Check for the user break (caps shift + space).
 void user_break(void)
 {
    if (in_key_pressed(IN_KEY_SCANCODE_SPACE | 0x8000))  // CAPS+SPACE
@@ -23,6 +24,7 @@ void user_break(void)
 
 }
 
+// Make LR and CR visible.
 char* replaceCrAndLn2(char* str, char* newStr)
 {
    uint8_t len = strlen(str);
@@ -40,6 +42,7 @@ char* replaceCrAndLn2(char* str, char* newStr)
    return newStr;
 }
 
+// Send string to UART.
 void uart_tx2(unsigned char *s)
 {
    #if UART_SPECIAL_DEBUG_PRINT_ENABLED
@@ -65,6 +68,7 @@ void uart_tx2(unsigned char *s)
    }
 }
 
+// Send data to UART.
 uint8_t uart_raw_tx2(unsigned char *s, uint16_t size)
 {
    uint16_t timeout_ms = UART_TIMEOUT_MS;
@@ -91,11 +95,13 @@ uint8_t uart_raw_tx2(unsigned char *s, uint16_t size)
    return 0;
 }
 
+// Check if there is incoming data in UART.
 bool uart_available_rx2(void)
 {
    return (IO_133B & 0x01); // Is there data in RX port?
 }
 
+// Check and wait for a while if there is incoming data in UART.
 bool uart_available_rx_wait_once(uint16_t waitTimeMs)
 {
    if(IO_133B & 0x01) // Is there data in RX port?
@@ -105,6 +111,7 @@ bool uart_available_rx_wait_once(uint16_t waitTimeMs)
    return (IO_133B & 0x01); // Is there data in RX port?
  }
 
+// Print the char and make non-printing characters visible.
 void uart_pretty_print(char c)
 {
    if(c>31)
@@ -154,6 +161,7 @@ unsigned char uart_rx_char2(void)
    return ch;
 }
 
+// Flush the receive buffer.
 void uart_flush_rx2(void)
 {
    // flush read buffer2
@@ -205,6 +213,7 @@ void uart_flush_rx2(void)
    }
 }
 
+// Read chars from UART until the expected string is found. 
 uint8_t uart_read_until_expected(char* expected)
 {
    uint16_t expectedStringPos = 0;
@@ -248,6 +257,7 @@ uint8_t uart_read_until_expected(char* expected)
    return err; // Not found.
 }
 
+// Read chars from UART until the expected string is found. 
 uint8_t uart_read_expected2(char* expected)
 {
    //printf("uart_read_expected2: %s", expected);
@@ -282,6 +292,7 @@ uint8_t uart_read_expected2(char* expected)
    return 1; // Not found.
 }
 
+// Read chars from UART until on of the expected strings is found. 
 uint8_t uart_read_expected_many2(char* expected1, char* expected2)
 {
    // printf("uart_read_expected_many2: #1=%s(%u) or #2=%s(%u)\n", 
@@ -374,6 +385,7 @@ uint8_t uart_read_until_char(char untilChar, char* receivedData, uint8_t maxLen)
    return 1; // Not found.
 }
 
+// Send data to UDP via UART.
 uint8_t uart_send_data_packet2(unsigned char *data, uint8_t len)
 {
    if( len==0 )
@@ -404,6 +416,7 @@ uint8_t uart_send_data_packet2(unsigned char *data, uint8_t len)
    return 0;
 }
 
+// Receive data from UDP via UART.
 uint8_t uart_receive_data_packet_if_any(char* receivedData, uint8_t size)
 {
    // Read UART until the string was found or there is timeout.

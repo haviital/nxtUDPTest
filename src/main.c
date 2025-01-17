@@ -31,6 +31,7 @@
 #include "defines.h"
 #include "TextTileMap.h"
 
+// Memory settings.
 #pragma output CRT_ORG_CODE = 0x8184
 #pragma output REGISTER_SP = 0xFF58
 #pragma output CLIB_MALLOC_HEAP_SIZE = 0
@@ -65,13 +66,15 @@
  * Type Definitions
  ******************************************************************************/
 
+// The sprite info struct.
 typedef struct sprite_info {
     uint8_t x; // X coordinate in pixels
     uint8_t y; // Y coordinate in pixels
-    int8_t dx; // Horizontal displacement in pixels
-    int8_t dy; // Vertical displacement in pixels
+    int8_t dx; // Horizontal movement in pixels
+    int8_t dy; // Vertical movement in pixels
 } sprite_info_t;
 
+// The state of the game engine.
 enum state
 {
     STATE_NONE = 0,
@@ -84,41 +87,15 @@ enum state
  ******************************************************************************/
 
 static void init_hardware(void);
-
 static void init_isr(void);
-
-static void create_start_screen(void);
-
-static void init_tests(void);
-
-static void select_test(void);
-
-static void test_clear_screen(layer2_screen_t *screen);
-
-static void test_load_screen(layer2_screen_t *screen);
-
-static void test_load_screen_with_palette(layer2_screen_t *screen);
-
-static void test_draw_pixel(layer2_screen_t *screen);
-
-static void test_draw_line(layer2_screen_t *screen);
-
-static void test_draw_rect(layer2_screen_t *screen);
-
-static void test_fill_rect(layer2_screen_t *screen);
-
-static void test_draw_text(layer2_screen_t *screen);
-
-static void test_blit(layer2_screen_t *screen);
-
-static void test_blit_transparent(layer2_screen_t *screen);
-
+void StartNewPacket(bool isIncoming);
+void PageFlip(void);
 
 /*******************************************************************************
- * Variables
+ * Defines
  ******************************************************************************/
 
-// Defines
+// Sprites.
 #define DATA_SPR_SPEED 5
 #define PACKET_SPRITE_PATTERN_SLOT 0
 #define CLOUD_SPRITE_PATTERN_SLOT 1
@@ -128,12 +105,18 @@ static void test_blit_transparent(layer2_screen_t *screen);
 #define SERVER_SPRITE_3_PATTERN_SLOT 5
 #define SPECNEXT_SPRITE_0_PATTERN_SLOT 6
 #define SPECNEXT_SPRITE_1_PATTERN_SLOT 7
-
 #define OUTGOING_PACKET_X1 34
 #define INCOMING_PACKET_X1 219
 #define OUTGOING_PACKET_X2 214
 #define INCOMING_PACKET_X2 29
+#define INCOMING_PACKET_GOB_COUNT 20
+#define OUTGOING_PACKET_GOB_COUNT 8
 
+/*******************************************************************************
+ * Variables
+ ******************************************************************************/
+
+// Tilemap colors.
 uint8_t tilemap_background[16] = {
         0xE3,0x01,     // Transparent
         0xA0,0x00,     // Red
@@ -144,22 +127,14 @@ uint8_t tilemap_background[16] = {
         0x16,0x01,     // Cyan
         0xB6,0x01      // White
 };
-
 uint8_t tilemap_foreground[32] = {            // 0xE3 = 277
 //      TRANS,     Red,       Green,     Yellow,    Blue,      Magenta,   Cyan,      White,
         0xE3,0x01, 0xA0,0x00, 0x14,0x00, 0xAC,0x00, 0x02,0x01, 0xA2,0x01, 0x16,0x01, 0xB6,0x01, // (normal)
         0x6D,0x01, 0xED,0x01, 0x7D,0x01, 0xFD,0x01, 0x77,0x01, 0xEE,0x01, 0x7F,0x01, 0xFF,0x01  // (bright)
 };
 
-static uint8_t test_number = 0;
-
 static layer2_screen_t shadow_screen = {SHADOW_SCREEN};
-
-//layer2_screen_t off_screen = {OFF_SCREEN, 0, 1, 3};
-
-#define INCOMING_PACKET_GOB_COUNT 20
 static GameObject incomingPacketGobs[INCOMING_PACKET_GOB_COUNT];
-#define OUTGOING_PACKET_GOB_COUNT 8
 static GameObject outgoingPacketGobs[OUTGOING_PACKET_GOB_COUNT];
 static uint8_t guardArr1[4];
 char serverAddress[16];  // aaa.bbb.ccc.ddd
@@ -184,9 +159,6 @@ uint16_t oneSecondPassedAtFrame = 0;
 // Frame counter by an interrupt function.
 uint16_t frames16t;
 
-void StartNewPacket(bool isIncoming);
-void PageFlip(void);
-
 
 /*******************************************************************************
  * Functions
@@ -200,18 +172,13 @@ static void init_hardware(void)
     // Disable RAM memory contention.
     ZXN_NEXTREGA(REG_PERIPHERAL_3, ZXN_READ_REG(REG_PERIPHERAL_3) | RP3_DISABLE_CONTENTION);
 
-    //IO_153B = 0x00;  // Select ESP for UART(?)
-
-    // Set UART to 115 kbaud
-    //uart_set_prescaler(uart_compute_prescaler(115200UL));
-    
+    // Layer 2 banks.
     layer2_set_main_screen_ram_bank(8);
     layer2_set_shadow_screen_ram_bank(11);
 }
 
 void init_tilemap(void)
 {
-    #if 1
     // 0x6E (110) R/W =>  Tilemap Base Address
     //  bits 7-6 = Read back as zero, write values ignored
     //  bits 5-0 = MSB of address of the tilemap in Bank 5
@@ -272,20 +239,6 @@ void init_tilemap(void)
     //             (if either are transparent the result is transparent otherwise the
     //              result is a logical AND of both colours)
     ZXN_NEXTREG(/*REG_ULA_CONTROL*/0x68, 0x80);  // Disable ULA screen. Use only the tilemap on U layer  
-
-    // (R/W) 0x1B (27) => Clip Window Tilemap
-    //   bits 7-0 = Coord. of the clip window
-    //   1st write = X1 position (multiplied by 2)
-    //   2nd write = X2 position (multiplied by 2)
-    //   3rd write = Y1 position
-    //   4rd write = Y2 position
-    //   The values are 0,159,0,255 after a Reset
-    //ZXN_NEXTREG(/*Clip Window Tilemap*/0x1B, 16);  // left x (multiplied by 2)  
-    //ZXN_NEXTREG(/*Clip Window Tilemap*/0x1B, 128); // right x (multiplied by 2)  
-    //ZXN_NEXTREG(/*Clip Window Tilemap*/0x1B, 16);  // top y (multiplied by 2)  
-    //ZXN_NEXTREG(/*Clip Window Tilemap*/0x1B, 192); // bottom y (multiplied by 2)  
-
-    #endif
 }
 
 // There are a lot of ways to define an interrupt service routine
@@ -335,9 +288,7 @@ static void create_sprites(void)
     set_sprite_attributes_ext(CLOUD_SPRITE_PATTERN_SLOT, 30, 40, 0, 0, true);
 
     // Cloud sprite 1
-    //set_sprite_slot(101);
-    //set_sprite_pattern(cloudSpr);
-    set_sprite_slot(101);
+     set_sprite_slot(101);
     set_sprite_attributes_ext(CLOUD_SPRITE_PATTERN_SLOT, 214, 40, 0, 0, true);
 
     // Server sprite 0
@@ -378,7 +329,7 @@ static void create_sprites(void)
 
     #endif  // NO_GFX
 
-   // *** Moving sprites
+    // *** Define moving sprites (used by GameObjects)
 
     // Map sprite bitmap(pattern) to the certain pattern slot. 
     set_sprite_slot(PACKET_SPRITE_PATTERN_SLOT);
@@ -391,7 +342,6 @@ static void create_sprites(void)
     {
         int sprIndex = i;
         outgoingPacketGobs[i] = defaultGob2;
-        //incomingPacketGobs[i].y = i*32;
         outgoingPacketGobs[i].spriteIndex = sprIndex;
         outgoingPacketGobs[i].spritePaletteOffset = 1;
         set_sprite_slot(sprIndex);
@@ -410,28 +360,10 @@ static void create_sprites(void)
         incomingPacketGobs[i].y = i*32;
         incomingPacketGobs[i].spriteIndex = sprIndex;
         incomingPacketGobs[i].spritePaletteOffset = 0;
-        //set_sprite_slot(sprIndex);
-        //set_sprite_pattern(packet);
         set_sprite_slot(sprIndex);
         set_sprite_attributes_ext(incomingPacketGobs[i].spritePatternIndex, 
             incomingPacketGobs[i].x, incomingPacketGobs[i].y, incomingPacketGobs[i].spritePaletteOffset, 
             0, !incomingPacketGobs[i].isHidden);
-    }
-}
-
-static void DrawCloudEdge(layer2_screen_t *screen)
-{
-    #ifdef NO_GFX
-    return;
-    #endif
-
-    // Draw tiled cloud
-    int i=0;
-    int x=0;
-    for(i=0; i<16; i++ )
-    {
-        layer2_blit_transparent(x, CLOUD_SPRITE_Y,  cloud, 16, 26, screen); // top
-        x+=16;
     }
 }
 
@@ -447,31 +379,20 @@ static void DrawGameBackground(void)
     //Fill the lower screen area with black.
     layer2_fill_rect(0, CLOUD_SPRITE_Y, 256, (int)(194-CLOUD_SPRITE_Y), 123/*l.blue*/, &shadow_screen);
 
-    DrawCloudEdge(&shadow_screen);
+    // Draw the cloud edge.
+    int x=0;
+    for(int i=0; i<16; i++ )
+    {
+        layer2_blit_transparent(x, CLOUD_SPRITE_Y,  cloud, 16, 26, &shadow_screen);
+        x+=16;
+    }
 
-     // Swap the double buffered screen.
+    // Swap the double buffered screen.
     layer2_flip_main_shadow_screen();
 }
 
 static void create_start_screen(void)
 {
-    zx_border(INK_BLACK);
-    zx_cls(BRIGHT | INK_BLACK | PAPER_WHITE);
-
-    printAt(10, 0);
-
-    // Init ESP.
-    NetComInit();
-
-    //printf("Press any key to start\n");
-    //in_wait_key();
-
-    //!!HV DrawStatusTextAndPageFlip("Ping server");
-
-    gameState = STATE_CALL_NOP;
-
-    //printf("Press any key to start\n");
-    //in_wait_key();
 }
 
 void FlipBorderColor(bool reset)
@@ -818,11 +739,14 @@ void main(int argc, const char* argv[])
     DrawGameBackground();
     DrawGameBackground(); 
  
-    create_start_screen();
+    zx_border(INK_BLACK);
+    zx_cls(BRIGHT | INK_BLACK | PAPER_WHITE);
 
-    #ifndef NO_GFX
-
+    // Init ESP.
+    NetComInit();
+    gameState = STATE_CALL_NOP;
     
+    #ifndef NO_GFX
     layer2_draw_text(0, 0, " >>> UDP TEST PROGRAM v1.0 <<<", 0x70, &shadow_screen); 
      // Clear botton area.
     layer2_fill_rect( 0, (uint8_t)(192 - 16), 256, 16, 0x00, &shadow_screen); 

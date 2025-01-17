@@ -68,6 +68,17 @@ $4000 $7fff code ($6164) (or ULA screen?)          => bank 5
 $8000 $bfff data($929f), stack ($c000), (free ram) => bank 2
 $c000 $ffff ????	                               => bank 0
 
+# Features used
+
+Below is a list of some of the features used in the program:
+
+- Users two libraries for easy access to graphics: zxnext_Layer2 and zxnext_sprite
+- Uses the tilemap layer for implementing texts. The font bimtpa data is copied from ROM to the area accessible by the tilemap.
+- A IM2 interrupt handler in C which updates an own frame counter.
+- Uses ESP8266 via UART
+- Uses UDP communication (via ESP) with the server.
+- Implementes a very simple UDP server in Python.
+
 # Lessons learned
 This is my first Spectrum or Spectrum Next program ever, so obiously there has been *really a lot* to learn.
 Here are the list of new things I have learned as I remember:
