@@ -9,14 +9,8 @@
 //#define AT_ECHO_ON  // Set echo on.THIS TIMEOUTS FOR SOME REASON!
 
 #define CLOUD_SPRITE_Y 40
-
 #define UDP_LOCAL_PORT "333"
-
-
 #define UART_TIMEOUT_MS 1000*5
-
-//#define SERVER_IP_ADDRESS_2 "192.168.100.133"
-//#define SERVER_PORT_2 "8000"
 
 #define RESET_WIFI  // Reset the WIFI module before starting the connection.
 
@@ -48,5 +42,6 @@ void FlipBorderColor(bool reset);
 int16_t GetUsedStack(void);
 void prog_failed(char* sourceFile, int32_t lineNum, uint8_t err);
 bool CheckMemoryGuards(void);
+void DrawStatusTextAndPageFlip(char* text);
 
 

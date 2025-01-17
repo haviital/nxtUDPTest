@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include "defines.h"
 
+// The game object implemented as a HW sprite.
 typedef struct GameObject_ 
 {
     uint8_t x; // X coordinate in pixels

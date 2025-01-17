@@ -6,6 +6,7 @@
 #include "defines.h"
 #include "GameObject.h"
 
+// Move the game object.
 void GobUpdate(GameObject* gob)
 {
     uint8_t orgX = gob->x;
@@ -32,6 +33,7 @@ void GobUpdate(GameObject* gob)
     }
 }
 
+// Setup drawing of the game object.
 void GobDraw(GameObject* gob)
 {
      // Update sprite position.

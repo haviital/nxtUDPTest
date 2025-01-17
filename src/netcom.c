@@ -8,11 +8,9 @@
 #include "netcom.h"
 #include "uart2.h"
 
-void DrawStatusTextAndPageFlip(char* text);
-
+// Init the connection to the server.
 void NetComInit(void)
 {
-    //printf("NetComInit()..\n"); //!!HV
     DrawStatusTextAndPageFlip("Init");
     uart_flush_rx2();
 
@@ -37,22 +35,12 @@ void NetComInit(void)
     //     PROG_FAILED;
     #endif
 
-    // Connect to wifi AP.
-    // Note: commented out as wifi AP connect should be done outside this program.
-    // sprintf(atcmd, "AT+CWJAP=\"%s\",\"%s\"\r\n", g_wifiSsid, g_wifiPassword);
-    // uart_tx2(atcmd);
-    // if(uart_read_expected2("OK") != 0)
-    //     PROG_FAILED;
-
-    DrawStatusTextAndPageFlip("Connected to Wifi");
-
     // Enable single connection mode
-    //AT+CIPMUX=0
+    DrawStatusTextAndPageFlip("Create Server connection");
     uart_tx2("AT+CIPMUX=0\r\n");
     if(uart_read_expected2("OK") != 0)
         PROG_FAILED;
    
-    DrawStatusTextAndPageFlip("Create Server connection");
     // Start UDP connection.
     // 2 means UDP(?)
     // 0 means wifi passthrough
@@ -65,10 +53,9 @@ void NetComInit(void)
         PROG_FAILED;
 
     DrawStatusTextAndPageFlip("");
-
-    //printf("..NetComInit()\n"); //!!HV
  }
 
+// Receive the packet from the server.
 uint8_t ReceiveMessage(uint8_t msgId, uint16_t* receivedPacketCount)
 {
     if(uart_available_rx2()) 
@@ -138,13 +125,12 @@ uint8_t ReceiveMessage(uint8_t msgId, uint16_t* receivedPacketCount)
             default:
                 PROG_FAILED;
         }
-
-        //z80_delay_ms(1*8);   // 8x for 28MHz
     }
 
     return 0;
 }
 
+// Send the packet to the server.
 uint8_t SendMessage(uint8_t msgId)
 {
     // *** Send the packet to the server via UART & UDP.
@@ -195,8 +181,6 @@ uint8_t SendMessage(uint8_t msgId)
 
     totalSendPacketCount++;
     sendPacketCountPerSecond++;
-
-    //int32_t delta = totalSendPacketCount - totalReceivedPacketCount; 
-
+    
     return 0;
 }

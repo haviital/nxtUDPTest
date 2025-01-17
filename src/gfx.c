@@ -1,3 +1,5 @@
+// The graphics data
+
 #include "gfx.h"
 
 //16x16
