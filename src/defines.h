@@ -1,7 +1,7 @@
 #define SCREEN_X 256
 #define SCREEN_Y 192
 
-//#define NO_GFX // Do not draw UI gfx. It allows to see debug prints.
+#define NO_GFX // Do not draw UI gfx. It allows to see debug prints.
 //#define UART_PRINT_TO_SCREEN2 
 //#define UART_SPECIAL_DEBUG_PRINT_ENABLED 1
 #define UART_SPECIAL_DEBUG_PRINT_ENABLED 0

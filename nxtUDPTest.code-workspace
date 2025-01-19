@@ -54,7 +54,8 @@
             "uart2.h": "c",
             "string.h": "c",
             "gameobject.h": "c",
-            "netcom.h": "c"
+            "netcom.h": "c",
+            "mycredentials.h": "c"
         }
     }
 }

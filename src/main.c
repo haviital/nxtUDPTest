@@ -21,7 +21,7 @@
 
 #include <im2.h>           // im2 macros and functions
 
-#ifdef ZXNEXT_EMULATOR_MODE_INCLUDES
+#ifdef ZXNEXT_EMULATOR_MODE_INCLUDES_1
 // For server ip address and port, and packet token
 #include "..\..\mycredentials.h"
 #endif
@@ -615,7 +615,7 @@ void main(int argc, const char* argv[])
     // file: "..\..\mycredentials.h". For example:
     //    #define UDP_SERVER_PORT "4444"
     //    #define UDP_SERVER_ADDRESS "123.456.789.123" 
-    #ifdef ZXNEXT_EMULATOR_MODE_INCLUDES
+    #ifdef ZXNEXT_EMULATOR_MODE_INCLUDES_1
     // Copy the default values.
     strcpy(serverAddress, UDP_SERVER_ADDRESS);
     strcpy(serverPort, UDP_SERVER_PORT);
@@ -624,33 +624,37 @@ void main(int argc, const char* argv[])
     // Read the parameters if any.
 
     // Show help if not the correct number of parameters.
+    printf("argc=%d\n", argc);
     //CSPECT_BREAK();
-	if(strlen(serverAddress) == 0 && argc!=2) 
+	if(strlen(serverAddress) == 0)
     {
-        printf("This is a UDP client-server test program.");
-        printf("For more info: https\:\/\/github.com\/haviital\/nxtUDPTest");
-        printf("Usage: NxnUdpTest <server ip> <server port>\n");
-        printf("- <server ip> is an IP address of the server in PC.\n");
-        printf("- <server port> is an IP port of the server in PC.\n\n");
-        printf("Example: NxnUdpTest 123.456.789.123 4444\n");
-        for(;;);
-    }
+        if(argc!=2) 
+        {
+            printf("Usage:\n");
+            printf("NxtUdpTest <srv ip> <srv port>\n");
+            printf("- <srv ip> Server IP address\n");
+            printf("- <srv port> Server IP port\n\n");
+            printf("Example:\n");
+            printf("NxtUdpTest 123.45.6.7 4444\n");
+            for(;;);
+        }
 
-    // Server ip address
-    if( strlen(argv[1]) >= 16 )
-    {
-        printf("Error: Invalid server ip address.");
-        for(;;);
-    }
-    strcpy(serverAddress, argv[1]);
+        // Server ip address
+        if( strlen(argv[1]) >= 16 )
+        {
+            printf("Error: Invalid server ip address.");
+            for(;;);
+        }
+        strcpy(serverAddress, argv[1]);
 
-    // server ip port.
-    if( strlen(argv[2]) >= 8 )
-    {
-        printf("Error: Invalid port number.");
-        for(;;);
+        // server ip port.
+        if( strlen(argv[2]) >= 8 )
+        {
+            printf("Error: Invalid port number.");
+            for(;;);
+        }
+        strcpy(serverPort, argv[2]);
     }
-    strcpy(serverPort, argv[2]);
 
     // Initialize
 
