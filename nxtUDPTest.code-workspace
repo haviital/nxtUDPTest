@@ -19,15 +19,15 @@
             "cspect": {
                 "port": 11000
             },
-            "startAutomatically": true,
+            "startAutomatically": false,
             "history": {
                 "reverseDebugInstructionCount": 10000,
-                "codeCoverageEnabled": true
+                "codeCoverageEnabled": false
             },
             "z88dkv2": [{
-                "path": "build/test.lis",
+                "path": "build/NxtUdpTest.lis",
                 "srcDirs": [""],
-                "mapFile": "build/test_cspect.map",
+                "mapFile": "build/NxtUdpTest_cspect.map",
                 "excludeFiles": [  ]
             }],
             "commandsAfterLaunch": [
@@ -40,7 +40,7 @@
             },
             "rootFolder": "${workspaceFolder}",
             //"topOfStack": "REGISTER_SP",
-            "load": "build/test.nex",
+            "load": "build/NxtUdpTest.nex",
             "smallValuesMaximum": 513,
             "tmpDir": ".tmp"
        }],

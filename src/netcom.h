@@ -21,7 +21,6 @@ typedef struct NopResponse_
 typedef struct TestLoopBackRequest_ 
 {
     uint8_t cmd;  // The command must be the first itrem in all packets. Always MSG_ID_TESTLOOPBACK.
-    uint8_t token[4]; // The token is used for the extra security. It makes sure the client and server know each other.
     uint8_t loopPacketCount; // The number of packets the server sends back.
     uint8_t packetSize;  // The size of the payload data
     uint8_t packetData[MSG_TESTLOOPBACK_RANDOM_DATA_SIZE];  // The payload data (i.e. the actual game data).
@@ -31,7 +30,6 @@ typedef struct TestLoopBackRequest_
 typedef struct TestLoopBackResponse_ 
 {
     uint8_t cmd;  // The command must be the first itrem in all packets. Always MSG_ID_TESTLOOPBACK.
-    uint8_t token[4]; // The token is used for the extra security. It makes sure the client and server know each other.
     uint8_t packetSize;  // The size of the payload data
     uint8_t packetData[MSG_TESTLOOPBACK_RANDOM_DATA_SIZE];  // The payload data (i.e. the actual game data).
 } TestLoopBackResponse;

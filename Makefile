@@ -1,5 +1,5 @@
 # This is the name of your final .nex file without the .nex extension
-EXEC_OUTPUT=build/NextUdpTest
+EXEC_OUTPUT=build/NxtUdpTest
 
 # List all your source files here
 SOURCES = main.c GameObject.c gfx.c netcom.c uart2.c TextTileMap.c

@@ -21,6 +21,8 @@
 #define PROG_FAILED prog_failed(__FILE__, __LINE__, 0)
 #define PROG_FAILED1(err) prog_failed(__FILE__, __LINE__, err)
 
+// Add a programmatic breakpoint for the CSpect emulator. Note that CSpect should be started with the 
+// "-brk" parameter to enable the breakpoint feature.
 #define CSPECT_BREAK() \
    __asm\
    defb 0xfd, 0x00\
@@ -37,11 +39,9 @@ extern uint8_t numClonedPackets;
 extern uint8_t frameCount8Bit;
 extern char serverAddress[16];  // aaa.bbb.ccc.ddd
 extern char serverPort[8];  // 1234567
-extern char packetToken[5];  // 1234
 void FlipBorderColor(bool reset);
 int16_t GetUsedStack(void);
 void prog_failed(char* sourceFile, int32_t lineNum, uint8_t err);
-bool CheckMemoryGuards(void);
 void DrawStatusTextAndPageFlip(char* text);
 
 

@@ -70,14 +70,18 @@ $c000 $ffff ????	                               => bank 0
 
 # Features used
 
-Below is a list of some of the features used in the program:
+*Note: As this is my first Spectrum program ever there might some pecularities or lurking errors in the code.*
 
-- Users two libraries for easy access to graphics: zxnext_Layer2 and zxnext_sprite
-- Uses the tilemap layer for implementing texts. The font bimtpa data is copied from ROM to the area accessible by the tilemap.
+Below is a list of some of the features used in the program. I hope you find it useful in your own C program.
+
+- Uses two libraries for easy access to graphics: zxnext_Layer2 and zxnext_sprite
+- Uses the tilemap layer for implementing texts. The font bitmap data is copied from ROM to the area accessible by the tilemap.
 - A IM2 interrupt handler in C which updates an own frame counter.
 - Uses ESP8266 via UART
 - Uses UDP communication (via ESP) with the server.
+- Calculates the current stack usage in the program (GetUsedStack()).
 - Implementes a very simple UDP server in Python.
+- Adding a programmatic breakpoint in the C-code for CSpect emulator (CSPECT_BREAK_IF())
 
 # Lessons learned
 This is my first Spectrum or Spectrum Next program ever, so obiously there has been *really a lot* to learn.

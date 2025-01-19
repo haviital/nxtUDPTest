@@ -106,8 +106,6 @@ uint8_t ReceiveMessage(uint8_t msgId, uint16_t* receivedPacketCount)
                             MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE);
                         PROG_FAILED;
                     }
-                    if(strcmp(serverCommandsTestLoopBack.token, packetToken))
-                        PROG_FAILED;
 
                     // Verify the test data.
                     for(uint8_t i=0; i<MSG_TESTLOOPBACK_RANDOM_DATA_SIZE; i++)
@@ -155,7 +153,6 @@ uint8_t SendMessage(uint8_t msgId)
                 .loopPacketCount = numClonedPackets,  // Count of faked "clients"
                 .packetSize = MSG_TESTLOOPBACK_RANDOM_DATA_SIZE,  // Random data size.                  
             };
-            strcpy(serverCommandsTestLoopBack.token, packetToken);
 
             // Init the test data for verification when it comes back
             for(uint8_t i=0; i<MSG_TESTLOOPBACK_RANDOM_DATA_SIZE; i++)

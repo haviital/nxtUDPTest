@@ -29,9 +29,14 @@ def get_ip():
 
 ##############################
 #
-def receive_udp_packet(sock, testLoopBackGuidBytes):
+def receive_udp_packet(sock, testLoopBackGuidBytes, clientIp):
     recvData, address = sock.recvfrom(4096)
-    print(f"Received {len(recvData)} bytes from {address}")
+    if(address!=clientIp):
+        print(f"Not authorized client ip tries to connect: {address}")
+        cmd = b'\xff'  # error
+        return cmd
+
+    print(f"Received {len(recvData)} bytes from ")
     recvDataList = list(recvData)
     # print(f"bytes array: {recvDataList}")
 
@@ -40,28 +45,20 @@ def receive_udp_packet(sock, testLoopBackGuidBytes):
     # This is the C struct the client sends:
     # {
     #     uint8_t cmd;
-    #     uint8_t testGuid[16];
     #     uint8_t loopPacketCount;
     #     uint8_t packetSize;
     #     uint8_t packetData[MSG_TESTLOOPBACK_RANDOM_DATA_SIZE];
     # } 
 
     cmd = recvData[0:1]
-    clientGuidBytes = recvData[1:17]  # [17] is excluded     
-    loopPacketCount = recvData[17:18]
-    packetSize = recvData[18:19]
-    packetData = recvData[19:]
+    loopPacketCount = recvData[1:2]
+    packetSize = recvData[2:3]
+    packetData = recvData[3:]
 
-    # Validate the client packet.
-    #print(list(testLoopBackGuidBytes))
-    #print(list(clientGuidBytes))
-    if(clientGuidBytes != testLoopBackGuidBytes):
-        print("Invalid client guid or corrupted packet")
-        cmd = b'\xff'
-    len_ = len(packetData)
+    #len_ = len(packetData)
     #print(f"cmd={cmd}, loopPacketCount={loopPacketCount}, packetSize={packetSize}, data size={len_}, address={address}")
 
-    return cmd, clientGuidBytes, loopPacketCount, packetSize, packetData, address
+    return cmd, loopPacketCount, packetSize, packetData, address
 
 ##############################
 #
@@ -89,14 +86,14 @@ def send_udp_packets( sock, address, cmd, packetSize, packetData, loopPacketCoun
 
 ##############################
 #
-def udp_server(host, port):
+def udp_server(host, port, clientIp):
     
     # Create a UDP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     server_address = (host, port)
     sock.bind(server_address)
 
-    print(f"UDP server listening")
+    print(f"UDP server listening. Accepts connections from: {clientIp}.")
 
     # The test guid for security check. 
     guid_str = 'b679c980-0a2f-4c71-a0cf-fe9dcfef3a17'
@@ -107,8 +104,8 @@ def udp_server(host, port):
 
         # Receive a data packet.
         cmd, clientGuidBytes, loopPacketCount, packetSize, packetData, address = receive_udp_packet(
-            sock, testLoopBackGuidBytes )
-        if cmd == b'\xff':
+            sock, testLoopBackGuidBytes, clientIp )
+        if cmd != b'\x12':  # MSG_ID_TESTLOOPBACK = 18
             exit
 
         # Send data packets
@@ -122,16 +119,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Simple UDP server.' )
     parser.add_argument(
-            '-b','--bind', action='store', dest='bind',
-            default='0.0.0.0', help="bind address" )
-    parser.add_argument(
-            '-p', '--port', action='store', dest='port',
-            default=4444, help="listening port" )
+            '-c','--clientip', action='store', dest='clientip',
+            help="The address of the client" )
     args = parser.parse_args()
 
+    serverPort = 4444
     ips = get_ip()
-    for s in sorted( ips ):
-        print( f"#  {s}:{args.port}" )
+    for serverIp in sorted( ips ):
+        print( f"Server: {serverIp}:{serverPort}" )
 
     # Start the UDP server
-    udp_server(args.bind, args.port)
+    udp_server(serverIp, serverPort, args.clientip)

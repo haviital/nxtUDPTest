@@ -2,35 +2,25 @@
 8185.4 FD E5        push iy
 8187.4 D9           exx
 8188.4 E5           push hl
-8189.4 ED 73 1A D2  ld (0D21Ah),sp
+8189.4 ED 73 79 D0  ld (0D079h),sp
 818D.4 31 58 FF     ld sp,0FF58h
-8190.4 21 7E CC     ld hl,0CC7Eh
+8190.4 21 8E CB     ld hl,0CB8Eh
 8193.4 34           inc (hl)
 8194.4 34           inc (hl)
-8195.4 AF           xor a
-8196.4 21 16 CF     ld hl,0CF16h
-8199.4 77           ld (hl),a
-819A.4 23           inc hl
-819B.4 77           ld (hl),a
-819C.4 AF           xor a
-819D.4 21 18 CF     ld hl,0CF18h
-81A0.4 77           ld (hl),a
-81A1.4 23           inc hl
-81A2.4 77           ld (hl),a
 
-; Note: The address 0A304h is in a different bank.
-81A3.4 CD 04 A3     call 0A304h
+; Note: The address 0A1ABh is in a different bank.
+8195.4 CD AB A1     call 0A1ABh
 
-81A6.4 E5           push hl
-81A7.4 C1           pop bc
-81A8.4 ED 7B 1A D2  ld sp,(0D21Ah)
-81AC.4 D9           exx
-81AD.4 E1           pop hl
-81AE.4 D9           exx
-81AF.4 FD E1        pop iy
-81B1.4 ED 56        im 1
-81B3.4 FB           ei
-81B4.4 C9           ret
+8198.4 E5           push hl
+8199.4 C1           pop bc
+819A.4 ED 7B 79 D0  ld sp,(0D079h)
+819E.4 D9           exx
+819F.4 E1           pop hl
+81A0.4 D9           exx
+81A1.4 FD E1        pop iy
+81A3.4 ED 56        im 1
+81A5.4 FB           ei
+81A6.4 C9           ret
 
-D21A.0 00 00 FF...  DEFB 00 00 FF FF FF FF FF FF ; ASCII: ????????
+D079.0 00 00 FF...  DEFB 00 00 FF FF FF FF FF FF ; ASCII: ????????
 FF58.1 FF FF FF...  DEFB FF FF FF FF FF FF FF FF ; ASCII: ????????

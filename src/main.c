@@ -136,10 +136,8 @@ uint8_t tilemap_foreground[32] = {            // 0xE3 = 277
 static layer2_screen_t shadow_screen = {SHADOW_SCREEN};
 static GameObject incomingPacketGobs[INCOMING_PACKET_GOB_COUNT];
 static GameObject outgoingPacketGobs[OUTGOING_PACKET_GOB_COUNT];
-static uint8_t guardArr1[4];
 char serverAddress[16];  // aaa.bbb.ccc.ddd
 char serverPort[8];  // 1234567
-char packetToken[5];  // 1234
 uint8_t gameState = STATE_NONE;
 uint16_t engineFrameCount16t = 0;
 uint16_t totalSendPacketCount = 0;
@@ -376,7 +374,7 @@ static void DrawGameBackground(void)
     // Draw top part with white (cloud)
     layer2_fill_rect(0, 0,  256, CLOUD_SPRITE_Y, 0xff, &shadow_screen);
 
-    //Fill the lower screen area with black.
+    // Fill the lower screen area with black.
     layer2_fill_rect(0, CLOUD_SPRITE_Y, 256, (int)(194-CLOUD_SPRITE_Y), 123/*l.blue*/, &shadow_screen);
 
     // Draw the cloud edge.
@@ -391,21 +389,7 @@ static void DrawGameBackground(void)
     layer2_flip_main_shadow_screen();
 }
 
-static void create_start_screen(void)
-{
-}
-
-void FlipBorderColor(bool reset)
-{
-    reset;
-/*
-    static uint8_t color = 0;
-    if(reset) color=0;
-    zx_border(color);
-    color++;
-*/    
-}
-
+// Launch a new packet animation, incoming or outgoing.
 void StartNewPacket(bool isIncoming)
 {
     if(isIncoming)
@@ -462,8 +446,6 @@ void DrawStatusText(char* text)
     return;
     #endif
 
-    uint8_t len = strlen(text);
-    //uint8_t startPosX = 128 - (len/2);
     layer2_fill_rect(1, 3*8, 255, 8, 0xff, &shadow_screen); // Clear field.
     layer2_draw_text(3, 0/*startPosX*/, text, 0xc, &shadow_screen);
 }
@@ -478,20 +460,18 @@ void DrawStatusTextAndPageFlip(char* text)
 
     DrawStatusText(text);
 
-    //UpdateGameObjects();
     PageFlip();  
 
     DrawStatusText(text);
 }
 
 
+// Updates all moving game objects on the screen.
 static void UpdateGameObjects(void)
 {
     #ifdef NO_GFX
     return;
     #endif
-
-    if(!CheckMemoryGuards()) PROG_FAILED;
 
     for(int i=0; i<INCOMING_PACKET_GOB_COUNT; i++)
     {
@@ -528,8 +508,6 @@ static void UpdateGameObjects(void)
         GobDraw(gob);
     }
 
-    if(!CheckMemoryGuards()) PROG_FAILED;
-
     for(int i=0; i<OUTGOING_PACKET_GOB_COUNT; i++)
     {
         // Calculate next position of sprite.
@@ -562,8 +540,6 @@ static void UpdateGameObjects(void)
             //gob->isHidden = true;
         }
 
-        if(!CheckMemoryGuards()) PROG_FAILED;
-
         // Draw gob.
         GobDraw(gob);
     }
@@ -571,51 +547,12 @@ static void UpdateGameObjects(void)
 
 void UpdateAndDrawAll(void)      
 {
-    static uint16_t test1 = 0; //!!HV
-    static uint16_t test2 = 0; //!!HV
-
     // *** Update game objects
     UpdateGameObjects();
-
-    zx_border(INK_CYAN);
-
-    bool isRasterNumNegative1 = false;
-    uint16_t rasterLineNum1 = 
-        (( (uint8_t)ZXN_READ_REG(0x001E) & 0x1) << 8)  | (uint8_t)ZXN_READ_REG(0x001F);
-    test1 = rasterLineNum1; //!!HV
-    const uint8_t vblankStart = 192;
-    if(rasterLineNum1 >= vblankStart)
-    {
-        rasterLineNum1 = 320 - rasterLineNum1;
-        isRasterNumNegative1 = true;
-    }
 
     // *** Receive data from server.
     uint16_t receivedPacketCount = 0;
     uint8_t err =  ReceiveMessage(MSG_ID_TESTLOOPBACK, &receivedPacketCount);
-    
-    zx_border(INK_BLACK); 
-
-    bool isRasterNumNegative2 = false;
-    uint16_t rasterBottomScreenLinesCount2 = 0;
-    uint16_t rasterLineNum2 = 
-        (( (uint8_t)ZXN_READ_REG(0x001E) & 0x1) << 8)  | (uint8_t)ZXN_READ_REG(0x001F);
-    test2 = rasterLineNum2; //!!HV
-    if(rasterLineNum2 > vblankStart)
-    {
-        rasterLineNum2 = 320 - rasterLineNum2;
-        isRasterNumNegative2 = true;
-    }
-    // Check if duration more than a frame.
-    uint32_t recvRasterLineDiff = (rasterLineNum2 - rasterLineNum1);
-    if(isRasterNumNegative1 && isRasterNumNegative2)
-        recvRasterLineDiff = (rasterLineNum1 - rasterLineNum2);
-    else if(isRasterNumNegative1)
-        recvRasterLineDiff = (rasterLineNum2 + rasterLineNum1);
-    else if( isRasterNumNegative2 )
-        recvRasterLineDiff = 320;  // Takes more than one frame. Use the max.
-    recvRasterLineDur += recvRasterLineDiff;
-    recvRasterLineFrames += receivedPacketCount;
 
     //CSPECT_BREAK_IF(recvRasterLineDiff>100);
 
@@ -629,28 +566,9 @@ void UpdateAndDrawAll(void)
     // Only send every 8th frame
     if((frames16t & 0x7) == 0)
     {
-        zx_border(INK_BLUE);
-        uint8_t rasterLineNumMsb =  ZXN_READ_REG(0x001E /* Active Video Line MSB Register */);
-        uint8_t rasterLineNumLsb =  ZXN_READ_REG(0x001F /* Active Video Line LSB Register */);
-        uint16_t rasterLineNumBefore = (rasterLineNumMsb << 8) | rasterLineNumLsb;
-
-        err =  SendMessage(MSG_ID_TESTLOOPBACK);
-
-        zx_border(INK_BLACK);
-
-        
-        {
-            rasterLineNumMsb =  ZXN_READ_REG(0x001E /* Active Video Line MSB Register */);
-            rasterLineNumLsb =  ZXN_READ_REG(0x001F /* Active Video Line LSB Register */);
-            uint16_t rasterLineNumAfter = (rasterLineNumMsb << 8) | rasterLineNumLsb;
-            sendRasterLineDur += rasterLineNumAfter - rasterLineNumBefore;
-            sendRasterLineFrames++;
-        }
-       
+        err =  SendMessage(MSG_ID_TESTLOOPBACK);       
         StartNewPacket(false);
     }
-
-
 }
 
 void PageFlip(void)
@@ -662,99 +580,110 @@ void PageFlip(void)
         layer2_flip_main_shadow_screen();
 }
 
+// Calculates the current stack usage.
 int16_t GetUsedStack(void)
 {
     uint8_t stackEnd = 0;
     return(0xFF58 - (uint16_t)&stackEnd);
 }
 
-bool CheckMemoryGuards(void)
+void prog_failed(char* sourceFile, int32_t lineNum, uint8_t err)
 {
-    return(
-        guardArr1[0]==0xfe && guardArr1[1]==0xfe && guardArr1[2]==0xfe && guardArr1[3]==0xfe
-    );
+    // Enable ULA screen.
+    ZXN_NEXTREG(/*REG_ULA_CONTROL*/0x68, 0x00);  // Enable ULA screen. 
+
+    //Disable the tilemap
+    ZXN_NEXTREG(0x6b, /*0b10001000*/ 0x08); 
+
+    // Set ULA the topmost layer
+    set_sprite_layers_system(true, false, LAYER_PRIORITIES_U_S_L, false);
+
+    zx_border(2);  // Set red border first!
+
+    uint16_t stackUsage = GetUsedStack();
+    char text[128];
+    sprintf(text, "FAILED (err:%u) in file: %s (%lu)\n", err, sourceFile, lineNum);
+    printf(text);
+    printf("Stack usage after error: 0x%X bytes\n", stackUsage);
+    for(;;);
 }
 
 void main(int argc, const char* argv[])
 {
+    // Use some default values when testing under the emulator. To use your own you need to define 
+    // ZXNEXT_EMULATOR_MODE_INCLUDES in your environment variables and the defines in the
+    // file: "..\..\mycredentials.h". For example:
+    //    #define UDP_SERVER_PORT "4444"
+    //    #define UDP_SERVER_ADDRESS "123.456.789.123" 
     #ifdef ZXNEXT_EMULATOR_MODE_INCLUDES
     // Copy the default values.
     strcpy(serverAddress, UDP_SERVER_ADDRESS);
     strcpy(serverPort, UDP_SERVER_PORT);
-    strcpy(packetToken, PACKET_TOKEN);
     #endif
 
     // Read the parameters if any.
-	if(argc!=3) 
+
+    // Show help if not the correct number of parameters.
+    //CSPECT_BREAK();
+	if(strlen(serverAddress) == 0 && argc!=2) 
     {
         printf("This is a UDP client-server test program.");
         printf("For more info: https\:\/\/github.com\/haviital\/nxtUDPTest");
-        printf("Usage: ZxnUdpTest <token> <server ip> <server port>\n");
-        printf("- <token> is a user given four character string that is added in each sent or received packet.\n");
-        printf("          Use the same token in the Next device and the server in PC.\n");
+        printf("Usage: NxnUdpTest <server ip> <server port>\n");
         printf("- <server ip> is an IP address of the server in PC.\n");
         printf("- <server port> is an IP port of the server in PC.\n\n");
-        printf("Example: ZxnUdpTest 1234 123.456.789.123 4444\n");
-        exit(1);
+        printf("Example: NxnUdpTest 123.456.789.123 4444\n");
+        for(;;);
     }
 
-    // Token
-    if( strlen(argv[1]) != 4 )
-    {
-        printf("Error: Invalid token. Use exactly four characters (e.g. 1234)\n");
-        exit(1);
-    }
-    strcpy(packetToken, argv[1]);
-	
     // Server ip address
-    if( strlen(argv[2]) >= 16 )
+    if( strlen(argv[1]) >= 16 )
     {
         printf("Error: Invalid server ip address.");
-        exit(1);
+        for(;;);
     }
-    strcpy(serverAddress, argv[2]);
+    strcpy(serverAddress, argv[1]);
 
     // server ip port.
-    if( strlen(argv[3]) >= 8 )
+    if( strlen(argv[2]) >= 8 )
     {
         printf("Error: Invalid port number.");
-        exit(1);
+        for(;;);
     }
-    strcpy(serverPort, argv[3]);
+    strcpy(serverPort, argv[2]);
 
-    //
-    guardArr1[0] = 0xfe;
-    guardArr1[1] = 0xfe;
-    guardArr1[2] = 0xfe;
-    guardArr1[3] = 0xfe;
+    // Initialize
 
     init_hardware();
     init_tilemap();
     init_isr();
 
     create_sprites();
-        
     set_sprite_layers_system(true, false, LAYER_PRIORITIES_S_U_L, false);
 
     DrawGameBackground();
-    DrawGameBackground(); 
+    DrawGameBackground(); // The second time for double buffering.
  
     zx_border(INK_BLACK);
     zx_cls(BRIGHT | INK_BLACK | PAPER_WHITE);
 
-    // Init ESP.
-    NetComInit();
+    NetComInit(); // Init ESP.
+    
     gameState = STATE_CALL_NOP;
     
+    // Draw the title and the bottom status area.
+
     #ifndef NO_GFX
-    layer2_draw_text(0, 0, " >>> UDP TEST PROGRAM v1.0 <<<", 0x70, &shadow_screen); 
-     // Clear botton area.
+
+    const char* titleText = " >>> UDP TEST PROGRAM v1.0 <<<";
+    layer2_draw_text(0, 0, titleText, 0x70, &shadow_screen); 
+     // Clear bottom area.
     layer2_fill_rect( 0, (uint8_t)(192 - 16), 256, 16, 0x00, &shadow_screen); 
     // Swap the double buffered screen.
     layer2_flip_main_shadow_screen();    
     // Draw title for the other buffer. 
-    layer2_draw_text(0, 0, " >>> UDP TEST PROGRAM v1.0 <<<", 0x70, &shadow_screen); 
-     // Clear botton area for the other buffer.
+    layer2_draw_text(0, 0, titleText, 0x70, &shadow_screen); 
+     // Clear bottom area for the other buffer.
     layer2_fill_rect( 0, (uint8_t)(192 - 16), 256, 16, 0x00, &shadow_screen); 
  
     // Clear the text tilemap
@@ -763,63 +692,42 @@ void main(int argc, const char* argv[])
     #endif
 
     // Loop until the end of the game.
-    uint8_t test=0;
-    bool keyReleased_C = true;
-    uint8_t debugTextColor = 1;
-    uint16_t skippedFramesCount = 0;
     while (true)
     {   
-        // Read a a key.
+        // Read a key to change the number of packets the server sends.
         if (in_key_pressed(IN_KEY_SCANCODE_1))
             numClonedPackets = 1;
         else if (in_key_pressed(IN_KEY_SCANCODE_2))
             numClonedPackets = 3;
         else if (in_key_pressed(IN_KEY_SCANCODE_3))
             numClonedPackets = 7;      
-        else if (in_key_pressed(IN_KEY_SCANCODE_c | 0x8000) && keyReleased_C)
-        {
-            --debugTextColor;      
-            keyReleased_C = false;
-        }
-        else if (in_key_pressed(IN_KEY_SCANCODE_c) && keyReleased_C)
-        {
-            ++debugTextColor;      
-            keyReleased_C = false;
-        }
-        else 
-        {    
-            // The C key has been released 
-            keyReleased_C = true;
-        }
 
+        // Draw the animation and handle the UDP packet receiving and sending.
         UpdateAndDrawAll();
  
-        // Calc frame and packet counts.
+        // Calc frame and packet counts in one second periods.
         if( frames16t == oneSecondPassedAtFrame)
         {
             sendPacketsPerSecondInterval =  sendPacketCountPerSecond;
             recvPacketsPerSecondInterval =  recvPacketCountPerSecond;
         }
 
+        // Reset one second counters.
         if(frames16t >= oneSecondPassedAtFrame)
         {
-
             sendPacketCountPerSecond = 0;
             recvPacketCountPerSecond = 0;            
-
             totalSeconds++;
 
-            // Set next update = 
+            // Set next update.
             oneSecondPassedAtFrame = frames16t + VIDEO_SCREEN_REFRESH_RATE;
         }
 
+       // Print client and server send speed and send count.
+        #ifndef NO_GFX
         char text[128];
         text[0]=0;
         char tmpStr[64];
- 
-        // Print client and server send speed and send count.
-        #ifndef NO_GFX
-
         if((frames16t & 0x1f) == 0x1f ) // Every 32nd frame
         {
             // **** SEND INFO
@@ -845,22 +753,6 @@ void main(int argc, const char* argv[])
             strcpy(text, tmpStr);
             strcat(text, " B/s");
             TextTileMapPutsPos(26, 60, text);
-
-            // uint32_t sendRasterTimePerFrame = 0;
-            // if(sendRasterLineFrames>0) 
-            //     sendRasterTimePerFrame = sendRasterLineDur / sendRasterLineFrames;
-            // sendRasterLineFrames = 0;
-            // sendRasterLineDur = 0;
-            // ltoa(sendRasterTimePerFrame, tmpStr, 10);
-            // strcpy(text, tmpStr);
-            // strcat(text, " rst");
-            // TextTileMapPutsPos(26, 20, text);           
-
-            // Print frames.
-            // ltoa(frames16t, tmpStr, 10);
-            // strcpy(text, tmpStr);
-            // strcat(text, " frames");
-            // TextTileMapPutsPos(26, 31, text);
         }
 
         if(((frames16t + 16) & 0x1f) == 0x1f ) // Every 32nd frame, starting from frame 16.
@@ -889,82 +781,18 @@ void main(int argc, const char* argv[])
             strcat(text, " B/s");
             TextTileMapPutsPos(27, 60, text);
 
-            // uint32_t recvRasterTimePerFrame = 0;
-            // if(recvRasterLineFrames)
-            //     recvRasterTimePerFrame = recvRasterLineDur / recvRasterLineFrames;
-            // recvRasterLineFrames = 0;
-            // recvRasterLineDur = 0;
-            // ltoa(recvRasterTimePerFrame, tmpStr, 10);
-            // strcpy(text, tmpStr);
-            // strcat(text, " rst");
-            // TextTileMapPutsPos(27, 20, text);           
-
-            // Print cloned count.
+           // Print cloned count.
             strcpy(text, "x");
             itoa(numClonedPackets, tmpStr, 10);
             strcat(text, tmpStr);
             //layer2_draw_text(23, 27, text, 0x03, &shadow_screen);
             TextTileMapPutsPos(27, 75, text);
-
-            // screencolour = 6; // magenta
-            // uint16_t skippedFrames = frames16t - engineFrameCount16t;
-            // strcpy(text, "skip:");
-            // ltoa(skippedFrames, tmpStr, 10);
-            // strcat(text, tmpStr);
-            // TextTileMapPutsPos(10, 20, tmpStr);  
         }
-
         #endif
 
         engineFrameCount16t++;
 
+        // Flip the layer 2 page.
         PageFlip();   
-
-        // !!TEST Print the scanline number right after the page flip.
-        // screencolour = 4; // green
-        // screencolour = 6; // magenta
-        // uint16_t rasterLineNum = 
-        //     (( (uint8_t)ZXN_READ_REG(0x001E) & 0x1) << 8)  | (uint8_t)ZXN_READ_REG(0x001F);
-        // ltoa(rasterLineNum, tmpStr, 10);
-        // TextTileMapPutsPos(10, 10, tmpStr);  
-
     }
-
-    // Trig a soft reset. The Next hardware registers and I/O ports will be reset by NextZXOS after a soft reset.
-    //ZXN_NEXTREG(REG_RESET, RR_SOFT_RESET);
-    //return 0;
-}
-
-void prog_failed(char* sourceFile, int32_t lineNum, uint8_t err)
-{
-    // Enable ULA screen.
-    //
-    // bit 7    = 1 to disable ULA output
-    // bit 6    = 0 to select the ULA colour for blending in SLU modes 6 & 7
-    //          = 1 to select the ULA/tilemap mix for blending in SLU modes 6 & 7
-    // bits 5-1 = Reserved must be 0
-    // bit 0    = 1 to enable stencil mode when both the ULA and tilemap are enabled
-    //             (if either are transparent the result is transparent otherwise the
-    //              result is a logical AND of both colours)
-    ZXN_NEXTREG(/*REG_ULA_CONTROL*/0x68, 0x00);  // Enable ULA screen. 
-
-    //Disable tilemap
-    ZXN_NEXTREG(0x6b, /*0b10001000*/ 0x08); 
-
-    // Set ULA the topmost layer
-    set_sprite_layers_system(true, false, LAYER_PRIORITIES_U_S_L, false);
-
-   zx_border(2);  // Set red border first!
-
-   // Make L2 screen transparent.
-   //layer2_fill_rect(0, 0,  256, 192, 0xE3, &shadow_screen); // make a hole
-   //layer2_flip_main_shadow_screen();
-
-   //printf("uart_failed()\n");
-   uint16_t stackUsage = GetUsedStack();
-   char text[128];
-   sprintf(text, "FAILED (err:%u) in file: %s (%lu)\n", err, sourceFile, lineNum);
-   printf(text);
-   printf("Stack usage after error: 0x%X bytes\n", stackUsage);
-   for(;;);
 }
