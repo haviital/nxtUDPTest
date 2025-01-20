@@ -41,7 +41,7 @@ EXEC=$(EXEC_OUTPUT).nex
 %.o: %.asm
 	$(AS) $(ASFLAGS) -o $@ $<
 
-all : dirs $(EXEC)
+all : dirs $(EXEC) post-build
 
 $(EXEC) : $(OBJS)
 	$(CC) $(LDFLAGS) -startup=$(CRT) $(OBJS) -o $(EXEC_OUTPUT) -create-app
@@ -51,8 +51,11 @@ $(EXEC) : $(OBJS)
 install: all
 	# mv $(EXEC) bin
 
+post-build:
+	C:\bin\Z88CSPECT.EXE $(EXEC_OUTPUT).map $(EXEC_OUTPUT)_cspect.map
+
 clean:
-	rm -rf $(OUT_DIR) /tmp/tmpXX*
+	rm -f $(EXEC_OUTPUT).*
 	rm -f src/*.lis src/*.sym src/*.o
 
 dirs: $(OUT_DIR)

@@ -5,6 +5,7 @@
 #include <input.h>
 #include <intrinsic.h>
 #include <z80.h>
+#include "TextTileMap.h"
 
 #ifdef PRINT_TO_BUFFER2
 char testBuffer2[2048];
@@ -115,13 +116,21 @@ bool uart_available_rx_wait_once(uint16_t waitTimeMs)
 void uart_pretty_print(char c)
 {
    if(c>31)
-      printf("%c", c);
+      TextTileMapPutc(c);
    else if(c==10)
-      printf("n", c);
+      TextTileMapPuts("n");
    else if(c==13)
-      printf("r", c);
+      TextTileMapPuts("r");
    else
-      printf("<%u>", c);
+   {
+      char text[6];
+      char tmpStr[4];
+      strcpy(text, "<");
+      itoa((int8_t)c, tmpStr, 10);
+      strcat(text, tmpStr); 
+      strcat(text, ">");
+      TextTileMapPuts(text);
+   }
 }
 
 // Wait until there is one byte from uart.
@@ -220,6 +229,13 @@ uint8_t uart_read_until_expected(char* expected)
    const uint16_t expectedLen = strlen(expected);
    const uint16_t timeout_ms = 10;
  
+   #ifdef PRINT_UART_RX_DEBUG_TEXT
+   //TextTileMapPuts("###TX EXPECTED:");
+   //TextTileMapPuts(expected);
+   //TextTileMapPutc(' ');
+   //TextTileMapClearToEol()
+   #endif
+
    // First read out all the garbage before the expected string.
    char ch=0;
    uint8_t err = 0;
@@ -230,6 +246,10 @@ uint8_t uart_read_until_expected(char* expected)
          break; // Timeout error.
       else if( err != 0) 
          PROG_FAILED1(err);
+         
+      #ifdef PRINT_UART_RX_DEBUG_TEXT
+      uart_pretty_print(ch);
+      #endif
 
       // Check if the char is expected.
       if(ch==expected[expectedStringPos])
@@ -293,7 +313,7 @@ uint8_t uart_read_expected2(char* expected)
 }
 
 // Read chars from UART until on of the expected strings is found. 
-uint8_t uart_read_expected_many2(char* expected1, char* expected2)
+uint8_t uart_read_expected_many2(char* expected1, char* expected2, bool printOutput)
 {
    // printf("uart_read_expected_many2: #1=%s(%u) or #2=%s(%u)\n", 
    //    expected1, strlen(expected1), expected2, strlen(expected2));
@@ -311,6 +331,8 @@ uint8_t uart_read_expected_many2(char* expected1, char* expected2)
       *bufferReadToPtr = uart_rx_char2();
       readLen++;
 
+      if(printOutput)
+         uart_pretty_print(*bufferReadToPtr);
       // if(*bufferReadToPtr>31)
       //     printf("%c", *bufferReadToPtr);
       // else
@@ -435,9 +457,7 @@ uint8_t uart_receive_data_packet_if_any(char* receivedData, uint8_t size)
    // Convert the string to a number.
    uint8_t dataLen = atoi(receivedFromUart);
    if(dataLen!=size)
-   {
       return 3;
-   }
 
    // Read actual data.
    for(uint8_t i=0; i<dataLen; i++)

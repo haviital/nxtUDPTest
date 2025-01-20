@@ -2,11 +2,13 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include <arch/zxn.h>
 #include <z80.h>
 
 #include "defines.h"
 #include "netcom.h"
 #include "uart2.h"
+#include "TextTileMap.h"
 
 // Init the connection to the server.
 void NetComInit(void)
@@ -49,8 +51,22 @@ void NetComInit(void)
     sprintf(atcmd, "AT+CIPSTART=\"UDP\",\"%s\",%s,%s,0\r\n", 
         serverAddress, serverPort, UDP_LOCAL_PORT );
     uart_tx2(atcmd);
-    if(uart_read_expected_many2("OK", "ERROR") != 0)
+    if(uart_read_expected_many2("OK", "ERROR", false) != 0)
         PROG_FAILED;
+
+    #ifdef PRINT_DEBUG_TEXT
+    // Connected server IP.
+    TextTileMapGoto(10,0);
+    sprintf(atcmd, "AT+CIPSTATUS\r\n");
+    uart_tx2(atcmd);
+    uart_read_expected_many2("OK", "ERROR", true);
+
+    // Client IP.
+    sprintf(atcmd, "AT+CIFSR\r\n");
+    uart_tx2(atcmd);
+    uart_read_expected_many2("OK", "ERROR", true);
+    
+    #endif
 
     DrawStatusTextAndPageFlip("");
  }
@@ -89,6 +105,8 @@ uint8_t ReceiveMessage(uint8_t msgId, uint16_t* receivedPacketCount)
             {
                 // The request struct.
 
+                //CSPECT_BREAK()
+
                 // Receive a packet from the server
                 TestLoopBackResponse serverCommandsTestLoopBack;
                 uint8_t err = uart_receive_data_packet_if_any((char*)&serverCommandsTestLoopBack, 
@@ -98,6 +116,10 @@ uint8_t ReceiveMessage(uint8_t msgId, uint16_t* receivedPacketCount)
                 // If the packet was found, check the result.
                 if(!err)
                 {
+
+                    //CSPECT_BREAK();
+                    zx_border(INK_GREEN);
+
                     if( serverCommandsTestLoopBack.cmd != MSG_ID_TESTLOOPBACK )
                         PROG_FAILED;
                     if( serverCommandsTestLoopBack.packetSize != MSG_TESTLOOPBACK_RANDOM_DATA_SIZE )
@@ -110,12 +132,17 @@ uint8_t ReceiveMessage(uint8_t msgId, uint16_t* receivedPacketCount)
                     // Verify the test data.
                     for(uint8_t i=0; i<MSG_TESTLOOPBACK_RANDOM_DATA_SIZE; i++)
                         if(serverCommandsTestLoopBack.packetData[i] != i)
+                        {
+                            //CSPECT_BREAK();
                             PROG_FAILED1(i);
+                        }
 
                     // All good. Increase the received packet count.
+                    //CSPECT_BREAK();                    
                     (*receivedPacketCount)++;
                     totalReceivedPacketCount++;
                     recvPacketCountPerSecond++;
+                    zx_border(INK_YELLOW);
                 }
             }
             break;

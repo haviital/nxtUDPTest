@@ -64,7 +64,7 @@ void TextTileMapPutc(uint16_t c)
 }
 
 // Draw the string at.
-void TextTileMapPutsPos(uint16_t row, uint16_t col, const char* s)
+void TextTileMapPutsPos(uint16_t row, uint16_t col, char* s)
 {
 	screenx = col;
 	screeny = row;
@@ -72,7 +72,7 @@ void TextTileMapPutsPos(uint16_t row, uint16_t col, const char* s)
 }
 
 // Draw the string.
-void TextTileMapPuts(const char* s)
+void TextTileMapPuts(char* s)
 {
 	for (;;)
 	{

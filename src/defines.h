@@ -1,7 +1,11 @@
 #define SCREEN_X 256
 #define SCREEN_Y 192
 
-#define NO_GFX // Do not draw UI gfx. It allows to see debug prints.
+// Degub printing.
+#define PRINT_DEBUG_TEXT
+#define PRINT_UART_RX_DEBUG_TEXT
+
+//#define NO_GFX // Do not draw UI gfx. It allows to see debug prints.
 //#define UART_PRINT_TO_SCREEN2 
 //#define UART_SPECIAL_DEBUG_PRINT_ENABLED 1
 #define UART_SPECIAL_DEBUG_PRINT_ENABLED 0
@@ -23,6 +27,10 @@
 
 // Add a programmatic breakpoint for the CSpect emulator. Note that CSpect should be started with the 
 // "-brk" parameter to enable the breakpoint feature.
+//
+// NOTE: If you get this kind of info warning, it is a bug in the compiler. That is still ok:
+//       - "info 218: z80instructionSize() failed to parse line node, assuming 999 bytes
+//          'defb   0xfd, 0x00 '"
 #define CSPECT_BREAK() \
    __asm\
    defb 0xfd, 0x00\

@@ -31,12 +31,12 @@ def get_ip():
 #
 def receive_udp_packet(sock, testLoopBackGuidBytes, clientIp):
     recvData, address = sock.recvfrom(4096)
-    if(address!=clientIp):
-        print(f"Not authorized client ip tries to connect: {address}")
+    if(address[0]!=clientIp):
+        print(f"*** ERROR! Not authorized client ip tries to connect: {address}")
         cmd = b'\xff'  # error
-        return cmd
+        return cmd, cmd, cmd, cmd, cmd
 
-    print(f"Received {len(recvData)} bytes from ")
+    print(f"Received {len(recvData)} bytes from {address}")
     recvDataList = list(recvData)
     # print(f"bytes array: {recvDataList}")
 
@@ -103,7 +103,7 @@ def udp_server(host, port, clientIp):
     while True:
 
         # Receive a data packet.
-        cmd, clientGuidBytes, loopPacketCount, packetSize, packetData, address = receive_udp_packet(
+        cmd, loopPacketCount, packetSize, packetData, address = receive_udp_packet(
             sock, testLoopBackGuidBytes, clientIp )
         if cmd != b'\x12':  # MSG_ID_TESTLOOPBACK = 18
             exit
