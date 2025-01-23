@@ -17,7 +17,7 @@ void GobUpdate(GameObject* gob)
     // Going down
     if(gob->sy > 0)
     {
-        if(gob->y <  SCREEN_Y - gob->sy)
+        if(gob->y <  SCREEN_H - gob->sy)
             gob->y += gob->sy;   
     //    else
     //        gob->y = 0;
@@ -29,7 +29,7 @@ void GobUpdate(GameObject* gob)
         if(gob->y > -gob->sy )
             gob->y += gob->sy;   
         //else
-        //    gob->y = (uint8_t)(SCREEN_Y-1); 
+        //    gob->y = (uint8_t)(SCREEN_H-1); 
     }
 }
 

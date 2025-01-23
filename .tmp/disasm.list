@@ -2,9 +2,9 @@
 8185.4 FD E5        push iy
 8187.4 D9           exx
 8188.4 E5           push hl
-8189.4 ED 73 33 D3  ld (0D333h),sp
+8189.4 ED 73 51 D2  ld (0D251h),sp
 818D.4 31 58 FF     ld sp,0FF58h
-8190.4 21 47 CE     ld hl,0CE47h
+8190.4 21 65 CD     ld hl,0CD65h
 8193.4 34           inc (hl)
 8194.4 34           inc (hl)
 
@@ -13,7 +13,7 @@
 
 8198.4 E5           push hl
 8199.4 C1           pop bc
-819A.4 ED 7B 33 D3  ld sp,(0D333h)
+819A.4 ED 7B 51 D2  ld sp,(0D251h)
 819E.4 D9           exx
 819F.4 E1           pop hl
 81A0.4 D9           exx
@@ -22,5 +22,5 @@
 81A5.4 FB           ei
 81A6.4 C9           ret
 
-D333.0 00 00 FF...  DEFB 00 00 FF FF FF FF FF FF ; ASCII: ????????
+D251.0 00 00 FF...  DEFB 00 00 FF FF FF FF FF FF ; ASCII: ????????
 FF58.1 FF FF FF...  DEFB FF FF FF FF FF FF FF FF ; ASCII: ????????

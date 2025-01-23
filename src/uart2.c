@@ -48,10 +48,7 @@ char* replaceCrAndLn2(char* str, char* newStr)
 // Send string to UART.
 void uart_tx2(unsigned char *s)
 {
-   #if UART_SPECIAL_DEBUG_PRINT_ENABLED
-   printf("uart_tx2: %s\n", s);
-   #endif
-   uint16_t timeout_ms = UART_TIMEOUT_MS;
+    uint16_t timeout_ms = UART_TIMEOUT_MS;
    while (*s)
    {
       // Wait until the previuos data has been sent.
@@ -151,9 +148,6 @@ uint8_t uart_rx_char_timeout(unsigned char* ch, uint16_t timeout_ms)
       user_break(); 
    }
    unsigned char byte2 = IO_143B;
-   #ifdef UART_PRINT_TO_SCREEN2
-   uart_pretty_print(byte2);
-   #endif
    *ch = byte2;
    return 0;
 }
@@ -183,26 +177,8 @@ void uart_flush_rx2(void)
    {
       while (IO_133B & 0x01)
       {
-        c = IO_143B;
-        #ifdef UART_PRINT_TO_SCREEN2
-        if(c>31)
-           printf("%c", c);
-        else
-           printf("<%u>", c);
-        #elif defined(PRINT_TO_BUFFER2)
-         char* text_[16];
-         if(c>31)
-         {
-            sprintf(text_, "%c", c);
-            strcat(testBuffer2, text_);
-         }
-         else
-         {
-            sprintf(text_, "<%u>", c);
-            strcat(testBuffer2, text_);
-         }
-         #endif
-
+         c = IO_143B;
+   
          if (!(timeout_ms--)) 
          {
             printf("Timeout error! ");
@@ -424,10 +400,7 @@ uint8_t uart_send_data_packet2(unsigned char *data, uint8_t len)
    strcpy(atcmd, "AT+CIPSEND=");
    itoa(len, &(atcmd[11]), 10);
    strcat(atcmd, "\r\n");
-   #if UART_SPECIAL_DEBUG_PRINT_ENABLED
-   printf("call: %s\n", atcmd);
-   #endif
-   uart_tx2(atcmd);
+    uart_tx2(atcmd);
    //*buffer = 0;
 
    // Read response from UART. 
@@ -455,9 +428,11 @@ uint8_t uart_receive_data_packet_if_any(char* receivedData, uint8_t size)
    // - 12345: the sender ip port
    // - 123456: Actual data
 
-   uart_debug_print = 1;  //!!HV
+   #ifdef PRINT_UART_RX_DEBUG_TEXT
+   uart_debug_print = 1; 
    screencolour = 18;// pink //16 grey // 12 cyan
    TextTileMapGoto(15, 0);
+   #endif
 
    // Read UART until the string was found or there is timeout.
    uint8_t err = uart_read_until_expected("+IPD,"); 
@@ -471,13 +446,12 @@ uint8_t uart_receive_data_packet_if_any(char* receivedData, uint8_t size)
    #define MAX_STR_SIZE 27//19
    char receivedFromUart[MAX_STR_SIZE]; // includes the ending null. 
    err = uart_read_until_char(':', receivedFromUart, MAX_STR_SIZE);
-   
-   //for(;;); //!!HV
-   
    if(err)
       return 20 + err;
 
-   uart_debug_print = 0;  //!!HV
+   #ifdef PRINT_UART_RX_DEBUG_TEXT
+   uart_debug_print = 0;  
+   #endif
 
    //#ifdef PRINT_UART_RX_DEBUG_TEXT
    //uart_pretty_print(ch);

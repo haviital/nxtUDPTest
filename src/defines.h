@@ -1,5 +1,5 @@
-#define SCREEN_X 256
-#define SCREEN_Y 192
+#define SCREEN_W 256
+#define SCREEN_H 192
 
 // Degub printing.
 //#define DEBUG_TEXT_ENABLED
@@ -8,10 +8,6 @@
    #define PRINT_UART_RX_DEBUG_TEXT
 #endif
 
-//#define UART_PRINT_TO_SCREEN2 
-//#define UART_SPECIAL_DEBUG_PRINT_ENABLED 1
-#define UART_SPECIAL_DEBUG_PRINT_ENABLED 0
-// // #define PRINT_TO_BUFFER2  // Either this or UART_PRINT_TO_SCREEN2
 //#define AT_ECHO_ON  // Set echo on.THIS TIMEOUTS FOR SOME REASON!
 
 #define CLOUD_SPRITE_Y 40
