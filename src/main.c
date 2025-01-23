@@ -278,7 +278,6 @@ static void create_sprites(void)
 {
     // *** Static sprites
 
-    #ifndef NO_GFX
     // Cloud sprite 0
     set_sprite_slot(CLOUD_SPRITE_PATTERN_SLOT);
     set_sprite_pattern(cloudSpr);
@@ -325,9 +324,7 @@ static void create_sprites(void)
     set_sprite_slot(107);
     set_sprite_attributes_ext(SPECNEXT_SPRITE_1_PATTERN_SLOT, 28+16, (int)(154+10), 0, 0, true);
 
-    #endif  // NO_GFX
-
-    // *** Define moving sprites (used by GameObjects)
+     // *** Define moving sprites (used by GameObjects)
 
     // Map sprite bitmap(pattern) to the certain pattern slot. 
     set_sprite_slot(PACKET_SPRITE_PATTERN_SLOT);
@@ -367,10 +364,6 @@ static void create_sprites(void)
 
 static void DrawGameBackground(void)
 {
-    #ifdef NO_GFX
-    return;
-    #endif
-
     // Draw top part with white (cloud)
     layer2_fill_rect(0, 0,  256, CLOUD_SPRITE_Y, 0xff, &shadow_screen);
 
@@ -440,24 +433,12 @@ void StartNewPacket(bool isIncoming)
 
 void DrawStatusText(char* text)
 {
-    #ifdef NO_GFX
-    printf(text);
-    printf("\n");
-    return;
-    #endif
-
     layer2_fill_rect(1, 3*8, 255, 8, 0xff, &shadow_screen); // Clear field.
     layer2_draw_text(3, 0/*startPosX*/, text, 0xc, &shadow_screen);
 }
 
 void DrawStatusTextAndPageFlip(char* text)
 {
-    #ifdef NO_GFX
-    printf(text);
-    printf("\n");
-    return;
-    #endif
-
     DrawStatusText(text);
 
     PageFlip();  
@@ -469,9 +450,7 @@ void DrawStatusTextAndPageFlip(char* text)
 // Updates all moving game objects on the screen.
 static void UpdateGameObjects(void)
 {
-    #ifdef NO_GFX
-    return;
-    #endif
+   
 
     for(int i=0; i<INCOMING_PACKET_GOB_COUNT; i++)
     {
@@ -677,8 +656,6 @@ void main(int argc, const char* argv[])
     
     // Draw the title and the bottom status area.
 
-    #ifndef NO_GFX
-
     const char* titleText = " >>> UDP TEST PROGRAM v1.0 <<<";
     layer2_draw_text(0, 0, titleText, 0x70, &shadow_screen); 
      // Clear bottom area.
@@ -693,11 +670,14 @@ void main(int argc, const char* argv[])
     // Clear the text tilemap
     TextTileMapClear();
 
-    #endif
-
     // Loop until the end of the game.
     while (true)
     {   
+        #ifdef DEBUG_TEXT_ENABLED
+        screencolour = 12;
+        TextTileMapGoto(10,0);
+        #endif
+
         // Read a key to change the number of packets the server sends.
         if (in_key_pressed(IN_KEY_SCANCODE_1))
             numClonedPackets = 1;
@@ -728,8 +708,7 @@ void main(int argc, const char* argv[])
         }
 
        // Print client and server send speed and send count.
-        #ifndef NO_GFX
-        char text[128];
+       char text[128];
         text[0]=0;
         char tmpStr[64];
         if((frames16t & 0x1f) == 0x1f ) // Every 32nd frame
@@ -792,7 +771,6 @@ void main(int argc, const char* argv[])
             //layer2_draw_text(23, 27, text, 0x03, &shadow_screen);
             TextTileMapPutsPos(27, 75, text);
         }
-        #endif
 
         engineFrameCount16t++;
 

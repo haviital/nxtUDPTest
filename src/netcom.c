@@ -51,21 +51,32 @@ void NetComInit(void)
     sprintf(atcmd, "AT+CIPSTART=\"UDP\",\"%s\",%s,%s,0\r\n", 
         serverAddress, serverPort, UDP_LOCAL_PORT );
     uart_tx2(atcmd);
-    if(uart_read_expected_many2("OK", "ERROR", false) != 0)
+    if(uart_read_expected_many2("OK", "ERROR") != 0)
+        PROG_FAILED;
+
+    // Include sender address in each received packet.
+    // AT+CIPDINFO=1
+    sprintf(atcmd, "AT+CIPDINFO=1\r\n");
+    uart_tx2(atcmd);
+    if(uart_read_expected_many2("OK", "ERROR") != 0)
         PROG_FAILED;
 
     #ifdef PRINT_DEBUG_TEXT
+    uart_debug_print = 1;
+
     // Connected server IP.
-    TextTileMapGoto(10,0);
+    screencolour = 12;
+    TextTileMapGoto(0,0);
     sprintf(atcmd, "AT+CIPSTATUS\r\n");
     uart_tx2(atcmd);
-    uart_read_expected_many2("OK", "ERROR", true);
+    uart_read_expected_many2("OK", "ERROR");
 
     // Client IP.
     sprintf(atcmd, "AT+CIFSR\r\n");
     uart_tx2(atcmd);
-    uart_read_expected_many2("OK", "ERROR", true);
+    uart_read_expected_many2("OK", "ERROR");
     
+    uart_debug_print = 0;
     #endif
 
     DrawStatusTextAndPageFlip("");
@@ -111,7 +122,7 @@ uint8_t ReceiveMessage(uint8_t msgId, uint16_t* receivedPacketCount)
                 TestLoopBackResponse serverCommandsTestLoopBack;
                 uint8_t err = uart_receive_data_packet_if_any((char*)&serverCommandsTestLoopBack, 
                     MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE);
-                if(err && err != 1) PROG_FAILED;  // Note: 1 is timeout. Not an error.
+                if(err && err != 1) PROG_FAILED1(err);  // Note: 1 is timeout. Not an error.
 
                 // If the packet was found, check the result.
                 if(!err)

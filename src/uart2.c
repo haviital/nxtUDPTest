@@ -11,6 +11,8 @@
 char testBuffer2[2048];
 #endif
 
+uint8_t uart_debug_print = 0;
+
 // Work buffer.
 static char buffer2[BUFFER_MAX_SIZE2];
 
@@ -230,10 +232,10 @@ uint8_t uart_read_until_expected(char* expected)
    const uint16_t timeout_ms = 10;
  
    #ifdef PRINT_UART_RX_DEBUG_TEXT
-   //TextTileMapPuts("###TX EXPECTED:");
-   //TextTileMapPuts(expected);
-   //TextTileMapPutc(' ');
-   //TextTileMapClearToEol()
+   TextTileMapPuts("###TX EXPECTED:");
+   TextTileMapPuts(expected);
+   TextTileMapPutc(' ');
+   TextTileMapClearToEol();
    #endif
 
    // First read out all the garbage before the expected string.
@@ -313,7 +315,7 @@ uint8_t uart_read_expected2(char* expected)
 }
 
 // Read chars from UART until on of the expected strings is found. 
-uint8_t uart_read_expected_many2(char* expected1, char* expected2, bool printOutput)
+uint8_t uart_read_expected_many2(char* expected1, char* expected2)
 {
    // printf("uart_read_expected_many2: #1=%s(%u) or #2=%s(%u)\n", 
    //    expected1, strlen(expected1), expected2, strlen(expected2));
@@ -331,7 +333,7 @@ uint8_t uart_read_expected_many2(char* expected1, char* expected2, bool printOut
       *bufferReadToPtr = uart_rx_char2();
       readLen++;
 
-      if(printOutput)
+      if(uart_debug_print)
          uart_pretty_print(*bufferReadToPtr);
       // if(*bufferReadToPtr>31)
       //     printf("%c", *bufferReadToPtr);
@@ -388,11 +390,15 @@ uint8_t uart_read_expected_many2(char* expected1, char* expected2, bool printOut
 // maxLen should contain the ending null.
 uint8_t uart_read_until_char(char untilChar, char* receivedData, uint8_t maxLen)
 {
+   if(uart_debug_print)
+      TextTileMapPuts("uart_read_until_char ");
    uint8_t i=0;
    while(i<maxLen-1)
    {
       // read byte from uart
       char byte = uart_rx_char2();
+      if(uart_debug_print)
+         uart_pretty_print(byte);
 
       if(byte==untilChar)
       {
@@ -441,24 +447,74 @@ uint8_t uart_send_data_packet2(unsigned char *data, uint8_t len)
 // Receive data from UDP via UART.
 uint8_t uart_receive_data_packet_if_any(char* receivedData, uint8_t size)
 {
+   // The received data has the following format:
+   // "+IPD,6,192.168.1.100,12345:123456"
+   // Where:
+   // - 6: the data lenght in bytes
+   // - 192.168.1.100: the sender ip address
+   // - 12345: the sender ip port
+   // - 123456: Actual data
+
+   uart_debug_print = 1;  //!!HV
+   screencolour = 18;// pink //16 grey // 12 cyan
+   TextTileMapGoto(15, 0);
+
    // Read UART until the string was found or there is timeout.
    uint8_t err = uart_read_until_expected("+IPD,"); 
    if(err)
       return err;  // Note: 1 is a timeout. Not an error.
 
-   // Read the packet from UART. 
+   // Read the packet details from UART. The format is: "6,192.168.1.100,12345:" 
    // Get the number of bytes as a string.
-   // Read until the colon. Get the number of bytes back (as a string).
-   char receivedFromUart[4]; // includes the ending null. 
-   err = uart_read_until_char(':', receivedFromUart, 4);
+   // Read until ':'. Get the amount of data bytes back (as a string).
+   //const uint8_t MAX_STR_SIZE = 19; //3+1+15+1+6+1;
+   #define MAX_STR_SIZE 27//19
+   char receivedFromUart[MAX_STR_SIZE]; // includes the ending null. 
+   err = uart_read_until_char(':', receivedFromUart, MAX_STR_SIZE);
+   
+   //for(;;); //!!HV
+   
    if(err)
       return 20 + err;
 
-   // Convert the string to a number.
-   uint8_t dataLen = atoi(receivedFromUart);
-   if(dataLen!=size)
-      return 3;
+   uart_debug_print = 0;  //!!HV
 
+   //#ifdef PRINT_UART_RX_DEBUG_TEXT
+   //uart_pretty_print(ch);
+   //#endif
+
+   // Check the minimum lenght.
+   uint16_t serverAddressLen = strlen(serverAddress);
+   uint16_t serverPortLen = strlen(serverPort);
+   uint16_t len = strlen(receivedFromUart);
+   if( len < 1 + 1 + serverAddressLen + 1 + serverPortLen + 1 )
+      PROG_FAILED;
+
+   // get data lenght.
+   char tmp[32];
+   char* posPtr = strchr(receivedFromUart, ',');
+   if(posPtr==NULL)  
+      PROG_FAILED;
+   len = posPtr-receivedFromUart;
+   strncpy(tmp, receivedFromUart,len);
+   tmp[len] = '\0';
+
+   // Convert the string to a number.
+   uint8_t dataLen = atoi(tmp);
+   if(dataLen!=size)
+      PROG_FAILED;
+
+   // Check ip address.
+   posPtr++; // ','
+   if( strncmp(posPtr, serverAddress, serverAddressLen ) != 0)
+      PROG_FAILED;
+   posPtr += serverAddressLen;
+
+   // Check the port.
+   posPtr++; // ','
+   if( strncmp(posPtr, serverPort, serverPortLen ) != 0)
+      PROG_FAILED;
+      
    // Read actual data.
    for(uint8_t i=0; i<dataLen; i++)
       receivedData[i] = uart_rx_char2();

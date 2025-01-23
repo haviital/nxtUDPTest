@@ -2,10 +2,12 @@
 #define SCREEN_Y 192
 
 // Degub printing.
-#define PRINT_DEBUG_TEXT
-#define PRINT_UART_RX_DEBUG_TEXT
+//#define DEBUG_TEXT_ENABLED
+#ifdef DEBUG_TEXT_ENABLED 
+   #define PRINT_DEBUG_TEXT
+   #define PRINT_UART_RX_DEBUG_TEXT
+#endif
 
-//#define NO_GFX // Do not draw UI gfx. It allows to see debug prints.
 //#define UART_PRINT_TO_SCREEN2 
 //#define UART_SPECIAL_DEBUG_PRINT_ENABLED 1
 #define UART_SPECIAL_DEBUG_PRINT_ENABLED 0
