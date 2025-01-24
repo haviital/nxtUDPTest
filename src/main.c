@@ -593,6 +593,7 @@ void main(int argc, const char* argv[])
     // file: "..\..\mycredentials.h". For example:
     //    #define UDP_SERVER_PORT "4444"
     //    #define UDP_SERVER_ADDRESS "123.456.789.123" 
+    strcpy(serverPort, "4444");  // Use the fixed port for now for simplicity.
     #ifdef ZXNEXT_EMULATOR_MODE_INCLUDES_1
     // Copy the default values.
     strcpy(serverAddress, UDP_SERVER_ADDRESS);
@@ -606,14 +607,13 @@ void main(int argc, const char* argv[])
     //CSPECT_BREAK();
 	if(strlen(serverAddress) == 0)
     {
-        if(argc!=2) 
+        if(argc!=1) 
         {
             printf("Usage:\n");
-            printf("NxtUdpTest <srv ip> <srv port>\n");
+            printf("NxtUdpTest <srv ip>\n");
             printf("- <srv ip> Server IP address\n");
-            printf("- <srv port> Server IP port\n\n");
             printf("Example:\n");
-            printf("NxtUdpTest 123.45.6.7 4444\n");
+            printf("NxtUdpTest 123.45.6.7\n");
             for(;;);
         }
 
@@ -624,14 +624,6 @@ void main(int argc, const char* argv[])
             for(;;);
         }
         strcpy(serverAddress, argv[1]);
-
-        // server ip port.
-        if( strlen(argv[2]) >= 8 )
-        {
-            printf("Error: Invalid port number.");
-            for(;;);
-        }
-        strcpy(serverPort, argv[2]);
     }
 
     // Initialize

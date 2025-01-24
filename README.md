@@ -1,8 +1,4 @@
-# (WIP! ) UDP test program
-
-# TODO
-- Print the ip address on screen
-- Explain how to get Next connected to wifi
+# The UDP test program
 
 ## A short explanation of what the program does
 
@@ -11,6 +7,28 @@ The program sends UDP packets to the UDP server (hosted in PC). The packet is a 
 The graphics in the program are partly informing about the real usage and partly only for the viewing pleasure. E.g. for receiving, the (blue) packet sprite animation *is launched* each time the real UDP packet is received (supposing there is a free sprite to do that). The animation duration has nothing to do with the UDP communication thought. The same is true with outgoing (to the server) data packets. 
 
 ## Usage
+
+0) Preconditions: 
+   - You need to have your Wifi connection set up. You can do this from the Next main menu: "more../tools/Wifi Setup". Look at the Spectrum Next manual if you need more information about using the Wifi sertup. 
+   - Also you need to copy the NxtUdpTest.nex to the Next SD card. Copy it under the folder "Home".
+
+1) First, figure out the ip address of your Spectrum Next. You can find in (at least) two ways:
+	- Either select from the Next main menu: "more../tools/Wifi Setup". You can see the address on the screen.
+	- Or just start NxtUdpTest.nex (in the folder Home) by the browser or in the Command Line prompt in Next. Do this before starting the UDP server in PC. You can see the IP address at the bottom of the screen, beside the Next device image. 
+
+2) Make sure the NxtUdpTest.nex program is not running on Next. Now you can start the UDP server in PC.
+   - Install Python (I used Python 3.9) if not already installed.
+   - Start the server with the command:  python3.9 simple-udp-server.py -c 123.456.78.9
+      - The IP address after "-c" is the client IP address you found in phase (1).
+	  - Make a note about the server IP address on PC, which is shown on the simple-udp-server screen. You will need it next. 
+
+3) You can start the UDP client in Next. Open the Command Line, go to the "Home" folder in the SD card and type: 
+	  - NxtUdpTest 987.654.32.1
+	  - The IP address is the address of the *server* you noted in the phase (2)
+
+After the program has set up the UDP connection you should see the packets running forth and back between the server in PC and the client in Next :-)
+
+![The main screen](./mainScreen.png)
 
 There are 3 keys that affect to functionality:
 - "1": The program sends one packet and the server sends it back
@@ -29,6 +47,9 @@ The second row:
 - The bytes received per second (each packet has a 2 byte header and a 32 byte payload data).  
 - The number of packets the server sends back for each received packet (meaning how many pseudo clients there are in addition to my client)
 
+## Security
+
+You should have your normal secure firewall and security settings enabled in PC. Both the client (Next) and server (PC) are checking the IP address where the packet came from. If either end detects a packet that came from an unknown address it will fail the program immediately. 
 
 ## Visible memory map (64k address space)
 
