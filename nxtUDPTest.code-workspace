@@ -19,7 +19,7 @@
             "cspect": {
                 "port": 11000
             },
-            "startAutomatically": false,
+            "startAutomatically": true,
             "history": {
                 "reverseDebugInstructionCount": 10000,
                 "codeCoverageEnabled": false

@@ -1,14 +1,14 @@
 # (WIP! ) UDP test program
 
+# TODO
+- Print the ip address on screen
+- Explain how to get Next connected to wifi
+
 ## A short explanation of what the program does
 
-The program sends UDP packets to the UDP server (hosted in my PC). The packet is a special test packet which my UDP server understands and it sends the actual payload data back as many times as requested in the packet header data. This mimics the situation where there are several clients. The packets are send every 8th frame (about 6 times a second at 50 hz frame refresh). One UDP packet is received on every frame.
+The program sends UDP packets to the UDP server (hosted in PC). The packet is a special test packet which the UDP server understands and it sends the actual payload data back as many times as requested in the packet header data. This mimics the situation where there are several clients. The packets are send every 8th frame (about 6 times a second at 50 hz frame refresh). One UDP packet is received on every frame.
 
-The graphics in the program are partly informing about the real usage and partly only for the viewing pleasure. E.g. for receiving, the (blue) packet sprite animation *is lauched* each time the real UDP packet is received (supposing there is a free sprite to do that). The animation duration has nothing to do with the UDP communication thought. The same is true with outgoing (to the server) data packets. 
-
-So this program is not made to measure the peak performance of the UDP communication. It purpose is to find out if it would be technically possible to make a complex game over client-server UDP based, online multiplayer system. 
-
-Note: Unfortunately this is not something you can try, as it requires the special UDP server to exist. I plan to release the server codes also in public later.
+The graphics in the program are partly informing about the real usage and partly only for the viewing pleasure. E.g. for receiving, the (blue) packet sprite animation *is launched* each time the real UDP packet is received (supposing there is a free sprite to do that). The animation duration has nothing to do with the UDP communication thought. The same is true with outgoing (to the server) data packets. 
 
 ## Usage
 
@@ -30,43 +30,32 @@ The second row:
 - The number of packets the server sends back for each received packet (meaning how many pseudo clients there are in addition to my client)
 
 
-## TODO, NOT UP-TO_DATE! Visible memory map (64k address space)
+## Visible memory map (64k address space)
 
-$6164 CODE
-		- driver_terminal_input, driver_terminal_output, stdio
-		- $7853-$91FE *** program code ***
-		- $8328 GobDraw()
+$8184: CODE
+	- e.g. driver_terminal_input, driver_terminal_output, stdio
+	- my program code
 
-$929F - $9D55 (size=$0AB6 (dec:2742))
-	RODATA
-		- e.g. $9405 _cloudSpr
+$C06C-$CCE6: COMPILER RODATA
+	- e.g. $C2D5: _cloudSpr
 		
-$9E32 - $9F99
-	DATA
-	
-// $9F9D - $A493	
-$A79E - $ABE0
-	BSS
-	- __BSS_head = $A79E
-	- __BSS_END_head = $ABE0
-	- _incomingPacketGobs             = $A7A2
-	- _outgoingPacketGobs             = $A8B0
-	- _buffer2                        = $A8DE
-	- _buf_256                        = $AAA1
+$CDC3-$CE37: COMPILER DATA
+	- e.g. CDFB: _totalSendPacketCount
 
+$CE3B- $D251: COMPILER BSS (uninitialized data)
+	e.g.
+	- CE3B: _incomingPacketGobs 
+	- CEEF: _outgoingPacketGobs 
 
-$B000 
-
-
-$BE00 - $C000
-	STACK (size=$200)
-	- __register_sp                   = $C000
+$FD58-$FF58: STACK
+	- $FF58: TAR__register_sp
+	- stack size: $200
 
 ## Memory banks (16kb each)
-$0000 $3fff L2 buffer / rom                        => rom bank / layer 2
-$4000 $7fff code ($6164) (or ULA screen?)          => bank 5
-$8000 $bfff data($929f), stack ($c000), (free ram) => bank 2
-$c000 $ffff ????	                               => bank 0
+$0000-$3fff: L2 buffer / rom                        => rom bank / layer 2
+$4000-$7fff: ???          							=> bank 5
+$8000-$bfff: code, data, free ram 					=> bank 2
+$c000-$ffff: ????, stack                           	=> bank 0
 
 # Features used
 
@@ -103,4 +92,4 @@ In the learning process, the Specturm Next discord community has been a priceles
 
 The UDP test program v1 is ready but I plan to do more:
 - Add and check the sequence numbers so that it can be checked that packets are not lost. 
-- Measure the time (raster lines) the UDP comminication takes. This gives a hint how many cycles are left for the game. 
+- Optimize and measure the time (raster lines) the UDP comminication takes. This gives a hint how many cycles are left for the game. 

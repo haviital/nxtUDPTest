@@ -138,6 +138,7 @@ static GameObject incomingPacketGobs[INCOMING_PACKET_GOB_COUNT];
 static GameObject outgoingPacketGobs[OUTGOING_PACKET_GOB_COUNT];
 char serverAddress[16];  // aaa.bbb.ccc.ddd
 char serverPort[8];  // 1234567
+char localIpAddress[16];
 uint8_t gameState = STATE_NONE;
 uint16_t engineFrameCount16t = 0;
 uint16_t totalSendPacketCount = 0;
@@ -419,8 +420,6 @@ void StartNewPacket(bool isIncoming)
         // If a free packet was found,  
         if(i<OUTGOING_PACKET_GOB_COUNT)
         {
-            //printf("!!HV free outgoing packet found!\n");
-
             GameObject* gobp = &outgoingPacketGobs[i];
             gobp->isActive = true;
             gobp->x = OUTGOING_PACKET_X1;
@@ -670,11 +669,16 @@ void main(int argc, const char* argv[])
     // Clear the text tilemap
     TextTileMapClear();
 
+    // Print my ip address.
+    screencolour = TT_COLOR_DARK_YELLOW;
+    TextTileMapPutsPos(25, 21, localIpAddress);
+    TextTileMapPutsPos(25, 44, serverAddress);
+
     // Loop until the end of the game.
     while (true)
     {   
         #ifdef DEBUG_TEXT_ENABLED
-        screencolour = 12;
+        screencolour = TT_COLOR_CYAN;
         TextTileMapGoto(10,0);
         #endif
 
@@ -716,7 +720,7 @@ void main(int argc, const char* argv[])
             // **** SEND INFO
 
             // Packet count
-            screencolour = 12;  // cyan
+            screencolour = TT_COLOR_CYAN;
             strcpy(text, "Send: ");
             itoa(totalSendPacketCount, tmpStr, 10);
             strcat(text, tmpStr); 
@@ -743,7 +747,7 @@ void main(int argc, const char* argv[])
             // **** RECEIVE INFO
 
             // Packet count
-            screencolour = 8; // blue
+            screencolour = TT_COLOR_DARK_BLUE;
             strcpy(text, "Recv: ");
             itoa(totalReceivedPacketCount, tmpStr, 10);
             strcat(text, tmpStr);

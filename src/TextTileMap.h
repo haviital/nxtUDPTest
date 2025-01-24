@@ -17,6 +17,22 @@
 #define TEXTMODE_DEFAULT_COLOUR         0x04
 #define TEXTMODE_REVERSE_COLOUR         0x84
 
+#define TT_COLOR_RED 2
+#define TT_COLOR_DARK_RED 4
+#define TT_COLOR_DARK_YELLOW 6
+#define TT_COLOR_DARK_BLUE 8
+#define TT_COLOR_VIOLET 10
+#define TT_COLOR_CYAN 12
+#define TT_COLOR_LIGHT_GREY 14  // or light red?
+#define TT_COLOR_GREY 16
+#define TT_COLOR_PINK 18
+#define TT_COLOR_LIGHT_GREEN 20
+#define TT_COLOR_YELLOW 22
+#define TT_COLOR_LIGHT_BLUE 24
+#define TT_COLOR_MAGENTA 26  // "red"   
+#define TT_COLOR_LIGHT_CYAN 28  
+
+
 struct __tilemap
 {
     unsigned char tile;  // The tile index i.e. the "char code". 

@@ -45,6 +45,7 @@ extern uint8_t numClonedPackets;
 extern uint8_t frameCount8Bit;
 extern char serverAddress[16];  // aaa.bbb.ccc.ddd
 extern char serverPort[8];  // 1234567
+extern char localIpAddress[16];
 void FlipBorderColor(bool reset);
 int16_t GetUsedStack(void);
 void prog_failed(char* sourceFile, int32_t lineNum, uint8_t err);

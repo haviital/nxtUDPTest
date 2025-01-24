@@ -61,26 +61,43 @@ void NetComInit(void)
     if(uart_read_expected_many2("OK", "ERROR") != 0)
         PROG_FAILED;
 
-    #ifdef PRINT_DEBUG_TEXT
+    #ifdef PRINT_UART_RX_DEBUG_TEXT
     uart_debug_print = 1;
+    #endif
 
-    // Connected server IP.
-    screencolour = 12;
-    TextTileMapGoto(0,0);
-    sprintf(atcmd, "AT+CIPSTATUS\r\n");
-    uart_tx2(atcmd);
-    uart_read_expected_many2("OK", "ERROR");
-
-    // Client IP.
-    sprintf(atcmd, "AT+CIFSR\r\n");
-    uart_tx2(atcmd);
-    uart_read_expected_many2("OK", "ERROR");
-    
+    // Get my IP address.
+    uint8_t err = GetStationIp(/*OUT*/localIpAddress, 16 );
+    if(err)
+        PROG_FAILED1(err);
+    #ifdef PRINT_UART_RX_DEBUG_TEXT
     uart_debug_print = 0;
     #endif
 
     DrawStatusTextAndPageFlip("");
  }
+
+uint8_t GetStationIp(/*OUT*/char* textOut, uint8_t maxTextSizeWithNull )
+{
+    // Send a command to read my station ip.
+    // We should get this back ...'STAIP,"123.456.78.9"<crln>...OK'
+    uart_tx2("AT+CIFSR\r\n");
+
+    // Read UART until the string was found or there is timeout.
+    uint8_t err = uart_read_until_expected("STAIP,\""); 
+    if(err)
+        return err;  // Note: 1 is a timeout. Not an error.
+
+    // Read the IP adress. The format is '123.456.78.9"'. 
+    // Read until '"'. Get the the chars *before* it back, including '\0'.
+    err = uart_read_and_get_until_char('"', textOut, maxTextSizeWithNull);
+    if(err)
+      return 20 + err;
+
+    // Read the rest of the data.
+    uart_read_expected_many2("OK", "ERROR");
+
+    return 0;
+}
 
 // Receive the packet from the server.
 uint8_t ReceiveMessage(uint8_t msgId, uint16_t* receivedPacketCount)

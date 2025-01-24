@@ -135,8 +135,6 @@ void uart_pretty_print(char c)
 // Wait until there is one byte from uart.
 uint8_t uart_rx_char_timeout(unsigned char* ch, uint16_t timeout_ms)
 {
-   //printf(" uart_rx_char2 ");
-
    // Wait until there is a byte in rx.
    while (!(IO_133B & 0x01)) // Is there data in RX port?
    {
@@ -159,7 +157,7 @@ unsigned char uart_rx_char2(void)
    uint8_t err = uart_rx_char_timeout(&ch, UART_TIMEOUT_MS);
    if(err) 
    {
-      printf("timeout error (%lu ms)!\n", (uint16_t)UART_TIMEOUT_MS);
+      //printf("timeout error (%lu ms)!\n", (uint16_t)UART_TIMEOUT_MS);
       PROG_FAILED;
    }
    
@@ -170,7 +168,6 @@ unsigned char uart_rx_char2(void)
 void uart_flush_rx2(void)
 {
    // flush read buffer2
-   //printf("Flushing: \n");
    uint16_t timeout_ms = UART_TIMEOUT_MS;
    unsigned char c;
    while(1)
@@ -258,7 +255,6 @@ uint8_t uart_read_until_expected(char* expected)
 // Read chars from UART until the expected string is found. 
 uint8_t uart_read_expected2(char* expected)
 {
-   //printf("uart_read_expected2: %s", expected);
    buffer2[0] = 0; // clear// BUFFER_MAX_SIZE2];
    char* bufferReadToPtr = buffer2;
    char* stringStartPtr = buffer2;
@@ -270,11 +266,6 @@ uint8_t uart_read_expected2(char* expected)
       // read byte from uart
       *bufferReadToPtr = uart_rx_char2();
       readLen++;
-
-      // if(*bufferReadToPtr>31)
-      //     printf("%c", *bufferReadToPtr);
-      // else
-      //    printf("<%u>", *bufferReadToPtr);
 
       if(readLen>=strlen(expected))
       {
@@ -293,9 +284,6 @@ uint8_t uart_read_expected2(char* expected)
 // Read chars from UART until on of the expected strings is found. 
 uint8_t uart_read_expected_many2(char* expected1, char* expected2)
 {
-   // printf("uart_read_expected_many2: #1=%s(%u) or #2=%s(%u)\n", 
-   //    expected1, strlen(expected1), expected2, strlen(expected2));
-
    buffer2[0] = 0; // clear// BUFFER_MAX_SIZE2];
    char* bufferReadToPtr = buffer2;
    char* stringStartPtr1 = buffer2;
@@ -311,26 +299,10 @@ uint8_t uart_read_expected_many2(char* expected1, char* expected2)
 
       if(uart_debug_print)
          uart_pretty_print(*bufferReadToPtr);
-      // if(*bufferReadToPtr>31)
-      //     printf("%c", *bufferReadToPtr);
-      // else
-      //    printf("<%u>", *bufferReadToPtr);
-
-      //printf(" %u: ", readLen);
 
       //char text[128];
       if(readLen>=strlen(expected1))
       {
-         // TEST
-         // char* pastEndPtr=stringStartPtr1 + strlen(expected1);
-         // if(pastEndPtr>bufferReadToPtr+1)
-         //    pastEndPtr = bufferReadToPtr+1;
-         // uint8_t len = pastEndPtr - stringStartPtr1;
-         // memcpy(text, stringStartPtr1, len);
-         // text[len] = 0;
-         // replaceCrAndLn2(text, text);
-         // printf("#1(%s) ", text);
-
          if(strncmp(stringStartPtr1, expected1, strlen(expected1))==0)
             return 0;  // Found!
          stringStartPtr1++;
@@ -338,38 +310,32 @@ uint8_t uart_read_expected_many2(char* expected1, char* expected2)
 
       if(readLen>=strlen(expected2))
       {
-         // TEST
-         // char* pastEndPtr=stringStartPtr2 + strlen(expected2);
-         // if(pastEndPtr>bufferReadToPtr+1)
-         //    pastEndPtr = bufferReadToPtr+1;
-         // uint8_t len = pastEndPtr - stringStartPtr2;
-         // memcpy(text, stringStartPtr2, len);
-         // text[len] = 0;
-         // replaceCrAndLn2(text, text);
-         // printf("#2(%s) ", text);
-
          if(strncmp(stringStartPtr2, expected2, strlen(expected2))==0)
             return 0;  // Found!
          stringStartPtr2++;
       }
-
       bufferReadToPtr++;
-
-      //printf("\n");
-
    }  // response bytes comparison loop
 
    return 1; // Not found.   
 }
 
-// Read until the char is found and return the chars (not ending to \0) before that.
-// maxLen should contain the ending null.
-uint8_t uart_read_until_char(char untilChar, char* receivedData, uint8_t maxLen)
+// Read until the char is found and return the chars before that.
+// Returns a string parameter with an ending '\0'.
+// If the maxlen is exceeded, returns 1 (=not found).
+// The maxLen parameter should contain the ending null.
+uint8_t uart_read_and_get_until_char(char untilChar, char* receivedData, uint8_t maxLen)
 {
    if(uart_debug_print)
-      TextTileMapPuts("uart_read_until_char ");
+   {
+      //   TextTileMapPuts("uart_read_and_get_until_char ");
+      TextTileMapPuts(" READ_UNTIL>>");
+      TextTileMapPutc(untilChar);
+      TextTileMapPuts("<< ");
+   }
+
    uint8_t i=0;
-   while(i<maxLen-1)
+   while(i<maxLen)
    {
       // read byte from uart
       char byte = uart_rx_char2();
@@ -378,6 +344,7 @@ uint8_t uart_read_until_char(char untilChar, char* receivedData, uint8_t maxLen)
 
       if(byte==untilChar)
       {
+         if(uart_debug_print) TextTileMapPuts(" FOUND>>");
          receivedData[i] = 0;  // ending null
          return 0;  // Found the bookmark char.
       }
@@ -430,7 +397,7 @@ uint8_t uart_receive_data_packet_if_any(char* receivedData, uint8_t size)
 
    #ifdef PRINT_UART_RX_DEBUG_TEXT
    uart_debug_print = 1; 
-   screencolour = 18;// pink //16 grey // 12 cyan
+   screencolour = TT_COLOR_PINK;
    TextTileMapGoto(15, 0);
    #endif
 
@@ -445,7 +412,7 @@ uint8_t uart_receive_data_packet_if_any(char* receivedData, uint8_t size)
    //const uint8_t MAX_STR_SIZE = 19; //3+1+15+1+6+1;
    #define MAX_STR_SIZE 27//19
    char receivedFromUart[MAX_STR_SIZE]; // includes the ending null. 
-   err = uart_read_until_char(':', receivedFromUart, MAX_STR_SIZE);
+   err = uart_read_and_get_until_char(':', receivedFromUart, MAX_STR_SIZE);
    if(err)
       return 20 + err;
 
