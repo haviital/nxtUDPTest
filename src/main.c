@@ -665,6 +665,8 @@ void main(int argc, const char* argv[])
     screencolour = TT_COLOR_DARK_YELLOW;
     TextTileMapPutsPos(25, 21, localIpAddress);
     TextTileMapPutsPos(25, 44, serverAddress);
+    //TextTileMapPutsPos(25, 21, "123.456.78.9");  // For the screenshot
+    //TextTileMapPutsPos(25, 44, "987.654.32.1");  // For the screenshot
 
     // Loop until the end of the game.
     while (true)
