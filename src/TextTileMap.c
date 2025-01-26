@@ -63,6 +63,17 @@ void TextTileMapPutc(uint16_t c)
     }
 }
 
+// Draw the char.
+void TextTileMapPutColorOnlyPos(uint16_t row, uint16_t col)
+{
+    if (row >= TEXTTILEMAP_SCREENHEIGHT)
+            return;
+
+	screenx = col;
+	screeny = row;
+    tilemap[screeny*TEXTTILEMAP_SCREENWIDTH+screenx].flags = screencolour;
+}
+
 // Draw the string at.
 void TextTileMapPutsPos(uint16_t row, uint16_t col, char* s)
 {

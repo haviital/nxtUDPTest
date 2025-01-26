@@ -283,27 +283,18 @@ void InputIPAddress(char* outIPAddress)
     // Try to open an existing config file.
     #define maxIpAddressLen 15 
     uint8_t inputPos = 0;
-    uint8_t inputFieldNum = 0;  // 0-3
-    
-    // Draw dots.
-    uint8_t startScreenx = screenx;
-    for(int i=0;;i++)
-    {
-        screencolour = 208;  // Dark cyan bg, grey fg.
-        TextTileMapPuts("   ");
-        screencolour = TT_COLOR_GREY;
-        if(i==3) 
-            break;
-        TextTileMapPuts(".");
-    }
-    screencolour = 208;  // Dark cyan bg, grey fg.
-    screenx = startScreenx;  // Move back to start.
-    uint8_t test_mycolor = 0;
+    //uint8_t test_mycolor = 0;
+    bool readyToReadInput = false;
+    uint16_t startScreenx =  screenx;
     while(true/*&& inputPos <= maxIpAddressLen*/)
     {
-        in_wait_key();     
-        char key = in_inkey();
+        char key = 0;
 
+        if(readyToReadInput)
+        {
+            in_wait_key();     
+            key = in_inkey();
+        }
 #if 0
         if(key=='1') test_mycolor--;
         else if(key=='2') test_mycolor++;
@@ -320,42 +311,81 @@ void InputIPAddress(char* outIPAddress)
         {
             // Draw number char.
             // Add to the out array.
-            TextTileMapPutc(key);
             outIPAddress[inputPos++] = key;
             outIPAddress[inputPos] = '\0';
 
-            // Move to the start of the next field?
+            // If gone beyond the end,  stay in the last char in the last field.
+            if(inputPos > 14)     
+               inputPos--;
+
+            // If between fields, print dot and step forward.
             if((inputPos+1)%4 == 0)
-            {   
-                if(++inputFieldNum > 3)
-                {
-                    // Stay in the last char in the last field.
-                    inputFieldNum--;
-                    inputPos--;
-                    screenx--;
-                }
-                else
-                {
-                    // Goto the next input field.
-                    outIPAddress[inputPos++] = '.';      
-                    screenx++;       
-                }
-            }
+                outIPAddress[inputPos++] = '.';      
+        }
+        else if(key==12)  // del
+        {
+            if(inputPos!=0)
+            {
+                // Sep backwards.
+                inputPos--;
+
+                // If between fields, print dot and step backwards.
+                if((inputPos+1)%4 == 0)
+                    outIPAddress[inputPos--] = '.';    
+
+                // Set ending null.  
+                outIPAddress[inputPos] = '\0';
+           }
         }
         else
         {
-            char tmpstr[32];
-            itoa(key, tmpstr, 10);
-            TextTileMapPutc('<');
-            TextTileMapPuts(tmpstr);
-            TextTileMapPutc('>');
+            // char tmpstr[32];
+            // itoa(key, tmpstr, 10);
+            // TextTileMapPutc('<');
+            // TextTileMapPuts(tmpstr);
+            // TextTileMapPutc('>');
         }
  #endif
+
+        // Draw the current ip address.
+        screenx = startScreenx;
+        uint8_t outputLen = strlen(outIPAddress);
+        for(int i=0;i<15;i++)
+        {
+            char ch = 0;
+            if(i<outputLen)
+            {
+                ch = outIPAddress[i];
+            }
+            else
+            {
+                if((i+1)%4 == 0)
+                    ch='.';
+                else
+                    ch = ' ';
+            }
+
+            if(ch=='.')
+                screencolour = TT_COLOR_GREY;
+            else
+                screencolour = 208;  // Dark cyan bg, grey fg.
+            
+            // Draw the charcter.
+            TextTileMapPutc(ch);
+        }
+
+        // Draw the cursor
+        screencolour = 208-64;
+        TextTileMapPutColorOnlyPos(screeny, startScreenx+inputPos);
+
         // Wait for vertical blanking interval.
         intrinsic_halt();
 
         // Wait until the key is no more pressed.
         in_wait_nokey();
+
+        // Ready to read actual input after the first round.
+        readyToReadInput = true;
     }
 }
 
@@ -382,6 +412,7 @@ void ReadConfigFileOrAskServerIP(void)
         // TextTileMapPuts(", ");
 
         // Read IP address typed by the user.
+        serverAddress[0] = '\0';
         InputIPAddress(serverAddress);
 
         // Write the IP address.
