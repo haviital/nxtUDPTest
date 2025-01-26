@@ -31,6 +31,7 @@
 #define TT_COLOR_LIGHT_BLUE 24
 #define TT_COLOR_MAGENTA 26  // "red"   
 #define TT_COLOR_LIGHT_CYAN 28  
+#define TT_COLOR_WHITE 30  
 
 
 struct __tilemap

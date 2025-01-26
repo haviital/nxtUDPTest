@@ -281,65 +281,81 @@ static void init_isr(void)
 void InputIPAddress(char* outIPAddress)
 {
     // Try to open an existing config file.
-    errno=0;   
     #define maxIpAddressLen 15 
-    #define maxDetectedKeys 13 
-    uint16_t keyArray[maxDetectedKeys] = { 
-        IN_KEY_SCANCODE_0, IN_KEY_SCANCODE_1, IN_KEY_SCANCODE_2, IN_KEY_SCANCODE_3,
-        IN_KEY_SCANCODE_4, IN_KEY_SCANCODE_5, IN_KEY_SCANCODE_6, IN_KEY_SCANCODE_7,
-        IN_KEY_SCANCODE_8, IN_KEY_SCANCODE_9,
-
-        IN_KEY_SCANCODE_ENTER, 0x447f/*dot*/, 0xC1ef/*del*/ };
-    uint8_t keyReleased[maxDetectedKeys] = { 1,1,1,1,1,1,1,1,1,1,1,1,1 };
-
     uint8_t inputPos = 0;
-    while(true)
+    uint8_t inputFieldNum = 0;  // 0-3
+    
+    // Draw dots.
+    uint8_t startScreenx = screenx;
+    for(int i=0;;i++)
     {
-        for(uint8_t i=0; i<maxDetectedKeys; i++)
+        screencolour = 208;  // Dark cyan bg, grey fg.
+        TextTileMapPuts("   ");
+        screencolour = TT_COLOR_GREY;
+        if(i==3) 
+            break;
+        TextTileMapPuts(".");
+    }
+    screencolour = 208;  // Dark cyan bg, grey fg.
+    screenx = startScreenx;  // Move back to start.
+    uint8_t test_mycolor = 0;
+    while(true/*&& inputPos <= maxIpAddressLen*/)
+    {
+        in_wait_key();     
+        char key = in_inkey();
+
+#if 0
+        if(key=='1') test_mycolor--;
+        else if(key=='2') test_mycolor++;
+        screencolour = test_mycolor;
+        TextTileMapPutsPos(15,16,"Tämä on väritesti: ");
+        char tmpstr[32];
+        itoa(test_mycolor, tmpstr, 10);
+        TextTileMapPuts(tmpstr);
+#endif
+
+
+#if 1
+        if((key >= '0' && key <= '9') || key==32)  // number or space
         {
-            int pressedKey = in_key_pressed(keyArray[i]);
-            if (pressedKey && keyReleased[i])
-            {
-                if(i==12)  // delete
+            // Draw number char.
+            // Add to the out array.
+            TextTileMapPutc(key);
+            outIPAddress[inputPos++] = key;
+            outIPAddress[inputPos] = '\0';
+
+            // Move to the start of the next field?
+            if((inputPos+1)%4 == 0)
+            {   
+                if(++inputFieldNum > 3)
                 {
-                    if(inputPos>0)
-                    {
-                        screenx--;
-                        TextTileMapPutcPos(screeny,screenx,' ');
-                        inputPos--;
-                        outIPAddress[inputPos] = '\0';
-                    }
-                       
-                }
-                else if(i==11)  // dot
-                {
-                    TextTileMapPutc('.');
-                    outIPAddress[inputPos++] = '.';
-                    outIPAddress[inputPos] = '\0';
-                    
-                }
-                else if(i==10)  // enter
-                {
-                    
+                    // Stay in the last char in the last field.
+                    inputFieldNum--;
+                    inputPos--;
+                    screenx--;
                 }
                 else
                 {
-                    char char_= '0' + i;
-                    TextTileMapPutc(char_);
-                    outIPAddress[inputPos++] = char_;
-                    outIPAddress[inputPos] = '\0';
+                    // Goto the next input field.
+                    outIPAddress[inputPos++] = '.';      
+                    screenx++;       
                 }
-
-                keyReleased[i] = 0;
-            }    
-            else if(!pressedKey)
-            {
-                keyReleased[i] = 1;
             }
         }
-
+        else
+        {
+            char tmpstr[32];
+            itoa(key, tmpstr, 10);
+            TextTileMapPutc('<');
+            TextTileMapPuts(tmpstr);
+            TextTileMapPutc('>');
+        }
+ #endif
         // Wait for vertical blanking interval.
         intrinsic_halt();
+
+        // Wait until the key is no more pressed.
+        in_wait_nokey();
     }
 }
 
@@ -354,7 +370,7 @@ void ReadConfigFileOrAskServerIP(void)
         // The file does not exist yet. Ask the user for a server IP and save it to a file.
         
         // Show the input field for inputting IP address.
-        screencolour = TT_COLOR_DARK_YELLOW;
+        screencolour = TT_COLOR_GREY;
         TextTileMapPutsPos(15,15, "Server IP address? ");
 
         // char tmpStr[16];
@@ -773,14 +789,17 @@ void main(void)
     // Clear the text tilemap
     TextTileMapClear();
 
-    //
-    ReadConfigFileOrAskServerIP();
-
     // Print my ip address.
     screencolour = TT_COLOR_DARK_YELLOW;
     TextTileMapPutsPos(25, 21, localIpAddress);
-    TextTileMapPutsPos(25, 44, serverAddress);
     //TextTileMapPutsPos(25, 21, "123.456.78.9");  // For the screenshot
+
+    // Get the server IP address.
+    ReadConfigFileOrAskServerIP();
+
+    // Print server ip address.
+    screencolour = TT_COLOR_DARK_YELLOW;
+    TextTileMapPutsPos(25, 44, serverAddress);
     //TextTileMapPutsPos(25, 44, "987.654.32.1");  // For the screenshot
 
     // Loop until the end of the game.
