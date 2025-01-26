@@ -13,7 +13,7 @@ The graphics in the program are partly informing about the real usage and partly
    - Also you need to copy the NxtUdpTest.nex to the Next SD card. Copy it under the folder "Home".
 
 1) First, figure out the ip address of your Spectrum Next. You can find in (at least) two ways:
-	- Either select from the Next main menu: "more../tools/Wifi Setup". You can see the address on the screen.
+	- Select from the Next main menu: "more../tools/WIFI setup". You can see the IP address on the screen.
 	- Or just start NxtUdpTest.nex (in the folder Home) by the browser or in the Command Line prompt in Next. Do this before starting the UDP server in PC. You can see the IP address at the bottom of the screen, beside the Next device image. 
 
 2) Make sure the NxtUdpTest.nex program is not running on Next. Now you can start the UDP server in PC.
@@ -77,6 +77,10 @@ $0000-$3fff: L2 buffer / rom                        => rom bank / layer 2
 $4000-$7fff: ???          							=> bank 5
 $8000-$bfff: code, data, free ram 					=> bank 2
 $c000-$ffff: ????, stack                           	=> bank 0
+
+## Layer2 buffers
+Layer2 main buffer                                  => bank 8
+Layer2 shadow buffer                                => bank 11		
 
 # Features used
 

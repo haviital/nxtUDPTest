@@ -9,6 +9,7 @@
   ******************************************************************************/
 
 #include <arch/zxn.h>
+#include <arch/zxn/esxdos.h>
 #include <input.h>
 #include <z80.h>
 
@@ -18,12 +19,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
 
 #include <im2.h>           // im2 macros and functions
 
 #ifdef ZXNEXT_EMULATOR_MODE_INCLUDES_1
 // For server ip address and port, and packet token
-#include "..\..\mycredentials.h"
+//#include "..\..\mycredentials.h"
 #endif
 
 #include "lib/zxn/zxnext_layer2.h"
@@ -90,6 +92,7 @@ static void init_hardware(void);
 static void init_isr(void);
 void StartNewPacket(bool isIncoming);
 void PageFlip(void);
+void ReadConfigFileOrAskServerIP(void);
 
 /*******************************************************************************
  * Defines
@@ -273,6 +276,113 @@ static void init_isr(void)
     z80_wpoke(0x8182, (unsigned int)isr);   // to the isr routine
 
     intrinsic_ei();
+}
+
+void InputIPAddress(char* outIPAddress)
+{
+    // Try to open an existing config file.
+    errno=0;   
+    #define maxIpAddressLen 15 
+    #define maxDetectedKeys 13 
+    uint16_t keyArray[maxDetectedKeys] = { 
+        IN_KEY_SCANCODE_0, IN_KEY_SCANCODE_1, IN_KEY_SCANCODE_2, IN_KEY_SCANCODE_3,
+        IN_KEY_SCANCODE_4, IN_KEY_SCANCODE_5, IN_KEY_SCANCODE_6, IN_KEY_SCANCODE_7,
+        IN_KEY_SCANCODE_8, IN_KEY_SCANCODE_9,
+
+        IN_KEY_SCANCODE_ENTER, 0x447f/*dot*/, 0xC1ef/*del*/ };
+    uint8_t keyReleased[maxDetectedKeys] = { 1,1,1,1,1,1,1,1,1,1,1,1,1 };
+
+    uint8_t inputPos = 0;
+    while(true)
+    {
+        for(uint8_t i=0; i<maxDetectedKeys; i++)
+        {
+            int pressedKey = in_key_pressed(keyArray[i]);
+            if (pressedKey && keyReleased[i])
+            {
+                if(i==12)  // delete
+                {
+                    if(inputPos>0)
+                    {
+                        screenx--;
+                        TextTileMapPutcPos(screeny,screenx,' ');
+                        inputPos--;
+                        outIPAddress[inputPos] = '\0';
+                    }
+                       
+                }
+                else if(i==11)  // dot
+                {
+                    TextTileMapPutc('.');
+                    outIPAddress[inputPos++] = '.';
+                    outIPAddress[inputPos] = '\0';
+                    
+                }
+                else if(i==10)  // enter
+                {
+                    
+                }
+                else
+                {
+                    char char_= '0' + i;
+                    TextTileMapPutc(char_);
+                    outIPAddress[inputPos++] = char_;
+                    outIPAddress[inputPos] = '\0';
+                }
+
+                keyReleased[i] = 0;
+            }    
+            else if(!pressedKey)
+            {
+                keyReleased[i] = 1;
+            }
+        }
+
+        // Wait for vertical blanking interval.
+        intrinsic_halt();
+    }
+}
+
+void ReadConfigFileOrAskServerIP(void)
+{
+    // Try to open an existing config file.
+    errno=0;    
+
+    //uint8_t file = esx_f_open("NextUdpTest.cfg", ESX_MODE_R|ESX_MODE_OPEN_EXIST);
+    //if (file==0xff || errno) 
+    {
+        // The file does not exist yet. Ask the user for a server IP and save it to a file.
+        
+        // Show the input field for inputting IP address.
+        screencolour = TT_COLOR_DARK_YELLOW;
+        TextTileMapPutsPos(15,15, "Server IP address? ");
+
+        // char tmpStr[16];
+        // ltoa(in_key_scancode(0x2e), tmpStr, 10);
+        // TextTileMapPuts(tmpStr);
+        // TextTileMapPuts(", ");
+        // ltoa(in_key_scancode(127), tmpStr, 10);
+        // TextTileMapPuts(tmpStr);
+        // TextTileMapPuts(", ");
+
+        // Read IP address typed by the user.
+        InputIPAddress(serverAddress);
+
+        // Write the IP address.
+        //esx_f_write(file, serverAddress, strlen(serverAddress));
+    }
+    // else
+    // {
+    //     // The file exists. Read the server IP.
+    //     const uint8_t maxIpLen = 15;  // aaa.bbb.ccc.ddd
+    //     uint16_t len = esx_f_read(file, serverAddress, maxIpLen);
+    //     if (len==0 || errno) 
+    //         PROG_FAILED;
+    //     serverAddress[len] = '\0';
+    // }
+
+    // // Close the file.
+    // esx_f_close(file);
 }
 
 static void create_sprites(void)
@@ -586,7 +696,7 @@ void prog_failed(char* sourceFile, int32_t lineNum, uint8_t err)
     for(;;);
 }
 
-void main(int argc, const char* argv[])
+void main(void)
 {
     // Use some default values when testing under the emulator. To use your own you need to define 
     // ZXNEXT_EMULATOR_MODE_INCLUDES in your environment variables and the defines in the
@@ -594,12 +704,13 @@ void main(int argc, const char* argv[])
     //    #define UDP_SERVER_PORT "4444"
     //    #define UDP_SERVER_ADDRESS "123.456.789.123" 
     strcpy(serverPort, "4444");  // Use the fixed port for now for simplicity.
-    #ifdef ZXNEXT_EMULATOR_MODE_INCLUDES_1
+    #ifdef UDP_SERVER_ADDRESS
     // Copy the default values.
     strcpy(serverAddress, UDP_SERVER_ADDRESS);
     strcpy(serverPort, UDP_SERVER_PORT);
     #endif
 
+#if 0
     // Read the parameters if any.
 
     // Show help if not the correct number of parameters.
@@ -625,6 +736,7 @@ void main(int argc, const char* argv[])
         }
         strcpy(serverAddress, argv[1]);
     }
+#endif
 
     // Initialize
 
@@ -660,6 +772,9 @@ void main(int argc, const char* argv[])
  
     // Clear the text tilemap
     TextTileMapClear();
+
+    //
+    ReadConfigFileOrAskServerIP();
 
     // Print my ip address.
     screencolour = TT_COLOR_DARK_YELLOW;
