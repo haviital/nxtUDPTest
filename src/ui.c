@@ -12,15 +12,32 @@
 #include <intrinsic.h>
 #include "TextTileMap.h"
 
-void InputIPAddress(void)
+void DrawIpAddressDialog(uint8_t row, uint8_t col)
 {
+    // Draw dialog background
+    screencolour = TT_COLOR_IP_DIALOG_MAIN_TEXT;
+    for(uint8_t r=0; r<6; r++)
+        for(uint8_t c=0; c<62; c++)
+            TextTileMapPutColorOnlyPos(row + r, col + c);
+
+    TextTileMapPutsPos(15,10, "Give the server IP address? ");
+    screencolour = TT_COLOR_IP_DIALOG_INFO_TEXT;
+    TextTileMapPutsPos(17,10, "Press \"a\" to accept and save to the config file. ");
+    TextTileMapPutsPos(18,10, "You can reset it by deleting the config file: NxtUdpTest.cfg");
+}
+
+void InputIPAddress(uint8_t row, uint8_t col)
+{
+    screenx = col;
+    screeny = row;
+    uint16_t startScreenx =  screenx;
+    uint16_t startScreeny =  screeny;
+
     // Try to open an existing config file.
     #define maxIpAddressLen 15 
     uint8_t inputPos = 0;
-    //uint8_t test_mycolor = 0;
+    uint8_t test_mycolor = 0;
     bool readyToReadInput = false;
-    uint16_t startScreenx =  screenx;
-    uint16_t startScreeny =  screeny;
     char tmpIPAddress[16];
     tmpIPAddress[0] = '\0';
     while(true/*&& inputPos <= maxIpAddressLen*/)
@@ -32,18 +49,7 @@ void InputIPAddress(void)
             in_wait_key();     
             key = in_inkey();
         }
-#if 0
-        if(key=='1') test_mycolor--;
-        else if(key=='2') test_mycolor++;
-        screencolour = test_mycolor;
-        TextTileMapPutsPos(15,16,"Tämä on väritesti: ");
-        char tmpstr[32];
-        itoa(test_mycolor, tmpstr, 10);
-        TextTileMapPuts(tmpstr);
-#endif
 
-
-#if 1
         if((key >= '0' && key <= '9') || key==32)  // number or space
         {
             // Draw number char.
@@ -57,7 +63,10 @@ void InputIPAddress(void)
 
             // If between fields, print dot and step forward.
             if((inputPos+1)%4 == 0)
+            {
                 tmpIPAddress[inputPos++] = '.';      
+                tmpIPAddress[inputPos] = '\0';
+            }
         }
         else if(key==12)  // del
         {
@@ -78,7 +87,20 @@ void InputIPAddress(void)
         {
             break;
         }
- #endif
+
+        else if(key=='z' || key=='x')
+        {
+            if(key=='z') test_mycolor--;
+            else if(key=='x') test_mycolor++;
+            //TextTileMapPutsPos(15,16,"Tämä on väritesti: ");
+            char tmpstr[32];
+            itoa(test_mycolor, tmpstr, 10);
+            screencolour = TT_COLOR_GREY;
+            TextTileMapPutsPos(0,0, tmpstr);
+
+            screencolour = test_mycolor;
+            DrawIpAddressDialog(14, 9);
+        }
 
         // Draw the current ip address.
         screenx = startScreenx;
@@ -100,16 +122,16 @@ void InputIPAddress(void)
             }
 
             if(ch=='.')
-                screencolour = TT_COLOR_GREY;
+                screencolour = TT_COLOR_IP_DIALOG_IP_ADDRESS_POINTS;
             else
-                screencolour = 208;  // Dark cyan bg, grey fg.
+                screencolour = TT_COLOR_IP_DIALOG_IP_ADDRESS_FIELD;
             
             // Draw the charcter.
             TextTileMapPutc(ch);
         }
 
         // Draw the cursor
-        screencolour = 208-64;
+        screencolour = TT_COLOR_IP_DIALOG_CURSOR;  // blue backround, grey text
         TextTileMapPutColorOnlyPos(screeny, startScreenx+inputPos);
 
         // Truncate the IP address and store it to the global variable.
@@ -141,12 +163,12 @@ void InputIPAddress(void)
 void printIpAddressesOnUI(void)
 {
    // Print my ip address.
-    screencolour = TT_COLOR_DARK_YELLOW;
+    screencolour = TT_COLOR_WHITE;
     TextTileMapPutsPos(25, 21, "               ");   
     TextTileMapPutsPos(25, 21, localIpAddress);
     //TextTileMapPutsPos(25, 21, "123.456.78.9");  // For the screenshot
     // Print server ip address.
-    screencolour = TT_COLOR_DARK_YELLOW;
+    screencolour = TT_COLOR_WHITE;
     TextTileMapPutsPos(25, 44, "               ");   
     TextTileMapPutsPos(25, 44, serverAddress);
     //TextTileMapPutsPos(25, 44, "987.654.32.1");  // For the screenshot

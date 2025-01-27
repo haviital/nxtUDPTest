@@ -301,24 +301,16 @@ void ReadConfigFileOrAskServerIP(void)
     else
     {
         // The file does not exist yet. Ask the user for a server IP and save it to a file.
-        
-        // Show the input field for inputting IP address.
-        screencolour = TT_COLOR_WHITE;
-        TextTileMapPutsPos(17,8, " - Press \"A\" to accept and save to the config file. ");
-        TextTileMapPutsPos(18,8, " - You can reset it by deleting the config file: NxtUdpTest.cfg");
-        screencolour = TT_COLOR_GREY;
-        TextTileMapPutsPos(15,8, "Give the server IP address? ");
+    
+        // Draw the dialog.
+        DrawIpAddressDialog(14, 9);
 
         // Read IP address typed by the user.
         serverAddress[0] = '\0';
-        InputIPAddress();
-
-        // 
-        uint16_t len = strlen( serverAddress );
-        //memset(serverAddress + len, 0, 16-len);
+        InputIPAddress(15, 38);
 
         // Create the config file.
-       errno = 0;    
+        errno = 0;    
         uint8_t newFile = esx_f_open(PROGRAM_CONFIG_FILE, ESX_MODE_W|ESX_MODE_OPEN_CREAT);
         if (newFile==0xff || newFile==0) 
         {
@@ -333,8 +325,9 @@ void ReadConfigFileOrAskServerIP(void)
         }
 
         // Write the IP address.
-        esx_f_write(newFile, serverAddress, len);
-        esx_f_close(newFile);
+        uint16_t len = strlen( serverAddress );
+        esx_f_write( newFile, serverAddress, len );
+        esx_f_close( newFile );
     }
 }
 
