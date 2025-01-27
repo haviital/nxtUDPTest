@@ -36,7 +36,6 @@ void InputIPAddress(uint8_t row, uint8_t col)
     // Try to open an existing config file.
     #define maxIpAddressLen 15 
     uint8_t inputPos = 0;
-    uint8_t test_mycolor = 0;
     bool readyToReadInput = false;
     char tmpIPAddress[16];
     tmpIPAddress[0] = '\0';
@@ -86,20 +85,6 @@ void InputIPAddress(uint8_t row, uint8_t col)
         else if(key=='a')  // a = accept
         {
             break;
-        }
-
-        else if(key=='z' || key=='x')
-        {
-            if(key=='z') test_mycolor--;
-            else if(key=='x') test_mycolor++;
-            //TextTileMapPutsPos(15,16,"Tämä on väritesti: ");
-            char tmpstr[32];
-            itoa(test_mycolor, tmpstr, 10);
-            screencolour = TT_COLOR_GREY;
-            TextTileMapPutsPos(0,0, tmpstr);
-
-            screencolour = test_mycolor;
-            DrawIpAddressDialog(14, 9);
         }
 
         // Draw the current ip address.
