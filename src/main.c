@@ -44,6 +44,7 @@
 #include "GameObject.h"
 #include "gfx.h"
 #include "netcom.h"
+#include "ui.h"
 
 /*
  * Define IDE_FRIENDLY in your C IDE to disable Z88DK C extensions and avoid
@@ -278,158 +279,63 @@ static void init_isr(void)
     intrinsic_ei();
 }
 
-void InputIPAddress(char* outIPAddress)
-{
-    // Try to open an existing config file.
-    #define maxIpAddressLen 15 
-    uint8_t inputPos = 0;
-    //uint8_t test_mycolor = 0;
-    bool readyToReadInput = false;
-    uint16_t startScreenx =  screenx;
-    while(true/*&& inputPos <= maxIpAddressLen*/)
-    {
-        char key = 0;
-
-        if(readyToReadInput)
-        {
-            in_wait_key();     
-            key = in_inkey();
-        }
-#if 0
-        if(key=='1') test_mycolor--;
-        else if(key=='2') test_mycolor++;
-        screencolour = test_mycolor;
-        TextTileMapPutsPos(15,16,"Tämä on väritesti: ");
-        char tmpstr[32];
-        itoa(test_mycolor, tmpstr, 10);
-        TextTileMapPuts(tmpstr);
-#endif
-
-
-#if 1
-        if((key >= '0' && key <= '9') || key==32)  // number or space
-        {
-            // Draw number char.
-            // Add to the out array.
-            outIPAddress[inputPos++] = key;
-            outIPAddress[inputPos] = '\0';
-
-            // If gone beyond the end,  stay in the last char in the last field.
-            if(inputPos > 14)     
-               inputPos--;
-
-            // If between fields, print dot and step forward.
-            if((inputPos+1)%4 == 0)
-                outIPAddress[inputPos++] = '.';      
-        }
-        else if(key==12)  // del
-        {
-            if(inputPos!=0)
-            {
-                // Sep backwards.
-                inputPos--;
-
-                // If between fields, print dot and step backwards.
-                if((inputPos+1)%4 == 0)
-                    outIPAddress[inputPos--] = '.';    
-
-                // Set ending null.  
-                outIPAddress[inputPos] = '\0';
-           }
-        }
-        else
-        {
-            // char tmpstr[32];
-            // itoa(key, tmpstr, 10);
-            // TextTileMapPutc('<');
-            // TextTileMapPuts(tmpstr);
-            // TextTileMapPutc('>');
-        }
- #endif
-
-        // Draw the current ip address.
-        screenx = startScreenx;
-        uint8_t outputLen = strlen(outIPAddress);
-        for(int i=0;i<15;i++)
-        {
-            char ch = 0;
-            if(i<outputLen)
-            {
-                ch = outIPAddress[i];
-            }
-            else
-            {
-                if((i+1)%4 == 0)
-                    ch='.';
-                else
-                    ch = ' ';
-            }
-
-            if(ch=='.')
-                screencolour = TT_COLOR_GREY;
-            else
-                screencolour = 208;  // Dark cyan bg, grey fg.
-            
-            // Draw the charcter.
-            TextTileMapPutc(ch);
-        }
-
-        // Draw the cursor
-        screencolour = 208-64;
-        TextTileMapPutColorOnlyPos(screeny, startScreenx+inputPos);
-
-        // Wait for vertical blanking interval.
-        intrinsic_halt();
-
-        // Wait until the key is no more pressed.
-        in_wait_nokey();
-
-        // Ready to read actual input after the first round.
-        readyToReadInput = true;
-    }
-}
-
 void ReadConfigFileOrAskServerIP(void)
 {
     // Try to open an existing config file.
-    errno=0;    
+    errno = 0;    
+    uint8_t file = esx_f_open(PROGRAM_CONFIG_FILE, ESX_MODE_R|ESX_MODE_OPEN_EXIST);
+    if (file!=0xff && !errno) 
+    {
+        // The file exists. Read the server IP.
+        uint16_t len = esx_f_read(file, serverAddress, 16);
+        if (len==0 || errno) 
+        {
+            int errno_org = errno;
+            esx_f_close(file);
+            PROG_FAILED1(errno_org);
+        }
+        serverAddress[len] = '\0';
+        esx_f_close(file);
 
-    //uint8_t file = esx_f_open("NextUdpTest.cfg", ESX_MODE_R|ESX_MODE_OPEN_EXIST);
-    //if (file==0xff || errno) 
+    }
+    else
     {
         // The file does not exist yet. Ask the user for a server IP and save it to a file.
         
         // Show the input field for inputting IP address.
+        screencolour = TT_COLOR_WHITE;
+        TextTileMapPutsPos(17,8, " - Press \"A\" to accept and save to the config file. ");
+        TextTileMapPutsPos(18,8, " - You can reset it by deleting the config file: NxtUdpTest.cfg");
         screencolour = TT_COLOR_GREY;
-        TextTileMapPutsPos(15,15, "Server IP address? ");
-
-        // char tmpStr[16];
-        // ltoa(in_key_scancode(0x2e), tmpStr, 10);
-        // TextTileMapPuts(tmpStr);
-        // TextTileMapPuts(", ");
-        // ltoa(in_key_scancode(127), tmpStr, 10);
-        // TextTileMapPuts(tmpStr);
-        // TextTileMapPuts(", ");
+        TextTileMapPutsPos(15,8, "Give the server IP address? ");
 
         // Read IP address typed by the user.
         serverAddress[0] = '\0';
-        InputIPAddress(serverAddress);
+        InputIPAddress();
+
+        // 
+        uint16_t len = strlen( serverAddress );
+        //memset(serverAddress + len, 0, 16-len);
+
+        // Create the config file.
+       errno = 0;    
+        uint8_t newFile = esx_f_open(PROGRAM_CONFIG_FILE, ESX_MODE_W|ESX_MODE_OPEN_CREAT);
+        if (newFile==0xff || newFile==0) 
+        {
+            esx_f_close(newFile);
+            PROG_FAILED1(newFile);
+        }
+        if (errno) 
+        {
+            int errno_org = errno;
+            esx_f_close(newFile);
+            PROG_FAILED1(errno_org);
+        }
 
         // Write the IP address.
-        //esx_f_write(file, serverAddress, strlen(serverAddress));
+        esx_f_write(newFile, serverAddress, len);
+        esx_f_close(newFile);
     }
-    // else
-    // {
-    //     // The file exists. Read the server IP.
-    //     const uint8_t maxIpLen = 15;  // aaa.bbb.ccc.ddd
-    //     uint16_t len = esx_f_read(file, serverAddress, maxIpLen);
-    //     if (len==0 || errno) 
-    //         PROG_FAILED;
-    //     serverAddress[len] = '\0';
-    // }
-
-    // // Close the file.
-    // esx_f_close(file);
 }
 
 static void create_sprites(void)
@@ -757,34 +663,6 @@ void main(void)
     strcpy(serverPort, UDP_SERVER_PORT);
     #endif
 
-#if 0
-    // Read the parameters if any.
-
-    // Show help if not the correct number of parameters.
-    printf("argc=%d\n", argc);
-    //CSPECT_BREAK();
-	if(strlen(serverAddress) == 0)
-    {
-        if(argc!=1) 
-        {
-            printf("Usage:\n");
-            printf("NxtUdpTest <srv ip>\n");
-            printf("- <srv ip> Server IP address\n");
-            printf("Example:\n");
-            printf("NxtUdpTest 123.45.6.7\n");
-            for(;;);
-        }
-
-        // Server ip address
-        if( strlen(argv[1]) >= 16 )
-        {
-            printf("Error: Invalid server ip address.");
-            for(;;);
-        }
-        strcpy(serverAddress, argv[1]);
-    }
-#endif
-
     // Initialize
 
     init_hardware();
@@ -820,18 +698,17 @@ void main(void)
     // Clear the text tilemap
     TextTileMapClear();
 
-    // Print my ip address.
-    screencolour = TT_COLOR_DARK_YELLOW;
-    TextTileMapPutsPos(25, 21, localIpAddress);
-    //TextTileMapPutsPos(25, 21, "123.456.78.9");  // For the screenshot
-
     // Get the server IP address.
     ReadConfigFileOrAskServerIP();
 
-    // Print server ip address.
-    screencolour = TT_COLOR_DARK_YELLOW;
-    TextTileMapPutsPos(25, 44, serverAddress);
-    //TextTileMapPutsPos(25, 44, "987.654.32.1");  // For the screenshot
+    // Connect to server.
+    NetComConnectToServer(); 
+
+    // Clear the text tilemap
+    TextTileMapClear();
+
+    // Print client and server IP address.
+    printIpAddressesOnUI();
 
     // Loop until the end of the game.
     while (true)

@@ -2,7 +2,7 @@
 EXEC_OUTPUT=build/NxtUdpTest
 
 # List all your source files here
-SOURCES = main.c GameObject.c gfx.c netcom.c uart2.c TextTileMap.c
+SOURCES = main.c GameObject.c gfx.c netcom.c uart2.c TextTileMap.c ui.c
 
 # Maybe you'll need to edit this
 CRT=1

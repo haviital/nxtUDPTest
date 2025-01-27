@@ -55,7 +55,8 @@
             "string.h": "c",
             "gameobject.h": "c",
             "netcom.h": "c",
-            "mycredentials.h": "c"
+            "mycredentials.h": "c",
+            "stdint.h": "c"
         }
     }
 }

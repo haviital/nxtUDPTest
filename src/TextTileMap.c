@@ -114,8 +114,11 @@ void TextTileMapClearToEol(void)
 // Set all chars to zero for the whole screen.
 void TextTileMapClear(void)
 {
-    //memset(tilemap, 0, sizeof(tilemap));
-    memset(tilemap, 0, sizeof(tilemap));
+    for(int i=0; i < TEXTTILEMAP_SCREENHEIGHT*TEXTTILEMAP_SCREENWIDTH; i++)
+    {
+        tilemap[i].tile = 0;
+        tilemap[i].flags = 0;
+    }
     screenx = screeny = 0;
 }
 

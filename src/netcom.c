@@ -18,8 +18,6 @@ void NetComInit(void)
 
     DrawStatusTextAndPageFlip("Connecting to Wifi");
 
-    char atcmd[256];
- 
     // Disable echo
     #ifdef AT_ECHO_ON
     uart_tx2("ATE1\r\n");
@@ -38,16 +36,36 @@ void NetComInit(void)
     #endif
 
     // Enable single connection mode
-    DrawStatusTextAndPageFlip("Create Server connection");
+    DrawStatusTextAndPageFlip("Init connection.");
     uart_tx2("AT+CIPMUX=0\r\n");
     if(uart_read_expected2("OK") != 0)
         PROG_FAILED;
    
+    #ifdef PRINT_UART_RX_DEBUG_TEXT
+    uart_debug_print = 1;
+    #endif
+    // Get my IP address.
+    uint8_t err = GetStationIp(/*OUT*/localIpAddress, 16 );
+    if(err)
+        PROG_FAILED1(err);
+    #ifdef PRINT_UART_RX_DEBUG_TEXT
+    uart_debug_print = 0;
+    #endif
+
+    DrawStatusTextAndPageFlip("");
+ }
+
+// Init the connection to the server.
+void NetComConnectToServer(void)
+{
+    // DrawStatusTextAndPageFlip("Connect to server.");
+
     // Start UDP connection.
     // 2 means UDP(?)
     // 0 means wifi passthrough
     // AT+CIPSTART="UDP","<remote_ip>",<remote_port>,<local_port>,0
     // Could also come: "ALREADY CONNECTED\r\nERROR\n\r"
+    char atcmd[128]; 
     sprintf(atcmd, "AT+CIPSTART=\"UDP\",\"%s\",%s,%s,0\r\n", 
         serverAddress, serverPort, UDP_LOCAL_PORT );
     uart_tx2(atcmd);
@@ -60,21 +78,7 @@ void NetComInit(void)
     uart_tx2(atcmd);
     if(uart_read_expected_many2("OK", "ERROR") != 0)
         PROG_FAILED;
-
-    #ifdef PRINT_UART_RX_DEBUG_TEXT
-    uart_debug_print = 1;
-    #endif
-
-    // Get my IP address.
-    uint8_t err = GetStationIp(/*OUT*/localIpAddress, 16 );
-    if(err)
-        PROG_FAILED1(err);
-    #ifdef PRINT_UART_RX_DEBUG_TEXT
-    uart_debug_print = 0;
-    #endif
-
-    DrawStatusTextAndPageFlip("");
- }
+}
 
 uint8_t GetStationIp(/*OUT*/char* textOut, uint8_t maxTextSizeWithNull )
 {
