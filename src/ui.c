@@ -150,11 +150,18 @@ void printIpAddressesOnUI(void)
    // Print my ip address.
     screencolour = TT_COLOR_WHITE;
     TextTileMapPutsPos(25, 21, "               ");   
+    #ifdef SCREENSHOT_MODE
+    TextTileMapPutsPos(25, 21, "123.456.78.9");  // For the screenshot
+    #else
     TextTileMapPutsPos(25, 21, localIpAddress);
-    //TextTileMapPutsPos(25, 21, "123.456.78.9");  // For the screenshot
+    #endif
     // Print server ip address.
     screencolour = TT_COLOR_WHITE;
     TextTileMapPutsPos(25, 44, "               ");   
-    TextTileMapPutsPos(25, 44, serverAddress);
+    #ifdef SCREENSHOT_MODE
     //TextTileMapPutsPos(25, 44, "987.654.32.1");  // For the screenshot
+    TextTileMapPutsPos(25, 44, serverAddress);  // !!TEST
+    #else
+    TextTileMapPutsPos(25, 44, serverAddress);
+    #endif
 }
