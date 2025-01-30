@@ -778,7 +778,7 @@ void main(void)
             // **** RECEIVE INFO
 
             // Packet count
-            screencolour = TT_COLOR_DARK_BLUE;
+            screencolour = TT_COLOR_BLUE;
             strcpy(text, "Recv: ");
             itoa(totalReceivedPacketCount, tmpStr, 10);
             strcat(text, tmpStr);

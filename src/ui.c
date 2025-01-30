@@ -16,14 +16,29 @@ void DrawIpAddressDialog(uint8_t row, uint8_t col)
 {
     // Draw dialog background
     screencolour = TT_COLOR_IP_DIALOG_MAIN_TEXT;
-    for(uint8_t r=0; r<6; r++)
+    for(uint8_t r=0; r<7; r++)
         for(uint8_t c=0; c<62; c++)
             TextTileMapPutColorOnlyPos(row + r, col + c);
 
+    // Draw top and bottom borders
+    for(uint8_t c=0; c<62; c++)
+    {
+        TextTileMapPutcPos(row + 0, col + c, 131);
+        TextTileMapPutcPos(row + 6, col + c, 140);
+    }
+    // Draw left and right borders
+    for(uint8_t r=0; r<7; r++)
+    {
+        TextTileMapPutcPos(row + r, col + 0, 138);
+        TextTileMapPutcPos(row + r, col + 61, 133);
+    }
+
+    // Draw the text
     TextTileMapPutsPos(15,10, "Give the server IP address? ");
     screencolour = TT_COLOR_IP_DIALOG_INFO_TEXT;
-    TextTileMapPutsPos(17,10, "Press \"a\" to accept and save to the config file. ");
-    TextTileMapPutsPos(18,10, "You can reset it by deleting the config file: NxtUdpTest.cfg");
+    TextTileMapPutsPos(17,10, "Press \"d\" to delete a character. ");
+    TextTileMapPutsPos(18,10, "Press \"Enter\" to accept and save to the config file.");
+    TextTileMapPutsPos(19,10, "Delete the file NxtUdpTest.cfg to reset the address.");
 }
 
 void InputIPAddress(uint8_t row, uint8_t col)
@@ -67,7 +82,7 @@ void InputIPAddress(uint8_t row, uint8_t col)
                 tmpIPAddress[inputPos] = '\0';
             }
         }
-        else if(key==12)  // del
+        else if(key=='d')  // del
         {
             if(inputPos!=0)
             {
@@ -82,7 +97,7 @@ void InputIPAddress(uint8_t row, uint8_t col)
                 tmpIPAddress[inputPos] = '\0';
            }
         }
-        else if(key=='a')  // a = accept
+        else if(key==13)  // enter = accept
         {
             break;
         }
@@ -133,6 +148,13 @@ void InputIPAddress(uint8_t row, uint8_t col)
 
         // Print client and server IP address.
         printIpAddressesOnUI();
+
+        //!!HV TEST
+        screencolour = TT_COLOR_GREEN;
+        char test_txt[8];
+        itoa(key, test_txt, 10);
+        strcat(test_txt, "   ");
+        TextTileMapPutsPos(0,0, test_txt);
 
         // Wait for vertical blanking interval.
         intrinsic_halt();
