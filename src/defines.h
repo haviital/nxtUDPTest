@@ -1,7 +1,7 @@
 #define SCREEN_W 256
 #define SCREEN_H 192
 
-#define SCREENSHOT_MODE  // enable to hide ip addresses from the main view
+//#define SCREENSHOT_MODE  // enable to hide ip addresses from the main view
 
 // Degub printing.
 //#define DEBUG_TEXT_ENABLED

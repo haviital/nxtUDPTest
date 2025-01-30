@@ -647,13 +647,13 @@ void main(void)
     // Use some default values when testing under the emulator. To use your own you need to define 
     // ZXNEXT_EMULATOR_MODE_INCLUDES in your environment variables and the defines in the
     // file: "..\..\mycredentials.h". For example:
-    //    #define UDP_SERVER_PORT "4444"
+    //    //#define UDP_SERVER_PORT "4444"
     //    #define UDP_SERVER_ADDRESS "123.456.789.123" 
     strcpy(serverPort, "4444");  // Use the fixed port for now for simplicity.
     #ifdef UDP_SERVER_ADDRESS
     // Copy the default values.
     strcpy(serverAddress, UDP_SERVER_ADDRESS);
-    strcpy(serverPort, UDP_SERVER_PORT);
+    //strcpy(serverPort, UDP_SERVER_PORT);
     #endif
 
     // Initialize
@@ -691,8 +691,10 @@ void main(void)
     // Clear the text tilemap
     TextTileMapClear();
 
+    #ifndef UDP_SERVER_ADDRESS
     // Get the server IP address.
     ReadConfigFileOrAskServerIP();
+    #endif
 
     // Connect to server.
     NetComConnectToServer(); 

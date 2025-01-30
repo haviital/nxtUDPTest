@@ -159,8 +159,7 @@ void printIpAddressesOnUI(void)
     screencolour = TT_COLOR_WHITE;
     TextTileMapPutsPos(25, 44, "               ");   
     #ifdef SCREENSHOT_MODE
-    //TextTileMapPutsPos(25, 44, "987.654.32.1");  // For the screenshot
-    TextTileMapPutsPos(25, 44, serverAddress);  // !!TEST
+    TextTileMapPutsPos(25, 44, "987.654.32.1");  // For the screenshot
     #else
     TextTileMapPutsPos(25, 44, serverAddress);
     #endif
