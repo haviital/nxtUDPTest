@@ -36,9 +36,9 @@ void DrawIpAddressDialog(uint8_t row, uint8_t col)
     // Draw the text
     TextTileMapPutsPos(15,10, "Give the server IP address? ");
     screencolour = TT_COLOR_IP_DIALOG_INFO_TEXT;
-    TextTileMapPutsPos(17,10, "Press \"d\" to delete a character. ");
-    TextTileMapPutsPos(18,10, "Press \"Enter\" to accept and save to the config file.");
-    TextTileMapPutsPos(19,10, "Delete the file NxtUdpTest.cfg to reset the address.");
+    TextTileMapPutsPos(17,11, "Press \"d\" to delete a character. ");
+    TextTileMapPutsPos(18,11, "Press \"Enter\" to accept and save to the config file.");
+    TextTileMapPutsPos(19,11, "Delete the file NxtUdpTest.cfg to reset the address.");
 }
 
 void InputIPAddress(uint8_t row, uint8_t col)
@@ -148,13 +148,6 @@ void InputIPAddress(uint8_t row, uint8_t col)
 
         // Print client and server IP address.
         printIpAddressesOnUI();
-
-        //!!HV TEST
-        screencolour = TT_COLOR_GREEN;
-        char test_txt[8];
-        itoa(key, test_txt, 10);
-        strcat(test_txt, "   ");
-        TextTileMapPutsPos(0,0, test_txt);
 
         // Wait for vertical blanking interval.
         intrinsic_halt();

@@ -307,7 +307,7 @@ void ReadConfigFileOrAskServerIP(void)
 
         // Read IP address typed by the user.
         serverAddress[0] = '\0';
-        InputIPAddress(15, 38);
+        InputIPAddress(15, 39);
 
         // Create the config file.
         errno = 0;    
