@@ -59,24 +59,24 @@ The second row:
 
 ## Visible memory map (64k address space)
 
-$8184: CODE
-	- e.g. driver_terminal_input, driver_terminal_output, stdio
-	- my program code
+$8184 CODE
+- e.g. driver_terminal_input, driver_terminal_output, stdio
+- my program code
 
-$C06C-$CCE6: COMPILER RODATA
-	- e.g. $C2D5: _cloudSpr
+$C06C-$CCE6 COMPILER RODATA
+- e.g. $C2D5: _cloudSpr
 		
-$CDC3-$CE37: COMPILER DATA
-	- e.g. CDFB: _totalSendPacketCount
+$CDC3-$CE37 COMPILER DATA
+- e.g. CDFB: _totalSendPacketCount
 
-$CE3B- $D251: COMPILER BSS (uninitialized data)
-	e.g.
-	- CE3B: _incomingPacketGobs 
-	- CEEF: _outgoingPacketGobs 
+$CE3B- $D251 COMPILER BSS (uninitialized data)
+- e.g.
+   - CE3B: _incomingPacketGobs 
+   - CEEF: _outgoingPacketGobs 
 
-$FD58-$FF58: STACK
-	- $FF58: TAR__register_sp
-	- stack size: $200
+$FD58-$FF58 STACK
+- $FF58: TAR__register_sp
+- stack size: $200
 
 ## Memory banks (16kb each)
 $0000-$3fff: L2 buffer / rom                        => rom bank / layer 2
