@@ -2,26 +2,28 @@
 
 ## A short explanation of what the program does
 
-The program sends UDP packets to the UDP server (hosted in PC). The packet is a special test packet which the UDP server understands and it sends the actual payload data back as many times as requested in the packet header data. This mimics the situation where there are several clients. The packets are send every 8th frame (about 6 times a second at 50 hz frame refresh). One UDP packet is received on every frame.
+The program sends UDP packets to the UDP server (hosted in PC). The packet is a special test packet which the UDP server understands and it sends the actual payload data back as many times as requested in the packet header data. This mimics the situation (in the client poin tof view) where there are several other clients and the server broadcasts all packets to all clients. The packets are send every 8th frame (about 6 times a second at 50 hz frame refresh). One UDP packet is received on every frame.
 
-The graphics in the program are partly informing about the real usage and partly only for the viewing pleasure. E.g. for receiving, the (blue) packet sprite animation *is launched* each time the real UDP packet is received (supposing there is a free sprite to do that). The animation duration has nothing to do with the UDP communication thought. The same is true with outgoing (to the server) data packets. 
+The graphics in the program are partly informing about the real functionality and partly only for the viewing pleasure. E.g. for receiving, the (blue) packet sprite animation *is launched* each time the real UDP packet is received (supposing there is a free sprite to do that). The animation duration has nothing to do with the UDP communication thought. The same is true with outgoing (to the server) data packets. 
 
 ## Security
 
-You should have your normal secure firewall and other security settings enabled in PC. 
-Both the client (Next) and server (PC) are checking the IP address where the packet came from. If either end detects a packet that came from an unknown address it will fail the program immediately. That is ok behaviour for a simple test application like this. 
+No encryption is used in the payload data, but both the client (Next) and server (PC) are checking the IP address where the packet came from. If either end detects a packet that came from an unknown address it will fail the program immediately. That is ok behaviour for a simple test application like this. 
 
-For advanced security, you can in the firewall only allow IP connections to the server port 4444 from the Next ip address. That way you can block connections from unknown ip addresses before they are even delivered to the python server application.  
+For advanced security, you can in the firewall only allow IP connections to the server port 4444 from the Next ip address. That way you can block connections from unknown ip addresses before they are even delivered to the python server application.
 
 ## Usage
 
 0) Preconditions: 
-   	- You need to have your Wifi connection set up. You can do this from the Next main menu: "more../tools/Wifi Setup". Look at the Spectrum Next manual if you need more information about using the Wifi startup. 
+   	- You need to have your Wifi connection set up. If not yet configured, you can do this from the Next main menu: "more../tools/Wifi Setup".
 	- Also you need to copy the NxtUdpTest.nex to the Next SD card. Copy it under the folder "home".
+	- There are two files you need: 
+	      - "NxtUdpText.nex": Copy it to the Next SD card, under the folder "home". 
+		  - "simple-udp-server.py": Will be run on PC (phase 3).
 
 1) Find out the server (PC) ip address. There are multiple ways to do it:
 	- E.g. give in the commmand prompt in PC: "ipconfig" (Windows) or "ifconfig" (Linux) 
-	- You can do also that by starting the simple-udp-server.py (as instructed in the phase (3) ) but *without any parameters*. Remember to kill the python program with ctrl-c after that.
+	- You can do also that by starting the simple-udp-server.py (as instructed in the phase 3 ) but *without any parameters*. Remember to kill the python program with ctrl-c after that.
 
 2) You can now start the UDP client in Next. 
 	- Easiest way to do it is using the Browser. Go to the "home" directory and launch NxtUdpTest.
