@@ -79,14 +79,20 @@ $FD58-$FF58 STACK
 - stack size: $200
 
 ## Memory banks (16kb each)
-$0000-$3fff: L2 buffer / rom                        => rom bank / layer 2
-$4000-$7fff: ???          							=> bank 5
-$8000-$bfff: code, data, free ram 					=> bank 2
-$c000-$ffff: ????, stack                           	=> bank 0
+$0000-$3fff L2 buffer / rom 
+- rom bank / layer 2
+$4000-$7fff ???
+- bank 5
+$8000-$bfff code, data, free ram
+- bank 2
+$c000-$ffff ????, stack
+- bank 0
 
 ## Layer2 buffers
-Layer2 main buffer                                  => bank 8
-Layer2 shadow buffer                                => bank 11		
+Layer2 main buffer
+- bank 8
+Layer2 shadow buffer
+- bank 11		
 
 # Features used
 
