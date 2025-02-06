@@ -41,8 +41,20 @@ extern uint16_t recvPacketCountPerSecond;
 
 void NetComInit(void);
 void NetComConnectToServer(void);
-uint8_t SendMessage(uint8_t msgId);
-uint8_t ReceiveMessage(uint8_t msgId, uint16_t* receivedPacketCount);
-uint8_t GetStationIp(/*OUT*/char* text, uint8_t maxTextSizeWithNull );
 
+uint8_t PrepareSendMessage(uint8_t msgId);
+uint8_t SendMessage(uint8_t msgId);
+
+uint8_t GetMessageIfAny(uint8_t msgId, uint16_t* receivedPacketCount);
+uint8_t GetMessage(uint8_t msgId, uint16_t* receivedPacketCount);
+uint8_t GetStationIp(/*OUT*/char* text, uint8_t maxTextSizeWithNull );
+uint8_t NetComReceiveDataPacketIfAny(char* receivedData, uint8_t size);
+uint8_t NetComFetchReceivedCommandIfAny(/*OUT*/ uint8_t* netComCmd);
+uint8_t NetComGetMessage(char* receivedData, uint8_t size);
+
+enum {
+    NETCOM_CMD_NONE = 0,
+    NETCOM_CMD_IPD_RECEIVED = 1,
+    NETCOM_CMD_CIPSEND_RESPONSE = 2
+};
 

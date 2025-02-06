@@ -31,7 +31,7 @@ def get_ip():
 #
 def receive_udp_packet(sock, testLoopBackGuidBytes, clientIp):
     recvData, address = sock.recvfrom(4096)
-    if(address[0]!=clientIp):
+    if(clientIp != None and address[0]!=clientIp ):
         print(f"*** ERROR! Not authorized client ip tries to connect: {address}")
         cmd = b'\xff'  # error
         return cmd, cmd, cmd, cmd, cmd
@@ -93,7 +93,10 @@ def udp_server(host, port, clientIp):
     server_address = (host, port)
     sock.bind(server_address)
 
-    print(f"UDP server listening. Accepts connections from: {clientIp}.")
+    if(clientIp == None):
+        print(f"UDP server listening. Accepts connections from any ip address to port: {port}.")
+    else:
+        print(f"UDP server listening. Accepts connections only from {clientIp} to port: {port}.")
 
     # The test guid for security check. 
     guid_str = 'b679c980-0a2f-4c71-a0cf-fe9dcfef3a17'
@@ -117,12 +120,20 @@ if __name__ == "__main__":
     
     # Read parameters
     parser = argparse.ArgumentParser(
-        description='Simple UDP server.' )
+        prog='simple-udp-server.py',
+        description='This is a simple UDP server which receives a packet and sends one or more packets back to the client. The client specify in a packet header how many repeated sends there are.',
+        epilog='Example: python simple-udp-server.py -c 123.456.78.9'
+    )
     parser.add_argument(
             '-c','--clientip', action='store', dest='clientip',
-            help="The address of the client" )
+            help="The address of the client (optional). The sender of the incoming packet will be checked." )
     args = parser.parse_args()
 
+    if(args.clientip == None):
+        print("\n*** Note ***")
+        print("The -clientip parameter not used. The incoming packet ip is not checked.\nUse -clientip or -c for better security. More info with the -h parameter.")
+        print("*** End  ***\n")
+       
     serverPort = 4444
     ips = get_ip()
     for serverIp in sorted( ips ):

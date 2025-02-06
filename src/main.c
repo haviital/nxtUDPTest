@@ -25,6 +25,7 @@
 
 #ifdef ZXNEXT_EMULATOR_MODE_INCLUDES_1
 // For server ip address and port, and packet token
+// Comment out if you want to use the ip address from the cfg file.
 //#include "..\..\mycredentials.h"
 #endif
 
@@ -78,11 +79,11 @@ typedef struct sprite_info {
 } sprite_info_t;
 
 // The state of the game engine.
-enum state
-{
+enum {
     STATE_NONE = 0,
-    STATE_CALL_NOP = 1,
-    STATE_WAIT_FOR_NOP = 2
+    STATE_CALL_NOP = 1, 
+    STATE_WAIT_FOR_NOP = 2,
+    STATE_WAIT_FOR_CIPSEND_RESP = 3
 };
 
 /*******************************************************************************
@@ -91,7 +92,7 @@ enum state
 
 static void init_hardware(void);
 static void init_isr(void);
-void StartNewPacket(bool isIncoming);
+void StartNewPacketAnim(bool isIncoming);
 void PageFlip(void);
 void ReadConfigFileOrAskServerIP(void);
 
@@ -109,6 +110,7 @@ void ReadConfigFileOrAskServerIP(void);
 #define SERVER_SPRITE_3_PATTERN_SLOT 5
 #define SPECNEXT_SPRITE_0_PATTERN_SLOT 6
 #define SPECNEXT_SPRITE_1_PATTERN_SLOT 7
+#define CROSS_SPRITE_PATTERN_SLOT 8
 #define OUTGOING_PACKET_X1 34
 #define INCOMING_PACKET_X1 219
 #define OUTGOING_PACKET_X2 214
@@ -158,6 +160,7 @@ uint8_t recvRasterLineFrames = 0;
 uint32_t sendRasterLineDur = 0;
 uint8_t sendRasterLineFrames = 0;
 uint16_t oneSecondPassedAtFrame = 0;
+uint16_t lastReceivedPacketAt = 0;
 
 // Frame counter by an interrupt function.
 uint16_t frames16t;
@@ -287,6 +290,7 @@ void ReadConfigFileOrAskServerIP(void)
     if (file!=0xff && !errno) 
     {
         // The file exists. Read the server IP.
+        // Note: the address can be shorted than 16 characters.
         uint16_t len = esx_f_read(file, serverAddress, 16);
         if (len==0 || errno) 
         {
@@ -295,8 +299,13 @@ void ReadConfigFileOrAskServerIP(void)
             PROG_FAILED1(errno_org);
         }
         serverAddress[len] = '\0';
-        esx_f_close(file);
 
+        // Replace any CR or LF with '\0'.
+        for(int8_t i=0; i<len; i++)
+            if(serverAddress[i]=='\r' || serverAddress[i]=='\n')
+                serverAddress[i] = '\0';
+
+        esx_f_close(file);
     }
     else
     {
@@ -381,6 +390,12 @@ static void create_sprites(void)
     set_sprite_slot(107);
     set_sprite_attributes_ext(SPECNEXT_SPRITE_1_PATTERN_SLOT, 28+16, (int)(154+10), 0, 0, true);
 
+    // Cross sprite
+    set_sprite_slot(CROSS_SPRITE_PATTERN_SLOT);
+    set_sprite_pattern(crossSpr);
+    set_sprite_slot(108);
+    set_sprite_attributes_ext(CROSS_SPRITE_PATTERN_SLOT, (uint8_t)(210+4), (uint8_t)(154+4), 0, 0, false);
+
      // *** Define moving sprites (used by GameObjects)
 
     // Map sprite bitmap(pattern) to the certain pattern slot. 
@@ -440,7 +455,7 @@ static void DrawGameBackground(void)
 }
 
 // Launch a new packet animation, incoming or outgoing.
-void StartNewPacket(bool isIncoming)
+void StartNewPacketAnim(bool isIncoming)
 {
     if(isIncoming)
     {
@@ -584,25 +599,85 @@ void UpdateAndDrawAll(void)
     // *** Update game objects
     UpdateGameObjects();
 
-    // *** Receive data from server.
-    uint16_t receivedPacketCount = 0;
-    uint8_t err =  ReceiveMessage(MSG_ID_TESTLOOPBACK, &receivedPacketCount);
+    // *** Update the cross sprite
+    // Show it if there has not been packets from server for a second.
+    bool isCrossVisible = frames16t > (lastReceivedPacketAt + 50);
+    set_sprite_slot(108);
+    set_sprite_attributes_ext(CROSS_SPRITE_PATTERN_SLOT, (uint8_t)(210+4), (uint8_t)(154+4), 0, 0, isCrossVisible);
 
-    //CSPECT_BREAK_IF(recvRasterLineDiff>100);
-
-    if(receivedPacketCount>0)
+    // A state machine.
+    // Run until the state has not changed or until prevGameState is STATE_NONE.
+    uint8_t prevGameState = 255;
+    //while(gameState != prevGameState && prevGameState != STATE_NONE)
+    bool exitLoop = false;
+    while(!exitLoop)
     {
-        StartNewPacket(true);
-        gameState = STATE_CALL_NOP;  
-    }
+        prevGameState = gameState;
 
-    // *** Send data to server.
-    // Only send every 8th frame
-    if((frames16t & 0x7) == 0)
-    {
-        err =  SendMessage(MSG_ID_TESTLOOPBACK);       
-        StartNewPacket(false);
-    }
+        switch(gameState)
+        {
+            case STATE_NONE:
+            {
+                // *** Receive data from server.
+                uint16_t receivedPacketCount = 0;
+                uint8_t err =  GetMessageIfAny(MSG_ID_TESTLOOPBACK, &receivedPacketCount);
+
+                //CSPECT_BREAK_IF(recvRasterLineDiff>100);
+
+                if(receivedPacketCount>0)
+                    StartNewPacketAnim(true);
+ 
+                // *** Prepare sending data to server.
+                // Only send every 8th frame
+                if(gameState == STATE_NONE && (frames16t & 0x7) == 0)
+                {
+                    err = PrepareSendMessage(MSG_ID_TESTLOOPBACK);
+                    gameState = STATE_WAIT_FOR_CIPSEND_RESP;
+                }
+                else
+                {
+                    // Always exit the loop.
+                    exitLoop = true;
+                }
+            }
+            break;
+
+            case STATE_WAIT_FOR_CIPSEND_RESP:
+            {
+                uint8_t netComCmd = NETCOM_CMD_NONE;
+                if( NetComFetchReceivedCommandIfAny(/*OUT*/ &netComCmd) )
+                    PROG_FAILED;   
+
+                // Wait for the CIPSEND (sending data packet) response.
+                if(netComCmd == NETCOM_CMD_CIPSEND_RESPONSE)
+                {
+                    // The CIPSEND cmd response received. Ready for sending the data. 
+
+                    // Send the actual data packet to server.
+                    SendMessage(MSG_ID_TESTLOOPBACK);
+                    gameState = STATE_NONE;
+
+                    StartNewPacketAnim(false);
+                }
+                else if(netComCmd == NETCOM_CMD_IPD_RECEIVED)
+                {
+                    uint16_t receivedPacketCount = 0;
+                    uint8_t err =  GetMessage(MSG_ID_TESTLOOPBACK, &receivedPacketCount);
+
+                    //CSPECT_BREAK_IF(recvRasterLineDiff>100);
+
+                    if(receivedPacketCount>0)
+                        StartNewPacketAnim(true);
+                }
+                
+                // Always exit the loop.
+                exitLoop = true;
+            }
+            break;
+
+        }  // end switch
+
+    }  // end while
 }
 
 void PageFlip(void)
@@ -639,7 +714,14 @@ void prog_failed(char* sourceFile, int32_t lineNum, uint8_t err)
     sprintf(text, "FAILED (err:%u) in file: %s (%lu)\n", err, sourceFile, lineNum);
     printf(text);
     printf("Stack usage after error: 0x%X bytes\n", stackUsage);
-    for(;;);
+
+    // Print the log buffer.
+    printf("UART LOG: \n");
+    printPaper(PAPER_BLACK);
+    printf("\x10\x36"); // Set BRIGHT INK to YELLOW = (char)0x10 and  (char)(0x30 + 0x06)
+    print_log_buffer();
+
+    for(;;); // Wait forever.
 }
 
 void main(void)
@@ -673,7 +755,7 @@ void main(void)
 
     NetComInit(); // Init ESP.
     
-    gameState = STATE_CALL_NOP;
+    gameState = STATE_NONE;
     
     // Draw the title and the bottom status area.
 
@@ -713,6 +795,8 @@ void main(void)
         TextTileMapGoto(10,0);
         #endif
 
+       char text[128];
+ 
         // Read a key to change the number of packets the server sends.
         if (in_key_pressed(IN_KEY_SCANCODE_1))
             numClonedPackets = 1;
@@ -720,6 +804,10 @@ void main(void)
             numClonedPackets = 3;
         else if (in_key_pressed(IN_KEY_SCANCODE_3))
             numClonedPackets = 7;      
+
+        // TEST Show the fail view (for seeing the ESP log).
+        //else if (in_key_pressed(IN_KEY_SCANCODE_4))
+        //    PROG_FAILED;     
 
         // Draw the animation and handle the UDP packet receiving and sending.
         UpdateAndDrawAll();
@@ -743,7 +831,6 @@ void main(void)
         }
 
        // Print client and server send speed and send count.
-       char text[128];
         text[0]=0;
         char tmpStr[64];
         if((frames16t & 0x1f) == 0x1f ) // Every 32nd frame

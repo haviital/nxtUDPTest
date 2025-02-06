@@ -1,14 +1,17 @@
 # This is the name of your final .nex file without the .nex extension
 EXEC_OUTPUT=build/NxtUdpTest
 
+HDFMONKEY = c:\bin\hdfmonkey
+EMUDIR = C:\bin\CSpect2_19_9_1
+EMUSD = c:\bin\CSpect2_19_9_1\sn-emulator-22.10a.img
+KILL = taskkill /F /IM
+SYNCDIR = C:\nextsync
+
 # List all your source files here
 SOURCES = main.c GameObject.c gfx.c netcom.c uart2.c TextTileMap.c ui.c
 
 # Maybe you'll need to edit this
 CRT=1
-#ZXNEXT_LAYER2_INCLUDE := $(ZXNEXT_LAYER2)/include
-#ZXNEXT_LAYER2_LIB_SDCC_IY := $(ZXNEXT_LAYER2)/lib/sdcc_iy
-#ZXNEXT_LAYER2_LIB_SDCC_IY := $(ZXNEXT_LAYER2)/lib/zxn
 
 # You don't need to edit below here, have a nice day.
 
@@ -41,7 +44,7 @@ EXEC=$(EXEC_OUTPUT).nex
 %.o: %.asm
 	$(AS) $(ASFLAGS) -o $@ $<
 
-all : dirs $(EXEC) post-build
+all : dirs $(EXEC)
 
 $(EXEC) : $(OBJS)
 	$(CC) $(LDFLAGS) -startup=$(CRT) $(OBJS) -o $(EXEC_OUTPUT) -create-app
@@ -53,6 +56,20 @@ install: all
 
 post-build:
 	C:\bin\Z88CSPECT.EXE $(EXEC_OUTPUT).map $(EXEC_OUTPUT)_cspect.map
+	# $(HDFMONKEY) put $(EMUSD) $(EXEC_OUTPUT).nex home
+	# -$(KILL) cspect.exe 
+	# CMD /C start /d $(EMUDIR) cspect -fullscreen -zxnext -nextrom -basickeys -exit -brk -vsync -tv -emu -mmc=$(EMUSD) -map=C:\git\nxtUDPTest\build\NxtUdpTest_cspect.map
+
+sync:
+	# -$(MD) "$(SYNCDIR)\NextLayer2Examples"
+	cp "$(EXEC_OUTPUT).nex" "$(SYNCDIR)/home/"
+	# -$(MD) "$(SYNCDIR)\NextZXOS"
+	# copy "$(BASICDIR)\autoexec.bas" "$(SYNCDIR)\NextZXOS\*.*"             
+
+	# Warning: kills all running python processes
+	# Remove these two lines and start the server manually if that bothers you
+	-$(KILL) python3.9.exe
+	CMD /C start /d $(SYNCDIR) /min python3.9.exe nextsync.py
 
 clean:
 	rm -f $(EXEC_OUTPUT).*

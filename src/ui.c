@@ -16,29 +16,68 @@ void DrawIpAddressDialog(uint8_t row, uint8_t col)
 {
     // Draw dialog background
     screencolour = TT_COLOR_IP_DIALOG_MAIN_TEXT;
-    for(uint8_t r=0; r<7; r++)
-        for(uint8_t c=0; c<62; c++)
+    const uint8_t width = 62;
+    const uint8_t height = 8;
+    for(uint8_t r=0; r<height; r++)
+        for(uint8_t c=0; c<width; c++)
             TextTileMapPutColorOnlyPos(row + r, col + c);
 
     // Draw top and bottom borders
-    for(uint8_t c=0; c<62; c++)
+    for(uint8_t c=0; c<width; c++)
     {
         TextTileMapPutcPos(row + 0, col + c, 131);
-        TextTileMapPutcPos(row + 6, col + c, 140);
+        TextTileMapPutcPos(row + height - 1, col + c, 140);
     }
     // Draw left and right borders
-    for(uint8_t r=0; r<7; r++)
+    for(uint8_t r=0; r<height; r++)
     {
         TextTileMapPutcPos(row + r, col + 0, 138);
-        TextTileMapPutcPos(row + r, col + 61, 133);
+        TextTileMapPutcPos(row + r, col + width - 1, 133);
     }
 
     // Draw the text
     TextTileMapPutsPos(15,10, "Give the server IP address? ");
     screencolour = TT_COLOR_IP_DIALOG_INFO_TEXT;
     TextTileMapPutsPos(17,11, "Press \"d\" to delete a character. ");
-    TextTileMapPutsPos(18,11, "Press \"Enter\" to accept and save to the config file.");
-    TextTileMapPutsPos(19,11, "Delete the file NxtUdpTest.cfg to reset the address.");
+    TextTileMapPutsPos(18,11, "Add \"Space\" to fill the field if needed.");
+    TextTileMapPutsPos(19,11, "Press \"Enter\" to accept and save to the config file.");
+    TextTileMapPutsPos(20,11, "Delete the file NxtUdpTest.cfg to reset the address.");
+}
+
+void PrettyAddress(char* address, char* prettyAddr)
+{
+    uint8_t j=0;
+    bool isDotZeroSequencePrefix = false;
+    for(int i=0; i<=strlen(address); i++)
+    {
+        if(address[i]==' ')
+            ; // skip spaces
+        else
+        {
+            // Fix all ".0N" => ".N". (or "0N" at the start of a string).
+            // Note that ".0." or "0" in the end of the string is accepted.
+            if( isDotZeroSequencePrefix && 
+                address[i] != '.' && address[i] != 0 ) 
+                    j--; // Write over the previous zero.
+
+            // Copy char to the real server address.
+            prettyAddr[j++] = address[i];
+
+            // Check for existing ".0" sequence.
+            if(j>1 && prettyAddr[j-2] == '.' && serverAddress[j-1] == '0')
+            {
+                // Found ".0" sequence.
+                isDotZeroSequencePrefix = true;
+            }
+            else if(j==1 && prettyAddr[j-1] == '0')
+            {
+                // Found "0" char at the start of the string.
+                isDotZeroSequencePrefix = true;
+            }
+            else 
+                isDotZeroSequencePrefix = false;
+        }
+    }
 }
 
 void InputIPAddress(uint8_t row, uint8_t col)
@@ -102,7 +141,7 @@ void InputIPAddress(uint8_t row, uint8_t col)
             break;
         }
 
-        // Draw the current ip address.
+        // Draw the current ip address to the dialog.
         screenx = startScreenx;
         screeny = startScreeny;
         uint8_t outputLen = strlen(tmpIPAddress);
@@ -135,18 +174,9 @@ void InputIPAddress(uint8_t row, uint8_t col)
         TextTileMapPutColorOnlyPos(screeny, startScreenx+inputPos);
 
         // Truncate the IP address and store it to the global variable.
-        uint8_t j=0;
-        for(int i=0; i<strlen(tmpIPAddress); i++)
-        {
-            
-            if(tmpIPAddress[i]==' ')
-                ; // skip
-            else
-                serverAddress[j++] = tmpIPAddress[i];
-        }
-        serverAddress[j] = 0;
+        PrettyAddress(tmpIPAddress, serverAddress);
 
-        // Print client and server IP address.
+        // Print client and server IP address on the bottom.
         printIpAddressesOnUI();
 
         // Wait for vertical blanking interval.

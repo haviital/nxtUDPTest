@@ -7,14 +7,79 @@
 #include <z80.h>
 #include "TextTileMap.h"
 
-#ifdef PRINT_TO_BUFFER2
-char testBuffer2[2048];
-#endif
-
 uint8_t uart_debug_print = 0;
 
 // Work buffer.
-static char buffer2[BUFFER_MAX_SIZE2];
+#define UART_SMALL_BUFFER_SIZE 128
+static char uart_small_buffer[UART_SMALL_BUFFER_SIZE];
+
+// Uart log buffer.
+uint16_t uart_log_ring_buffer_pos = 0;
+char uart_log_ring_buffer[UART_LOG_RING_BUFFER_SIZE];
+bool uart_log_ring_buffer_wrapped = false;
+
+// Ring buffer methods
+void add_to_log_ring_buffer(char c)
+{
+   uart_log_ring_buffer[uart_log_ring_buffer_pos++] = c;
+   if(uart_log_ring_buffer_pos>=UART_LOG_RING_BUFFER_SIZE)
+   {
+      uart_log_ring_buffer_pos = 0;
+      uart_log_ring_buffer_wrapped = true;
+   }
+}
+void add_to_log_ring_buffer_with_color(char c, uint8_t color)
+{
+   log_buffer_set_ink_color(color);
+   add_to_log_ring_buffer(c);
+   log_buffer_set_ink_color(INK_YELLOW);
+}
+void add_str_to_log_ring_buffer(char* s)
+{
+   while(*s)
+      add_to_log_ring_buffer(*s++);
+}
+void add_str_to_log_ring_buffer_with_color(char* s, uint8_t color)
+{
+   log_buffer_set_ink_color(color);
+   add_str_to_log_ring_buffer(s);
+   log_buffer_set_ink_color(INK_YELLOW);
+}
+void log_buffer_set_ink_color(uint8_t c)
+{
+   add_to_log_ring_buffer((char)0x10); // Set ink color...
+   add_to_log_ring_buffer((char)(0x30 + c));  // ...to => (char)(0x30 + c)
+}
+void print_log_buffer(void)
+{
+   uint16_t pos = uart_log_ring_buffer_pos;
+   uint16_t pastEndIndex = UART_LOG_RING_BUFFER_SIZE;
+   if(!uart_log_ring_buffer_wrapped)
+   {
+      pos = 0;
+      pastEndIndex = uart_log_ring_buffer_pos;
+   }
+   for(uint16_t i=0; i<pastEndIndex; i++)
+   {
+      char c = uart_log_ring_buffer[pos++];
+
+      // Handle non-visible characters.
+      if(c=='\r') 
+         c='r';
+      else if(c=='\n') 
+         c='n';
+      else if(c==0x10) // Preserve ink color control char.
+         ;
+      else if(c<32)
+         c = '.';
+
+      printf("%c",c);
+
+      // Check wrapping.
+      if(pos>=UART_LOG_RING_BUFFER_SIZE)
+         pos = 0;
+   }
+}
 
 // USER BREAK
 unsigned char err_break[] = "D BREAK - no repea" "\xf4";
@@ -48,7 +113,10 @@ char* replaceCrAndLn2(char* str, char* newStr)
 // Send string to UART.
 void uart_tx2(unsigned char *s)
 {
-    uint16_t timeout_ms = UART_TIMEOUT_MS;
+   add_to_log_ring_buffer((char)0x10); // Set ink color...
+   add_to_log_ring_buffer((char)0x34);  // ...to GREEN => (char)(0x30 + 0x04)
+
+   uint16_t timeout_ms = UART_TIMEOUT_MS;
    while (*s)
    {
       // Wait until the previuos data has been sent.
@@ -64,13 +132,31 @@ void uart_tx2(unsigned char *s)
          user_break();
       }
       
-      IO_133B = *s++;
+      IO_133B = *s;
+      add_to_log_ring_buffer(*s);
+      s++;
    }
+
+   add_to_log_ring_buffer((char)0x10); // Set ink color...
+   add_to_log_ring_buffer((char)0x36);  // ...to YELLOW => (char)(0x30 + 0x6)
 }
 
 // Send data to UART.
 uint8_t uart_raw_tx2(unsigned char *s, uint16_t size)
 {
+   // Print to log buffer.
+   add_to_log_ring_buffer((char)0x10); // Set ink color...
+   add_to_log_ring_buffer((char)0x34);  // ...to GREEN => (char)(0x30 + 0x04)
+
+   add_str_to_log_ring_buffer(" <TX RAW DATA:");
+   char text[8];
+   ltoa(size, text, 10);
+   add_str_to_log_ring_buffer(text);
+   add_str_to_log_ring_buffer("B> ");
+
+   add_to_log_ring_buffer((char)0x10); // Set ink color...
+   add_to_log_ring_buffer((char)0x36);  // ...to YELLOW => (char)(0x30 + 0x6)
+
    uint16_t timeout_ms = UART_TIMEOUT_MS;
    while (size)
    {
@@ -88,7 +174,10 @@ uint8_t uart_raw_tx2(unsigned char *s, uint16_t size)
          user_break();
       }
       
-      IO_133B = *s++;
+      IO_133B = *s;
+      //add_to_log_ring_buffer(*s);
+      s++;
+
       size--;
    }
 
@@ -147,6 +236,7 @@ uint8_t uart_rx_char_timeout(unsigned char* ch, uint16_t timeout_ms)
    }
    unsigned char byte2 = IO_143B;
    *ch = byte2;
+   add_to_log_ring_buffer(byte2);
    return 0;
 }
 
@@ -176,6 +266,8 @@ void uart_flush_rx2(void)
       {
          c = IO_143B;
    
+         add_to_log_ring_buffer(c);
+
          if (!(timeout_ms--)) 
          {
             printf("Timeout error! ");
@@ -198,69 +290,14 @@ void uart_flush_rx2(void)
 }
 
 // Read chars from UART until the expected string is found. 
-uint8_t uart_read_until_expected(char* expected)
-{
-   uint16_t expectedStringPos = 0;
-   const uint16_t expectedLen = strlen(expected);
-   const uint16_t timeout_ms = 10;
- 
-   #ifdef PRINT_UART_RX_DEBUG_TEXT
-   TextTileMapPuts("###TX EXPECTED:");
-   TextTileMapPuts(expected);
-   TextTileMapPutc(' ');
-   TextTileMapClearToEol();
-   #endif
-
-   // First read out all the garbage before the expected string.
-   char ch=0;
-   uint8_t err = 0;
-   while(true)
-   {
-      err = uart_rx_char_timeout(&ch, timeout_ms);
-      if(err==1) 
-         break; // Timeout error.
-      else if( err != 0) 
-         PROG_FAILED1(err);
-         
-      #ifdef PRINT_UART_RX_DEBUG_TEXT
-      uart_pretty_print(ch);
-      #endif
-
-      // Check if the char is expected.
-      if(ch==expected[expectedStringPos])
-      {
-         // Advance the expected string position.
-         if(++expectedStringPos >= expectedLen)
-            break;  // All checked!
-      }
-      else
-      {
-         // Did not find the char belonging to expected string.
-         // Start again!
-         expectedStringPos = 0;
-
-         // Check if the char is expected.
-         if(ch==expected[expectedStringPos])
-         {
-            // Advance the expected string position.
-            if(++expectedStringPos >= expectedLen)
-               break;  // All checked!
-         }
-      }
-   }
-
-   return err; // Not found.
-}
-
-// Read chars from UART until the expected string is found. 
 uint8_t uart_read_expected2(char* expected)
 {
-   buffer2[0] = 0; // clear// BUFFER_MAX_SIZE2];
-   char* bufferReadToPtr = buffer2;
-   char* stringStartPtr = buffer2;
+   uart_small_buffer[0] = 0; // clear
+   char* bufferReadToPtr = uart_small_buffer;
+   char* stringStartPtr = uart_small_buffer;
    uint16_t readLen = 0;
 
-   while(readLen<BUFFER_MAX_SIZE2)
+   while(readLen<UART_SMALL_BUFFER_SIZE)
    {
  
       // read byte from uart
@@ -278,21 +315,21 @@ uint8_t uart_read_expected2(char* expected)
 
    }  // response bytes comparison loop
 
-   return 1; // Not found.
+   return 1; // Not found. Tiemout.
 }
 
 // Read chars from UART until on of the expected strings is found. 
-uint8_t uart_read_expected_many2(char* expected1, char* expected2)
+// Returned foundStringOrdinal contains 0 or 1 depending on which string was found.
+uint8_t uart_read_expected_many2(char* expected1, char* expected2, /*OUT*/uint8_t* foundStringOrdinal)
 {
-   buffer2[0] = 0; // clear// BUFFER_MAX_SIZE2];
-   char* bufferReadToPtr = buffer2;
-   char* stringStartPtr1 = buffer2;
-    char* stringStartPtr2 = buffer2;
+   uart_small_buffer[0] = 0; // clear
+   char* bufferReadToPtr = uart_small_buffer;
+   char* stringStartPtr1 = uart_small_buffer;
+   char* stringStartPtr2 = uart_small_buffer;
    uint16_t readLen = 0;
 
-   while(readLen<BUFFER_MAX_SIZE2)
+   while(readLen<UART_SMALL_BUFFER_SIZE)
    {
- 
       // read byte from uart
       *bufferReadToPtr = uart_rx_char2();
       readLen++;
@@ -304,14 +341,20 @@ uint8_t uart_read_expected_many2(char* expected1, char* expected2)
       if(readLen>=strlen(expected1))
       {
          if(strncmp(stringStartPtr1, expected1, strlen(expected1))==0)
+         {
+            *foundStringOrdinal = 0;
             return 0;  // Found!
+         }
          stringStartPtr1++;
       }
 
       if(readLen>=strlen(expected2))
       {
          if(strncmp(stringStartPtr2, expected2, strlen(expected2))==0)
+         {
+            *foundStringOrdinal = 1;
             return 0;  // Found!
+         }
          stringStartPtr2++;
       }
       bufferReadToPtr++;
@@ -356,112 +399,7 @@ uint8_t uart_read_and_get_until_char(char untilChar, char* receivedData, uint8_t
    return 1; // Not found.
 }
 
-// Send data to UDP via UART.
-uint8_t uart_send_data_packet2(unsigned char *data, uint8_t len)
-{
-   if( len==0 )
-      return 1;
 
-   // Send AT command to UART to start sending the UDP packet.
-   char atcmd[32];
-   strcpy(atcmd, "AT+CIPSEND=");
-   itoa(len, &(atcmd[11]), 10);
-   strcat(atcmd, "\r\n");
-    uart_tx2(atcmd);
-   //*buffer = 0;
-
-   // Read response from UART. 
-   // There should be: "OK\n\r>\n\r".
-   uint8_t err = uart_read_expected2(">");
-   if(err>0)
-      return err+20;
-
-    // Send data to UART. Check the response in the next frame.
-    err = uart_raw_tx2(data, len);
-    if(err>0)
-      return err+10;
-
-   return 0;
-}
-
-// Receive data from UDP via UART.
-uint8_t uart_receive_data_packet_if_any(char* receivedData, uint8_t size)
-{
-   // The received data has the following format:
-   // "+IPD,6,192.168.1.100,12345:123456"
-   // Where:
-   // - 6: the data lenght in bytes
-   // - 192.168.1.100: the sender ip address
-   // - 12345: the sender ip port
-   // - 123456: Actual data
-
-   #ifdef PRINT_UART_RX_DEBUG_TEXT
-   uart_debug_print = 1; 
-   screencolour = TT_COLOR_PINK;
-   TextTileMapGoto(15, 0);
-   #endif
-
-   // Read UART until the string was found or there is timeout.
-   uint8_t err = uart_read_until_expected("+IPD,"); 
-   if(err)
-      return err;  // Note: 1 is a timeout. Not an error.
-
-   // Read the packet details from UART. The format is: "6,192.168.1.100,12345:" 
-   // Get the number of bytes as a string.
-   // Read until ':'. Get the amount of data bytes back (as a string).
-   //const uint8_t MAX_STR_SIZE = 19; //3+1+15+1+6+1;
-   #define MAX_STR_SIZE 27//19
-   char receivedFromUart[MAX_STR_SIZE]; // includes the ending null. 
-   err = uart_read_and_get_until_char(':', receivedFromUart, MAX_STR_SIZE);
-   if(err)
-      return 20 + err;
-
-   #ifdef PRINT_UART_RX_DEBUG_TEXT
-   uart_debug_print = 0;  
-   #endif
-
-   //#ifdef PRINT_UART_RX_DEBUG_TEXT
-   //uart_pretty_print(ch);
-   //#endif
-
-   // Check the minimum lenght.
-   uint16_t serverAddressLen = strlen(serverAddress);
-   uint16_t serverPortLen = strlen(serverPort);
-   uint16_t len = strlen(receivedFromUart);
-   if( len < 1 + 1 + serverAddressLen + 1 + serverPortLen + 1 )
-      PROG_FAILED;
-
-   // get data lenght.
-   char tmp[32];
-   char* posPtr = strchr(receivedFromUart, ',');
-   if(posPtr==NULL)  
-      PROG_FAILED;
-   len = posPtr-receivedFromUart;
-   strncpy(tmp, receivedFromUart,len);
-   tmp[len] = '\0';
-
-   // Convert the string to a number.
-   uint8_t dataLen = atoi(tmp);
-   if(dataLen!=size)
-      PROG_FAILED;
-
-   // Check ip address.
-   posPtr++; // ','
-   if( strncmp(posPtr, serverAddress, serverAddressLen ) != 0)
-      PROG_FAILED;
-   posPtr += serverAddressLen;
-
-   // Check the port.
-   posPtr++; // ','
-   if( strncmp(posPtr, serverPort, serverPortLen ) != 0)
-      PROG_FAILED;
-      
-   // Read actual data.
-   for(uint8_t i=0; i<dataLen; i++)
-      receivedData[i] = uart_rx_char2();
-
-   return 0;
-}
 
 
 

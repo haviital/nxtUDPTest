@@ -18,7 +18,6 @@
 
 #define RESET_WIFI  // Reset the WIFI module before starting the connection.
 
-#define BUFFER_MAX_SIZE2 512
 #define VIDEO_SCREEN_REFRESH_RATE 50 // support only 50 hz refresh rate for now.
 #define PROGRAM_CONFIG_FILE "NxtUdpTest.cfg"
  
@@ -43,11 +42,13 @@ if(cond) {\
    __endasm;\
 }
 
+extern uint16_t frames16t;
 extern uint8_t numClonedPackets;
-extern uint8_t frameCount8Bit;
+extern uint16_t lastReceivedPacketAt;
 extern char serverAddress[16];  // aaa.bbb.ccc.ddd
 extern char serverPort[8];  // 1234567
 extern char localIpAddress[16];
+
 int16_t GetUsedStack(void);
 void prog_failed(char* sourceFile, int32_t lineNum, uint8_t err);
 void DrawStatusTextAndPageFlip(char* text);
