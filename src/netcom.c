@@ -10,7 +10,8 @@
 #include "uart2.h"
 #include "TextTileMap.h"
 
-void NetComCheckReceivedLoopbackData(TestLoopBackResponse serverCommandsTestLoopBack, uint16_t* receivedPacketCount);
+void NetComCheckReceivedLoopbackData(TestLoopBackResponse serverCommandsTestLoopBack);
+uint8_t NetComReceiveIPDDataPacket(char* receivedData, uint8_t size);
 
 // Init the connection to the server.
 void NetComInit(void)
@@ -113,167 +114,40 @@ uint8_t GetStationIp(/*OUT*/char* textOut, uint8_t maxTextSizeWithNull )
     return 0;
 }
 
-// Receive the packet from the server.
-uint8_t GetMessageIfAny(uint8_t msgId, uint16_t* receivedPacketCount)
+// Send the packet to the server.
+uint8_t NetComPrepareSendMessage(void)
 {
-    if(uart_available_rx2()) 
-    {
-        switch(msgId)
-        {
-            case MSG_ID_TESTLOOPBACK:
-            {
-                // The request struct.
-
-                //CSPECT_BREAK()
-
-                // Receive a packet from the server
-                TestLoopBackResponse serverCommandsTestLoopBack;
-                uint8_t err = NetComReceiveDataPacketIfAny((char*)&serverCommandsTestLoopBack, 
-                    MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE);
-                if(err && err != 1) PROG_FAILED1(err);  // Note: 1 is timeout. Not an error.
-
-                // If the packet was found, check the result.
-                if(!err)
-                {
-
-                    //CSPECT_BREAK();
-                    zx_border(INK_GREEN);
-
-                    ////
-                    NetComCheckReceivedLoopbackData( serverCommandsTestLoopBack, 
-                        receivedPacketCount );
-                }
-
-            }
-            break;
-            
-            default:
-                PROG_FAILED;
-        }
-    }
+    // *** Send the packet to the server via UART & UDP.
+    // Init packet sending to the server.
+    // Send AT command to UART to start sending the UDP packet.
+    char atcmd[32];
+    strcpy(atcmd, "AT+CIPSEND=");
+    itoa(MSG_TESTLOOPBACK_REQUEST_STRUCT_SIZE, &(atcmd[11]), 10);
+    strcat(atcmd, "\r\n");
+    uart_tx2(atcmd);     
 
     return 0;
 }
 
-// Receive the packet from the server.
-uint8_t GetMessage(uint8_t msgId, uint16_t* receivedPacketCount)
+// Send the packet to the server.
+uint8_t NetComSendMessage(void)
 {
-    switch(msgId)
+    // The request struct.
+    TestLoopBackRequest serverCommandsTestLoopBack = 
     {
-        case MSG_ID_TESTLOOPBACK:
-        {
-            // The IPD cmd received. Ready for receiving the data. 
-            TestLoopBackResponse serverCommandsTestLoopBack;
-            uint8_t err =  NetComGetMessage((char*)&serverCommandsTestLoopBack, 
-                MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE );
-            if(err)
-                PROG_FAILED;
+        .cmd = MSG_ID_TESTLOOPBACK,
+        .loopPacketCount = numClonedPackets,  // Count of faked "clients"
+        .packetSize = MSG_TESTLOOPBACK_RANDOM_DATA_SIZE,  // Random data size.                  
+    };
 
-            NetComCheckReceivedLoopbackData( serverCommandsTestLoopBack,
-                receivedPacketCount );
-        }
-        break;
-        
-        default:
-            PROG_FAILED;
-    }
-
-    return 0;
-}
-
-void NetComCheckReceivedLoopbackData(TestLoopBackResponse serverCommandsTestLoopBack, uint16_t* receivedPacketCount)
-{
-    if( serverCommandsTestLoopBack.cmd != MSG_ID_TESTLOOPBACK )
-        PROG_FAILED;
-    if( serverCommandsTestLoopBack.packetSize != MSG_TESTLOOPBACK_RANDOM_DATA_SIZE )
-    {
-        printf("packetSize=%u (%u)", serverCommandsTestLoopBack.packetSize, 
-            MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE);
-        PROG_FAILED;
-    }
-
-    // Verify the test data.
+    // Init the test data for verification when it comes back
     for(uint8_t i=0; i<MSG_TESTLOOPBACK_RANDOM_DATA_SIZE; i++)
-        if(serverCommandsTestLoopBack.packetData[i] != i)
-        {
-            //CSPECT_BREAK();
-            PROG_FAILED1(i);
-        }
+        serverCommandsTestLoopBack.packetData[i] = i;
 
-    // All good. Increase the received packet count.
-    //CSPECT_BREAK();                    
-    (*receivedPacketCount)++;
-    totalReceivedPacketCount++;
-    recvPacketCountPerSecond++;
-    zx_border(INK_YELLOW);
-
-    lastReceivedPacketAt = frames16t;
-}
-
-// Send the packet to the server.
-uint8_t PrepareSendMessage(uint8_t msgId)
-{
-    // *** Send the packet to the server via UART & UDP.
-    switch(msgId)
-    {
-        case MSG_ID_NOP:
-        {
-        }
-        break;
-        
-        case MSG_ID_TESTLOOPBACK:
-        {
-            // Init packet sending to the server.
-            // Send AT command to UART to start sending the UDP packet.
-            char atcmd[32];
-            strcpy(atcmd, "AT+CIPSEND=");
-            itoa(MSG_TESTLOOPBACK_REQUEST_STRUCT_SIZE, &(atcmd[11]), 10);
-            strcat(atcmd, "\r\n");
-            uart_tx2(atcmd);           
-        }
-        break;
-        
-        default:
-            PROG_FAILED;
-    }
-    return 0;
-}
-
-// Send the packet to the server.
-uint8_t SendMessage(uint8_t msgId)
-{
-    // *** Send the packet to the server via UART & UDP.
-    switch(msgId)
-    {
-        case MSG_ID_NOP:
-        {
-        }
-        break;
-        
-        case MSG_ID_TESTLOOPBACK:
-        {
-            // The request struct.
-            TestLoopBackRequest serverCommandsTestLoopBack = 
-            {
-                .cmd = MSG_ID_TESTLOOPBACK,
-                .loopPacketCount = numClonedPackets,  // Count of faked "clients"
-                .packetSize = MSG_TESTLOOPBACK_RANDOM_DATA_SIZE,  // Random data size.                  
-            };
-
-            // Init the test data for verification when it comes back
-            for(uint8_t i=0; i<MSG_TESTLOOPBACK_RANDOM_DATA_SIZE; i++)
-                serverCommandsTestLoopBack.packetData[i] = i;
-
-            // Send data to UART. Check the response in the next frame.
-            uint8_t err = uart_raw_tx2((uint8_t*)&serverCommandsTestLoopBack, MSG_TESTLOOPBACK_REQUEST_STRUCT_SIZE);
-            if(err>0)
-                PROG_FAILED1( err+10 );
-        }
-        break;
-        
-        default:
-            PROG_FAILED;
-    }
+    // Send data to UART. Check the response in the next frame.
+    uint8_t err = uart_raw_tx2((uint8_t*)&serverCommandsTestLoopBack, MSG_TESTLOOPBACK_REQUEST_STRUCT_SIZE);
+    if(err>0)
+        PROG_FAILED1( err+10 );
 
     totalSendPacketCount++;
     sendPacketCountPerSecond++;
@@ -281,7 +155,8 @@ uint8_t SendMessage(uint8_t msgId)
     return 0;
 }
 
-uint8_t NetComFetchReceivedCommandIfAny(/*OUT*/ uint8_t* netComCmd)
+
+uint8_t NetComReceiveSendPromptOrDataCmdIfAny(/*OUT*/ uint8_t* netComCmd)
 {
     if(uart_available_rx2()) 
     {
@@ -306,25 +181,50 @@ uint8_t NetComFetchReceivedCommandIfAny(/*OUT*/ uint8_t* netComCmd)
 }
 
 // Receive data from UDP via UART.
-uint8_t NetComReceiveDataPacketIfAny(char* receivedData, uint8_t size)
+uint8_t NetComReceiveSendResponseOrDataPacketIfAny( bool *hasReceivedPacket )
 {
-   // Read UART until the string was found or there is timeout.
-    uint8_t foundStringOrdinal = 0;
-    uint8_t err = uart_read_expected_many2("+IPD,", "SEND OK\r\n", /*OUT*/&foundStringOrdinal);
-    if(err)
-        return err;  // Note: 1 is a timeout. Not an error.    
+    *hasReceivedPacket = false;
+    if(uart_available_rx2()) 
+    {
+        // Read UART until the string was found or there is timeout.
+        uint8_t foundStringOrdinal = 0;
+        uint8_t err = uart_read_expected_many2("+IPD,", "SEND OK\r\n", /*OUT*/&foundStringOrdinal);
+        if(err)
+            return err;  // Note: 1 is a timeout. Not an error.    
 
-    if(foundStringOrdinal == 0)
-        err = NetComGetMessage(receivedData, size);
-    else if(foundStringOrdinal == 1)
-        err = 1; // Timeout (not really but ias ok to use)
-    return err;  
+        if(foundStringOrdinal == 0)
+        {
+            err = NetComReceiveAndCheckIPDDataPacket();
+            if(!err) *hasReceivedPacket = true;
+        }
+        else if(foundStringOrdinal == 1)
+            err = 1; // Timeout (not really but is ok to use)
+        return err;  
+    }
+
+    return 0;
 }
+
+// Receive the packet from the server.
+uint8_t NetComReceiveAndCheckIPDDataPacket(void)
+{
+    /// The IPD cmd received. Ready for receiving the data. 
+    TestLoopBackResponse serverCommandsTestLoopBack;
+    uint8_t err =  NetComReceiveIPDDataPacket((char*)&serverCommandsTestLoopBack, 
+        MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE );
+    if(err)
+        PROG_FAILED;
+
+    NetComCheckReceivedLoopbackData( serverCommandsTestLoopBack );
+
+    return 0;
+}
+
 // Receive data from UDP via UART.
-uint8_t NetComGetMessage(char* receivedData, uint8_t size)
+uint8_t NetComReceiveIPDDataPacket(char* receivedData, uint8_t size)
 {
    // The full received data has the following format:
-   // "+IPD,6,192.168.1.100,12345:123456"
+   // "+IPD," (already read) + "6,192.168.1.100,12345:123456"
    // Where:
    // - 6: the data lenght in bytes
    // - 192.168.1.100: the sender ip address
@@ -392,4 +292,32 @@ uint8_t NetComGetMessage(char* receivedData, uint8_t size)
       receivedData[i] = uart_rx_char2();
 
    return 0;
+}
+
+void NetComCheckReceivedLoopbackData(TestLoopBackResponse serverCommandsTestLoopBack)
+{
+    if( serverCommandsTestLoopBack.cmd != MSG_ID_TESTLOOPBACK )
+        PROG_FAILED;
+    if( serverCommandsTestLoopBack.packetSize != MSG_TESTLOOPBACK_RANDOM_DATA_SIZE )
+    {
+        printf("packetSize=%u (%u)", serverCommandsTestLoopBack.packetSize, 
+            MSG_TESTLOOPBACK_RESPONSE_STRUCT_SIZE);
+        PROG_FAILED;
+    }
+
+    // Verify the test data.
+    for(uint8_t i=0; i<MSG_TESTLOOPBACK_RANDOM_DATA_SIZE; i++)
+        if(serverCommandsTestLoopBack.packetData[i] != i)
+        {
+            //CSPECT_BREAK();
+            PROG_FAILED1(i);
+        }
+
+    // All good. Increase the received packet count.
+    //CSPECT_BREAK();                    
+    totalReceivedPacketCount++;
+    recvPacketCountPerSecond++;
+    zx_border(INK_YELLOW);
+
+    lastReceivedPacketAt = frames16t;
 }

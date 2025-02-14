@@ -26,7 +26,7 @@
 #ifdef ZXNEXT_EMULATOR_MODE_INCLUDES_1
 // For server ip address and port, and packet token
 // Comment out if you want to use the ip address from the cfg file.
-//#include "..\..\mycredentials.h"
+// #include "..\..\mycredentials.h"
 #endif
 
 #include "lib/zxn/zxnext_layer2.h"
@@ -619,19 +619,19 @@ void UpdateAndDrawAll(void)
             case STATE_NONE:
             {
                 // *** Receive data from server.
-                uint16_t receivedPacketCount = 0;
-                uint8_t err =  GetMessageIfAny(MSG_ID_TESTLOOPBACK, &receivedPacketCount);
+                bool hasReceivedPacket = false;
+                uint8_t err =  NetComReceiveSendResponseOrDataPacketIfAny(&hasReceivedPacket);
 
                 //CSPECT_BREAK_IF(recvRasterLineDiff>100);
 
-                if(receivedPacketCount>0)
+                if(hasReceivedPacket)
                     StartNewPacketAnim(true);
  
                 // *** Prepare sending data to server.
                 // Only send every 8th frame
                 if(gameState == STATE_NONE && (frames16t & 0x7) == 0)
                 {
-                    err = PrepareSendMessage(MSG_ID_TESTLOOPBACK);
+                    err = NetComPrepareSendMessage();
                     gameState = STATE_WAIT_FOR_CIPSEND_RESP;
                 }
                 else
@@ -645,7 +645,7 @@ void UpdateAndDrawAll(void)
             case STATE_WAIT_FOR_CIPSEND_RESP:
             {
                 uint8_t netComCmd = NETCOM_CMD_NONE;
-                if( NetComFetchReceivedCommandIfAny(/*OUT*/ &netComCmd) )
+                if( NetComReceiveSendPromptOrDataCmdIfAny(/*OUT*/ &netComCmd) )
                     PROG_FAILED;   
 
                 // Wait for the CIPSEND (sending data packet) response.
@@ -654,19 +654,18 @@ void UpdateAndDrawAll(void)
                     // The CIPSEND cmd response received. Ready for sending the data. 
 
                     // Send the actual data packet to server.
-                    SendMessage(MSG_ID_TESTLOOPBACK);
+                    NetComSendMessage();
                     gameState = STATE_NONE;
 
                     StartNewPacketAnim(false);
                 }
                 else if(netComCmd == NETCOM_CMD_IPD_RECEIVED)
                 {
-                    uint16_t receivedPacketCount = 0;
-                    uint8_t err =  GetMessage(MSG_ID_TESTLOOPBACK, &receivedPacketCount);
+                    uint8_t err =  NetComReceiveAndCheckIPDDataPacket();
 
                     //CSPECT_BREAK_IF(recvRasterLineDiff>100);
 
-                    if(receivedPacketCount>0)
+                    if(!err)
                         StartNewPacketAnim(true);
                 }
                 
@@ -759,7 +758,7 @@ void main(void)
     
     // Draw the title and the bottom status area.
 
-    const char* titleText = " >>> UDP TEST PROGRAM v1.0 <<<";
+    const char* titleText = " >>> UDP TEST PROGRAM v1.1 <<<";
     layer2_draw_text(0, 0, titleText, 0x70, &shadow_screen); 
      // Clear bottom area.
     layer2_fill_rect( 0, (uint8_t)(192 - 16), 256, 16, 0x00, &shadow_screen); 
