@@ -62,7 +62,7 @@ The second row:
 #### Why am I seeing a red cross over the PC icon on the program screen?
 - The client do not get any packets from server. That can be because of:
     - The server IP address is incorrect in the Next program. Check what is the address on the left side of the PC icon. Is that the correct address of your PC?
-    - Check if the Python UDP server is running on PC and continuously sending packets back to Next (the log prints are running on the screen on PC). If you have used the "-c/-client" parameter, check that the given client IP address parameter matches to the one you see on screen on Next, at the left side of the Next icon. You can also try it without the "-c" parameter.
+    - Check if the Python UDP server is running on PC and continuously sending packets back to Next (the log prints are running on the screen on PC). If you have used the "-c" parameter, check that the given client IP address parameter matches to the one you see on screen on Next, on the right side of the Next icon. You can also try it without the "-c" parameter.
     - Check that you firewall allows the port 4444 for your Python executable.
       
 #### Why the NxtUdpTest program fails to the red error screen after "Connection to Wifi"?
