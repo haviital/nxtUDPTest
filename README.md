@@ -72,6 +72,18 @@ The second row:
 #### The Wifi address of my PC has changed. How can I reconfigure the NxtUdpTest.nex program on Next?
 - Remove the "home/NxtUdpTest.cfg" file. Then start NxtUdpTest.nex. The server IP address will be asked again.
 
+## Development environment
+For compiling and debugging the program you need:
+- Spectrum Next or clone ( if necessary, you can manage also with the emulator only )
+- Z88DK, C development kit: https://z88dk.org/site/
+- zxnext_Layer2 and zxnext_sprite libraries (Github)
+- Microsoft VSCode development environment
+- Dezog-plugin for VSCode
+- CSpect emulator (optional but strongly recommended)
+- ESP8266-USB dongle for PC (optional but strongly recommended)
+- Python(3.9) in PC
+- NextSync in PC
+
 ## Visible memory map (64k address space)
 
 $8184 CODE
